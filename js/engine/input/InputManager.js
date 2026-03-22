@@ -2,6 +2,7 @@
   class InputManager {
     constructor(canvas) {
       this.keys = {};
+      this.physicalKeys = {};
       this.virtualKeys = {};
       this.mouse = { x: 0, y: 0, down: false };
 
@@ -21,8 +22,10 @@
         (e) => {
           if (BLOCK.has(e.key) || BLOCK.has(e.code)) e.preventDefault();
           if (e.repeat) return;
-          this.keys[e.key] = true;
-          this.keys[e.code] = true;
+          this.physicalKeys[e.key] = true;
+          this.physicalKeys[e.code] = true;
+          this._syncKeyState(e.key);
+          this._syncKeyState(e.code);
         },
         opts
       );
@@ -31,8 +34,10 @@
         "keyup",
         (e) => {
           if (BLOCK.has(e.key) || BLOCK.has(e.code)) e.preventDefault();
-          this.keys[e.key] = false;
-          this.keys[e.code] = false;
+          this.physicalKeys[e.key] = false;
+          this.physicalKeys[e.code] = false;
+          this._syncKeyState(e.key);
+          this._syncKeyState(e.code);
         },
         opts
       );
@@ -71,6 +76,7 @@
 
     setVirtualKey(key, isDown) {
       this.virtualKeys[key] = !!isDown;
+      this._syncKeyState(key);
     }
 
     tapVirtualKeys(keys, duration = 120) {
@@ -93,6 +99,10 @@
 
       this.mouse.x = (e.clientX - rect.left) * scaleX;
       this.mouse.y = (e.clientY - rect.top) * scaleY;
+    }
+
+    _syncKeyState(key) {
+      this.keys[key] = !!this.physicalKeys[key] || !!this.virtualKeys[key];
     }
 
     update() {}
