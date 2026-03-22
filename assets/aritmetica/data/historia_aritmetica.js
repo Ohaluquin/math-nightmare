@@ -261,7 +261,7 @@ function MN_buildSofiaSupportStory() {
       dialogs: [
         {
           speaker: "Sofía",
-          text: "Hola. Puedo explicarte el Reino o ayudarte con un reto concreto de Aritmética.",
+          text: "Hola, soy Sofía. Puedo ayudarte?",
           stage: { focus: "Sofía" },
           choices: [
             { text: "¿Qué es el Reino de los Números?", next: "sofia_reino" },

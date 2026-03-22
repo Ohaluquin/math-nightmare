@@ -104,47 +104,7 @@
       <img id="input-mode-img" src="" alt="Modo de control">
     </div>
 
-    <div id="mnTouchControls" class="touch-controls hidden" aria-hidden="true">
-      <div class="touch-controls__cluster touch-controls__cluster--left" data-touch-group-wrap="movement">
-        <button class="touch-toggle" type="button" data-touch-toggle="movement" aria-expanded="true">Mover</button>
-        <div class="touch-panel touch-panel--dpad" data-touch-panel="movement" aria-hidden="false">
-          <button class="touch-btn touch-btn--up" type="button" data-touch-key="ArrowUp">Arriba</button>
-          <button class="touch-btn touch-btn--left" type="button" data-touch-key="ArrowLeft">Izq.</button>
-          <button class="touch-btn touch-btn--right" type="button" data-touch-key="ArrowRight">Der.</button>
-          <button class="touch-btn touch-btn--down" type="button" data-touch-key="ArrowDown">Abajo</button>
-        </div>
-      </div>
-
-      <div class="touch-controls__rail touch-controls__rail--right">
-        <div class="touch-controls__cluster" data-touch-group-wrap="actions">
-          <button class="touch-toggle" type="button" data-touch-toggle="actions" aria-expanded="true">Acciones</button>
-          <div class="touch-panel touch-panel--actions" data-touch-panel="actions" aria-hidden="false">
-            <button class="touch-btn touch-btn--action" type="button" data-touch-tap-key="e,E,KeyE">Hablar</button>
-            <button class="touch-btn touch-btn--space" type="button" data-touch-tap-key="_SPACE_,Space,Spacebar">Espacio</button>
-            <button class="touch-btn touch-btn--confirm" type="button" data-touch-tap-key="Enter">OK</button>
-            <button class="touch-btn touch-btn--escape" type="button" data-touch-tap-key="Escape">ESC</button>
-          </div>
-        </div>
-
-        <div class="touch-controls__cluster" data-touch-group-wrap="numpad">
-          <button class="touch-toggle" type="button" data-touch-toggle="numpad" aria-expanded="false">123</button>
-          <div class="touch-panel touch-panel--numpad is-collapsed" data-touch-panel="numpad" aria-hidden="true">
-            <button class="touch-btn" type="button" data-touch-tap-key="1">1</button>
-            <button class="touch-btn" type="button" data-touch-tap-key="2">2</button>
-            <button class="touch-btn" type="button" data-touch-tap-key="3">3</button>
-            <button class="touch-btn" type="button" data-touch-tap-key="4">4</button>
-            <button class="touch-btn" type="button" data-touch-tap-key="5">5</button>
-            <button class="touch-btn" type="button" data-touch-tap-key="6">6</button>
-            <button class="touch-btn" type="button" data-touch-tap-key="7">7</button>
-            <button class="touch-btn" type="button" data-touch-tap-key="8">8</button>
-            <button class="touch-btn" type="button" data-touch-tap-key="9">9</button>
-            <button class="touch-btn touch-btn--zero" type="button" data-touch-tap-key="0">0</button>
-            <button class="touch-btn touch-btn--backspace" type="button" data-touch-tap-key="Backspace">Borrar</button>
-            <button class="touch-btn touch-btn--enter" type="button" data-touch-tap-key="Enter">Enter</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="mnTouchControls" class="touch-controls hidden" aria-hidden="true"></div>
   </div>
 
   <div id="sheet-modal" class="sheet-modal hidden">
@@ -197,6 +157,7 @@
   <script src="js/titleScene.js"></script>
   <script src="js/sheets.js"></script>
   <script src="js/save.js"></script>
+  <script src="js/touchControls.js"></script>
 
   <script src="js/areas/aritmetica/overworld_aritmetica.js"></script>
   <script src="js/areas/aritmetica/niveles/escribaScene.js"></script>

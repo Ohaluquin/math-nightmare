@@ -252,7 +252,7 @@ body {
 .mn-fullscreen-btn {
   position: fixed;
   top: 12px;
-  left: 12px;
+  right: 12px;
   z-index: 9998;
   padding: 0.5rem 0.75rem;
   border-radius: 10px;
@@ -424,6 +424,279 @@ body {
 
 .touch-btn--enter {
   font-size: 0.6875rem;
+}
+
+.touch-controls.touch-controls--overworld {
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.touch-controls.touch-controls--overworld .touch-toggle {
+  display: none;
+}
+
+.touch-controls.touch-controls--overworld .touch-controls__cluster--left,
+.touch-controls.touch-controls--overworld .touch-controls__rail,
+.touch-controls.touch-controls--overworld .touch-controls__rail--right,
+.touch-controls.touch-controls--overworld .touch-controls__cluster {
+  width: auto;
+  max-width: none;
+}
+
+.touch-controls.touch-controls--overworld .touch-controls__cluster--left {
+  order: 2;
+  align-self: flex-end;
+  margin-left: 0;
+}
+
+.touch-controls.touch-controls--overworld .touch-controls__rail--right {
+  order: 1;
+  align-self: flex-end;
+  margin-left: 0;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.touch-controls.touch-controls--overworld .touch-controls__cluster[data-touch-group-wrap="actions"] {
+  gap: 0;
+}
+
+.touch-controls.touch-controls--overworld .touch-panel--actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.touch-controls.touch-controls--overworld .touch-panel--actions .touch-btn {
+  min-width: 5rem;
+  width: 5rem;
+  height: 2.8rem;
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+}
+
+.touch-controls.touch-controls--overworld .touch-panel--dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 3.1rem);
+  grid-template-areas:
+    ". up ."
+    "left down right";
+  gap: 0.35rem;
+  align-items: end;
+  justify-items: center;
+}
+
+.touch-controls.touch-controls--overworld .touch-btn--up {
+  grid-area: up;
+}
+
+.touch-controls.touch-controls--overworld .touch-btn--left {
+  grid-area: left;
+}
+
+.touch-controls.touch-controls--overworld .touch-btn--right {
+  grid-area: right;
+}
+
+.touch-controls.touch-controls--overworld .touch-btn--down {
+  grid-area: down;
+}
+
+.touch-controls.touch-controls--overworld .touch-panel--dpad .touch-btn {
+  width: 3.1rem;
+  min-width: 3.1rem;
+  height: 2.8rem;
+  padding: 0;
+  border-radius: 1rem;
+  font-size: 0.72rem;
+}
+
+.touch-controls.touch-controls--quick-numpad {
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.touch-controls.touch-controls--quick-numpad .touch-toggle {
+  display: none;
+}
+
+.touch-controls.touch-controls--quick-numpad .touch-controls__cluster--left {
+  display: none;
+}
+
+.touch-controls.touch-controls--quick-numpad .touch-controls__rail,
+.touch-controls.touch-controls--quick-numpad .touch-controls__rail--right,
+.touch-controls.touch-controls--quick-numpad .touch-controls__cluster {
+  width: auto;
+  max-width: none;
+}
+
+.touch-controls.touch-controls--quick-numpad .touch-controls__rail--right {
+  margin-left: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.touch-controls.touch-controls--quick-numpad .touch-controls__cluster[data-touch-group-wrap="actions"],
+.touch-controls.touch-controls--quick-numpad .touch-controls__cluster[data-touch-group-wrap="numpad"] {
+  gap: 0;
+}
+
+.touch-controls.touch-controls--quick-numpad .touch-panel--actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.touch-controls.touch-controls--quick-numpad .touch-panel--actions .touch-btn {
+  min-width: 5rem;
+  width: 5rem;
+  height: 2.8rem;
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.touch-controls.touch-controls--quick-numpad .touch-panel--numpad .touch-btn {
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.touch-controls.touch-controls--eratostenes {
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-toggle {
+  display: none;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-controls__cluster--left,
+.touch-controls.touch-controls--eratostenes .touch-controls__rail,
+.touch-controls.touch-controls--eratostenes .touch-controls__rail--right,
+.touch-controls.touch-controls--eratostenes .touch-controls__cluster {
+  width: auto;
+  max-width: none;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-controls__cluster--left {
+  align-self: flex-end;
+  margin-right: auto;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-controls__rail--right {
+  margin-left: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-controls__cluster[data-touch-group-wrap="actions"],
+.touch-controls.touch-controls--eratostenes .touch-controls__cluster[data-touch-group-wrap="numpad"] {
+  gap: 0;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-end;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--actions .touch-btn {
+  min-width: 5.4rem;
+  height: 2.8rem;
+  padding: 0 0.65rem;
+  border-radius: 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--actions [data-touch-key-id="Escape"] {
+  order: 1;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--actions [data-touch-key-id="_SPACE_"] {
+  order: 2;
+  margin-top: 0.8rem;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--numpad {
+  margin-top: 0.4rem;
+  grid-template-columns: repeat(3, 3.55rem);
+  grid-template-rows: repeat(2, 3.55rem);
+  grid-template-areas:
+    "one two three"
+    "five seven empty";
+  gap: 0.45rem;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--numpad .touch-btn {
+  width: 3.55rem;
+  height: 3.55rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--numpad [data-touch-key-id="1"] {
+  grid-area: one;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--numpad [data-touch-key-id="2"] {
+  grid-area: two;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--numpad [data-touch-key-id="3"] {
+  grid-area: three;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--numpad [data-touch-key-id="5"] {
+  grid-area: five;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--numpad [data-touch-key-id="7"] {
+  grid-area: seven;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 3.15rem);
+  grid-template-areas:
+    ". up ."
+    "left down right";
+  gap: 0.4rem;
+  justify-items: center;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-btn--up {
+  grid-area: up;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-btn--left {
+  grid-area: left;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-btn--right {
+  grid-area: right;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-btn--down {
+  grid-area: down;
+}
+
+.touch-controls.touch-controls--eratostenes .touch-panel--dpad .touch-btn {
+  width: 3.15rem;
+  min-width: 3.15rem;
+  height: 2.9rem;
+  padding: 0;
+  border-radius: 1rem;
+  font-size: 0.74rem;
 }
 
 .project-modal {
@@ -1102,11 +1375,12 @@ body.mn-is-fullscreen .mn-fullscreen-btn {
 }
 
 body.mn-is-fullscreen .mn-fullscreen-btn {
-  left: calc(env(safe-area-inset-left) + 10px);
+  left: auto;
+  right: calc(env(safe-area-inset-right) + 10px);
 }
 
 body.mn-is-fullscreen .mn-save-btn {
-  right: calc(env(safe-area-inset-right) + 10px);
+  right: calc(env(safe-area-inset-right) + 96px);
 }
 
 @media (pointer: coarse) and (orientation: portrait) {
@@ -1167,6 +1441,37 @@ body.mn-is-fullscreen .mn-save-btn {
     align-items: flex-end;
   }
 
+  .touch-controls.touch-controls--quick-numpad .touch-controls__rail--right {
+    width: auto;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    transform: none;
+  }
+
+  .touch-controls.touch-controls--quick-numpad
+    .touch-controls__cluster[data-touch-group-wrap="actions"],
+  .touch-controls.touch-controls--quick-numpad
+    .touch-controls__cluster[data-touch-group-wrap="numpad"] {
+    align-items: flex-end;
+  }
+
+  .touch-controls.touch-controls--eratostenes {
+    justify-content: space-between;
+  }
+
+  .touch-controls.touch-controls--eratostenes .touch-controls__cluster--left {
+    transform: none;
+  }
+
+  .touch-controls.touch-controls--eratostenes .touch-controls__rail--right {
+    width: auto;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    transform: none;
+  }
+
   body.mn-is-fullscreen .touch-controls.touch-controls--overworld {
     justify-content: flex-end;
     align-items: flex-end;
@@ -1179,19 +1484,14 @@ body.mn-is-fullscreen .mn-save-btn {
     background: none;
   }
 
-  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-toggle {
-    display: none;
-  }
-
   body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-controls__cluster--left {
     align-self: flex-end;
     transform: none;
-    margin-left: auto;
   }
 
   body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-controls__rail--right {
     align-self: flex-end;
-    flex-direction: row;
+    flex-direction: column;
     gap: 0.5rem;
     transform: none;
     margin-left: 0;
@@ -1200,33 +1500,6 @@ body.mn-is-fullscreen .mn-save-btn {
   body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-controls__cluster {
     max-width: none;
     gap: 0;
-  }
-
-  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-panel--dpad {
-    display: grid;
-    grid-template-columns: repeat(3, 3rem);
-    grid-template-areas:
-      ". up ."
-      "left down right";
-    gap: 0.35rem;
-    align-items: end;
-    justify-items: center;
-  }
-
-  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-btn--up {
-    grid-area: up;
-  }
-
-  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-btn--left {
-    grid-area: left;
-  }
-
-  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-btn--right {
-    grid-area: right;
-  }
-
-  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-btn--down {
-    grid-area: down;
   }
 
   body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-panel--dpad .touch-btn {
@@ -1251,6 +1524,29 @@ body.mn-is-fullscreen .mn-save-btn {
     padding: 0 0.5rem;
     border-radius: 0.95rem;
     font-size: 0.72rem;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--escriba {
+    align-items: flex-end;
+    padding-top: max(60px, calc(env(safe-area-inset-top) + 60px));
+    padding-right: max(10px, calc(env(safe-area-inset-right) + 8px));
+    padding-bottom: max(14px, calc(env(safe-area-inset-bottom) + 14px));
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--escriba .touch-controls__rail--right {
+    transform: translateY(10px);
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--escriba .touch-panel--actions {
+    gap: 0.25rem;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--escriba .touch-panel--actions .touch-btn {
+    min-width: 4.1rem;
+    width: 4.1rem;
+    height: 2.55rem;
+    padding: 0 0.4rem;
+    font-size: 0.7rem;
   }
 }
 /* la clase/selector real del <img> del modal */
