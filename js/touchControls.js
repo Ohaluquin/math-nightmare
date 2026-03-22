@@ -1,31 +1,7 @@
 (function () {
   const DEBUG_STORAGE_KEY = "mnTouchControlsDebug";
   const DEBUG_QUERY_KEY = "touchcontrols";
-
-  const NUMERIC_TOUCH_SCENES = new Set([
-    "caja_rapida",
-    "escalera_sumas",
-    "restas_luciernagas",
-    "galileo_tablas",
-    "leonardo_razonamiento",
-    "eratostenes_divisores",
-  ]);
-
-  const QUICK_NUMPAD_SCENES = new Set([
-    "caja_rapida",
-    "escalera_sumas",
-    "galileo_tablas",
-    "leonardo_razonamiento",
-    "restas_luciernagas",
-  ]);
-
-  const ESC_ONLY_SCENES = new Set([
-    "armonia_division",
-    "chaman_jerarquia",
-    "general_signos",
-  ]);
-
-  const OK_ESC_SCENES = new Set(["mineros_division"]);
+  const sceneProfiles = new Map();
 
   const GROUP_DEFS = {
     movement: {
@@ -150,93 +126,61 @@
     root.dataset.touchControlsBuilt = "true";
   }
 
-  function isNumericTouchScene(sceneKey) {
-    return NUMERIC_TOUCH_SCENES.has(sceneKey);
-  }
-
-  function isQuickNumpadScene(sceneKey) {
-    return QUICK_NUMPAD_SCENES.has(sceneKey);
-  }
-
-  function isEscOnlyScene(sceneKey) {
-    return ESC_ONLY_SCENES.has(sceneKey);
-  }
-
-  function isOkEscScene(sceneKey) {
-    return OK_ESC_SCENES.has(sceneKey);
-  }
-
-  function isEratostenesScene(sceneKey) {
-    return sceneKey === "eratostenes_divisores";
-  }
-
   function createBaseProfile(sceneKey) {
     const isOverworld = !!sceneKey && sceneKey.startsWith("overworld");
-    const isNumeric = isNumericTouchScene(sceneKey);
 
     return {
       movement: isOverworld,
       actions: !!sceneKey && sceneKey !== "title" && sceneKey !== "novela",
-      numpad: isNumeric,
-      layout: !isOverworld && isNumeric ? "split" : "default",
+      numpad: false,
+      layout: "default",
       actionKeys: null,
       numpadKeys: null,
+      actionLabels: null,
+      variant: isOverworld ? "overworld" : null,
       expanded: {
         movement: isOverworld,
         actions: true,
-        numpad: isNumeric,
+        numpad: false,
       },
     };
   }
 
+  function getRegisteredProfile(sceneKey) {
+    if (!sceneKey) return null;
+    return sceneProfiles.get(sceneKey) || null;
+  }
+
   function getTouchProfile(sceneKey, override = null) {
     const profile = createBaseProfile(sceneKey);
-
     if (profile.movement) {
       profile.actions = true;
       profile.actionKeys = ["e"];
     }
 
-    if (sceneKey === "escriba_muescas") {
-      profile.actions = true;
-      profile.actionKeys = ["Escape"];
-      profile.numpad = false;
-      profile.layout = "default";
-    }
-
-    if (isEscOnlyScene(sceneKey)) {
-      profile.movement = false;
-      profile.actions = true;
-      profile.actionKeys = ["Escape"];
-      profile.numpad = false;
-      profile.layout = "default";
-    }
-
-    if (isOkEscScene(sceneKey)) {
-      profile.movement = false;
-      profile.actions = true;
-      profile.actionKeys = ["Enter", "Escape"];
-      profile.numpad = false;
-      profile.layout = "default";
-    }
-
-    if (QUICK_NUMPAD_SCENES.has(sceneKey)) {
-      profile.movement = false;
-      profile.actions = true;
-      profile.actionKeys = ["Escape"];
-      profile.numpad = true;
-      profile.layout = "split";
-      profile.expanded.numpad = true;
-    }
-
-    if (sceneKey === "eratostenes_divisores") {
-      profile.movement = true;
-      profile.actions = true;
-      profile.numpad = true;
-      profile.layout = "triad";
-      profile.actionKeys = ["_SPACE_", "Escape"];
-      profile.numpadKeys = ["1", "2", "3", "5", "7"];
-      profile.expanded.movement = true;
+    const registered = getRegisteredProfile(sceneKey);
+    if (registered) {
+      if (typeof registered.movement === "boolean") profile.movement = registered.movement;
+      if (typeof registered.actions === "boolean") profile.actions = registered.actions;
+      if (typeof registered.numpad === "boolean") profile.numpad = registered.numpad;
+      if (typeof registered.layout === "string") profile.layout = registered.layout;
+      if (typeof registered.variant === "string") profile.variant = registered.variant;
+      if (Array.isArray(registered.actionKeys)) profile.actionKeys = registered.actionKeys;
+      if (Array.isArray(registered.numpadKeys)) profile.numpadKeys = registered.numpadKeys;
+      if (registered.actionLabels && typeof registered.actionLabels === "object") {
+        profile.actionLabels = registered.actionLabels;
+      }
+      if (registered.expanded && typeof registered.expanded === "object") {
+        if (typeof registered.expanded.movement === "boolean") {
+          profile.expanded.movement = registered.expanded.movement;
+        }
+        if (typeof registered.expanded.actions === "boolean") {
+          profile.expanded.actions = registered.expanded.actions;
+        }
+        if (typeof registered.expanded.numpad === "boolean") {
+          profile.expanded.numpad = registered.expanded.numpad;
+        }
+      }
     }
 
     if (!override || typeof override !== "object") return profile;
@@ -255,9 +199,15 @@
       actionKeys: Array.isArray(override.actionKeys)
         ? override.actionKeys
         : profile.actionKeys,
+      actionLabels:
+        override.actionLabels && typeof override.actionLabels === "object"
+          ? override.actionLabels
+          : profile.actionLabels,
       numpadKeys: Array.isArray(override.numpadKeys)
         ? override.numpadKeys
         : profile.numpadKeys,
+      variant:
+        typeof override.variant === "string" ? override.variant : profile.variant,
       expanded: {
         movement:
           typeof override.expanded?.movement === "boolean"
@@ -347,33 +297,22 @@
 
     const applyProfile = (sceneKey = game.sceneManager?.currentKey) => {
       const profile = getTouchProfile(sceneKey, state.override);
-      root.classList.toggle(
-        "touch-controls--overworld",
-        !!sceneKey && sceneKey.startsWith("overworld")
-      );
-      root.classList.toggle(
-        "touch-controls--escriba",
-        sceneKey === "escriba_muescas"
-      );
-      root.classList.toggle(
-        "touch-controls--quick-numpad",
-        isQuickNumpadScene(sceneKey)
-      );
-      root.classList.toggle(
-        "touch-controls--eratostenes",
-        isEratostenesScene(sceneKey)
-      );
+      const variants = ["overworld", "escriba", "quick-numpad", "eratostenes"];
+      variants.forEach((name) => {
+        root.classList.toggle(`touch-controls--${name}`, profile.variant === name);
+      });
       setLayout(profile.layout || "default");
       setAllowedTapKeys(actionButtons, profile.actionKeys || null);
       setAllowedTapKeys(numpadButtons, profile.numpadKeys || null);
-      if (actionButtonsByKey.Enter) {
-        actionButtonsByKey.Enter.textContent = "OK";
-      }
-      if (actionButtonsByKey._SPACE_) {
-        actionButtonsByKey._SPACE_.textContent = isEratostenesScene(sceneKey)
-          ? "DISPARO"
-          : "Espacio";
-      }
+      const defaultActionLabels = {
+        Enter: "OK",
+        _SPACE_: "Espacio",
+        Escape: "ESC",
+        e: "Hablar",
+      };
+      Object.entries(actionButtonsByKey).forEach(([key, btn]) => {
+        btn.textContent = profile.actionLabels?.[key] || defaultActionLabels[key] || btn.textContent;
+      });
       setGroupVisible("movement", profile.movement);
       setGroupVisible("actions", profile.actions);
       setGroupVisible("numpad", profile.numpad);
@@ -540,6 +479,12 @@
     isEnabled,
     isTouchDevice,
     enableDebug,
+    registerProfiles(profiles = {}) {
+      Object.entries(profiles).forEach(([sceneKey, profile]) => {
+        if (!sceneKey || !profile || typeof profile !== "object") return;
+        sceneProfiles.set(sceneKey, profile);
+      });
+    },
   };
 
   document.addEventListener("DOMContentLoaded", () => {

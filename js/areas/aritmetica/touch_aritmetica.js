@@ -1,0 +1,102 @@
+(function () {
+  if (!window.MN_TOUCH_CONTROLS?.registerProfiles) return;
+
+  window.MN_TOUCH_CONTROLS.registerProfiles({
+    escriba_muescas: {
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: false,
+      layout: "default",
+      variant: "escriba",
+    },
+    caja_rapida: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: true,
+      layout: "split",
+      variant: "quick-numpad",
+      expanded: { numpad: true },
+    },
+    escalera_sumas: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: true,
+      layout: "split",
+      variant: "quick-numpad",
+      expanded: { numpad: true },
+    },
+    galileo_tablas: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: true,
+      layout: "split",
+      variant: "quick-numpad",
+      expanded: { numpad: true },
+    },
+    leonardo_razonamiento: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: true,
+      layout: "split",
+      variant: "quick-numpad",
+      expanded: { numpad: true },
+    },
+    restas_luciernagas: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: true,
+      layout: "split",
+      variant: "quick-numpad",
+      expanded: { numpad: true },
+    },
+    mineros_division: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Enter", "Escape"],
+      numpad: false,
+      layout: "default",
+    },
+    armonia_division: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: false,
+      layout: "default",
+    },
+    chaman_jerarquia: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: false,
+      layout: "default",
+    },
+    general_signos: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: false,
+      layout: "default",
+    },
+    eratostenes_divisores: {
+      movement: true,
+      actions: true,
+      numpad: true,
+      layout: "triad",
+      variant: "eratostenes",
+      actionKeys: ["_SPACE_", "Escape"],
+      actionLabels: {
+        _SPACE_: "DISPARO",
+        Escape: "ESC",
+      },
+      numpadKeys: ["1", "2", "3", "5", "7"],
+      expanded: {
+        movement: true,
+      },
+    },
+  });
+})();
