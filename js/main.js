@@ -162,6 +162,7 @@
     "restas_luciernagas",
     "galileo_tablas",
     "leonardo_razonamiento",
+    "eratostenes_divisores",
   ]);
 
   function MN_isNumericTouchScene(sceneKey) {
@@ -175,12 +176,26 @@
       movement: isOverworld,
       actions: !!sceneKey && sceneKey !== "title" && sceneKey !== "novela",
       numpad: isNumeric,
+      layout: !isOverworld && isNumeric ? "split" : "default",
+      numpadKeys: null,
       expanded: {
         movement: isOverworld,
         actions: true,
         numpad: isNumeric,
       },
     };
+
+    if (sceneKey === "eratostenes_divisores") {
+      base.movement = true;
+      base.actions = true;
+      base.numpad = true;
+      base.layout = "triad";
+      base.numpadKeys = ["1", "2", "3", "5", "7", "Enter"];
+    }
+
+    if (sceneKey === "caja_rapida") {
+      base.layout = "split";
+    }
 
     if (!override || typeof override !== "object") return base;
 
@@ -193,6 +208,11 @@
         typeof override.actions === "boolean" ? override.actions : base.actions,
       numpad:
         typeof override.numpad === "boolean" ? override.numpad : base.numpad,
+      layout:
+        typeof override.layout === "string" ? override.layout : base.layout,
+      numpadKeys: Array.isArray(override.numpadKeys)
+        ? override.numpadKeys
+        : base.numpadKeys,
       expanded: {
         movement:
           typeof override.expanded?.movement === "boolean"
@@ -228,6 +248,9 @@
       actions: root.querySelector('[data-touch-panel="actions"]'),
       numpad: root.querySelector('[data-touch-panel="numpad"]'),
     };
+    const numpadButtons = root.querySelectorAll(
+      '[data-touch-panel="numpad"] [data-touch-tap-key]'
+    );
     const state = {
       override: null,
       expanded: {
@@ -257,8 +280,24 @@
       if (!visible) setPanelExpanded(name, false);
     };
 
+    const setLayout = (layout) => {
+      root.classList.toggle("touch-controls--split", layout === "split");
+      root.classList.toggle("touch-controls--triad", layout === "triad");
+    };
+
+    const setNumpadKeys = (allowedKeys) => {
+      const allowed = Array.isArray(allowedKeys) ? new Set(allowedKeys) : null;
+      numpadButtons.forEach((btn) => {
+        const primaryKey = btn.dataset.touchTapKey?.split(",")?.[0] || "";
+        const visible = !allowed || allowed.has(primaryKey);
+        btn.classList.toggle("hidden", !visible);
+      });
+    };
+
     const applyProfile = (sceneKey = game.sceneManager?.currentKey) => {
       const profile = MN_getTouchProfile(sceneKey, state.override);
+      setLayout(profile.layout || "default");
+      setNumpadKeys(profile.numpadKeys || null);
       setGroupVisible("movement", profile.movement);
       setGroupVisible("actions", profile.actions);
       setGroupVisible("numpad", profile.numpad);

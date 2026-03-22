@@ -232,10 +232,10 @@ body {
   min-width: 74px;
   height: 38px;
   padding: 0 14px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(180, 230, 198, 0.34);
   border-radius: 999px;
-  background: rgba(16, 18, 27, 0.88);
-  color: #ffe4c6;
+  background: rgba(18, 96, 61, 0.9);
+  color: #eff9f2;
   font: inherit;
   font-size: 12px;
   font-weight: 700;
@@ -252,7 +252,7 @@ body {
 
 .touch-toggle:active,
 .touch-toggle.is-pressed {
-  background: rgba(145, 50, 20, 0.94);
+  background: rgba(35, 144, 89, 0.98);
 }
 
 .touch-panel {
@@ -286,15 +286,16 @@ body {
 .touch-panel--numpad {
   display: grid;
   grid-template-columns: repeat(3, 58px);
+  grid-template-rows: repeat(4, 58px);
   gap: 8px;
   justify-items: stretch;
 }
 
 .touch-btn {
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(198, 239, 211, 0.2);
   border-radius: 18px;
-  background: rgba(8, 10, 15, 0.72);
-  color: #f4e4d4;
+  background: rgba(14, 84, 53, 0.82);
+  color: #eff8f0;
   font: inherit;
   font-size: 13px;
   font-weight: 600;
@@ -306,7 +307,7 @@ body {
 
 .touch-btn:active,
 .touch-btn.is-pressed {
-  background: rgba(176, 63, 28, 0.92);
+  background: rgba(37, 151, 94, 0.98);
 }
 
 .touch-btn--up {
@@ -349,16 +350,17 @@ body {
 }
 
 .touch-btn--zero,
-.touch-btn--backspace {
-  width: 124px;
-}
-
-.touch-btn--zero {
-  grid-column: span 1;
+.touch-btn--backspace,
+.touch-btn--enter {
+  width: 58px;
 }
 
 .touch-btn--backspace {
-  grid-column: span 2;
+  font-size: 11px;
+}
+
+.touch-btn--enter {
+  font-size: 11px;
 }
 
 .project-modal {
@@ -901,6 +903,7 @@ p.project-modal__note {
 
   .touch-panel--numpad {
     grid-template-columns: repeat(3, 52px);
+    grid-template-rows: repeat(4, 52px);
     gap: 6px;
   }
 
@@ -909,8 +912,10 @@ p.project-modal__note {
     height: 52px;
   }
 
-  .touch-btn--backspace {
-    width: 110px;
+  .touch-btn--zero,
+  .touch-btn--backspace,
+  .touch-btn--enter {
+    width: 52px;
   }
 
   .sheet-controls {
@@ -934,17 +939,36 @@ p.project-modal__note {
     padding:
       max(14px, env(safe-area-inset-top))
       max(14px, env(safe-area-inset-right))
-      max(14px, env(safe-area-inset-bottom))
+      max(14px, calc(env(safe-area-inset-bottom) + 18px))
       max(14px, env(safe-area-inset-left));
   }
 
   .touch-controls__cluster--left {
     align-self: center;
+    transform: translateY(-26px);
   }
 
   .touch-controls__rail--right {
     align-self: center;
     flex-direction: column;
+    transform: translateY(-26px);
+  }
+
+  .touch-controls.touch-controls--split .touch-controls__rail--right {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .touch-controls.touch-controls--split
+    .touch-controls__cluster[data-touch-group-wrap="actions"] {
+    align-items: flex-start;
+  }
+
+  .touch-controls.touch-controls--split
+    .touch-controls__cluster[data-touch-group-wrap="numpad"] {
+    align-items: flex-end;
   }
 }
 /* la clase/selector real del <img> del modal */
