@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Nightmare - Demo v2</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <div class="game-container">
+    <div id="mnStartMenu" class="startMenu">
+      <div class="menuOptions menuOptions--minimal">
+        <button id="mnBtnNew" class="button button-primary">Nueva partida</button>
+      </div>
+    </div>
+
+    <div class="startMeta">
+      <button id="mnBtnAbout" class="startLink" type="button">Sobre el proyecto</button>
+    </div>
+
+    <div id="mnAboutModal" class="project-modal hidden" aria-hidden="true">
+      <div class="project-modal__backdrop" data-close-about="true"></div>
+      <div class="project-modal__panel" role="dialog" aria-modal="true" aria-labelledby="mnAboutTitle">
+        <button id="mnAboutClose" class="project-modal__close" type="button" aria-label="Cerrar">X</button>
+        <div class="project-modal__content">
+
+          <p class="project-modal__eyebrow">Sobre el proyecto</p>
+          <h2 id="mnAboutTitle">Math Nightmare</h2>
+
+          <p>
+            Math Nightmare es un juego educativo narrativo diseñado para <strong>practicar habilidades matemáticas a
+              través de la exploración y el juego</strong>.
+          </p>
+
+          <p>
+            A diferencia de un curso tradicional, no se centra en explicar contenidos, sino en poner a prueba lo que el
+            jugador ya conoce mediante minijuegos que trabajan habilidades específicas.
+          </p>
+
+          <p>
+            A lo largo del juego, podrás obtener hojas de conocimiento, que funcionan como material
+            complementario para reforzar ideas clave y comprender mejor los conceptos.
+          </p>
+
+          <hr class="project-divider">
+
+          <p>
+            <strong>Autor:</strong> Óscar Hugo Álvarez Luquín<br>
+            <strong>Contacto:</strong> oscar.alvarez1@iems.edu.mx<br>
+            <strong>Licencia:</strong> Creative Commons BY-NC-ND 4.0
+          </p>
+
+          <p class="project-modal__note">
+            Esta versión corresponde a una demo diseñada para jugarse en computadora. El proyecto continúa en
+            desarrollo.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <button id="mnSaveBtn" class="mn-save-btn hidden" title="Guardar progreso">Guardar</button>
+    <input id="mnImport" type="file" accept=".json,.mnsave.json" style="display:none" />
+
+    <div class="game-overlay" id="gameOverlay">
+      <div class="game-message" id="gameMessage">GAME OVER</div>
+    </div>
+
+    <canvas id="gameCanvas" width="1020" height="680"></canvas>
+
+    <div class="hud">
+      <div id="leaf-hud" class="leaf-hud"></div>
+    </div>
+
+    <div id="dialog-box" class="dialog-box hidden">
+      <div id="speaker" class="speaker"></div>
+      <div id="message" class="message"></div>
+      <div id="choices-root"></div>
+      <div class="dialog-buttons">
+        <button id="continue-btn">Continuar</button>
+        <button id="skip-dialog-btn">Saltar</button>
+      </div>
+    </div>
+
+    <div id="video-overlay" class="hidden">
+      <video id="cutscene" playsinline preload="auto"></video>
+      <button id="skip-video">Saltar</button>
+    </div>
+
+    <div id="hint"></div>
+
+    <div id="input-mode-icon" class="input-mode-icon hidden">
+      <img id="input-mode-img" src="" alt="Modo de control">
+    </div>
+  </div>
+
+  <div id="sheet-modal" class="sheet-modal hidden">
+    <div class="sheet-panel">
+      <button id="sheet-close">X</button>
+      <div class="sheet-controls">
+        <div class="sheet-zoom">
+          <button id="sheet-zoom-out" class="sheet-btn">-</button>
+          <button id="sheet-zoom-in" class="sheet-btn">+</button>
+          <button id="sheet-reset" class="sheet-btn">Reset</button>
+          <button id="sheet-prev" class="sheet-btn">Prev.</button>
+          <button id="sheet-next" class="sheet-btn">Sig.</button>
+        </div>
+
+        <div class="sheet-pad">
+          <button id="sheet-up" class="sheet-btn">Arriba</button>
+          <button id="sheet-left" class="sheet-btn">Izq.</button>
+          <button id="sheet-right" class="sheet-btn">Der.</button>
+          <button id="sheet-down" class="sheet-btn">Abajo</button>
+        </div>
+      </div>
+
+      <div class="sheet-viewport" id="sheet-viewport">
+        <img id="sheet-img" draggable="false" />
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/aritmetica/data/assets_aritmetica.js"></script>
+  <script src="assets/aritmetica/data/historia_aritmetica.js"></script>
+  <script src="assets/aritmetica/data/registro_aritmetica.js"></script>
+
+  <script src="js/engine/core/EventEmitter.js"></script>
+  <script src="js/engine/animation/Animation.js"></script>
+  <script src="js/engine/core/StateMachine.js"></script>
+  <script src="js/engine/assets/AssetLoader.js"></script>
+  <script src="js/engine/input/InputManager.js"></script>
+  <script src="js/engine/core/Camera.js"></script>
+  <script src="js/engine/physics/QuadTree.js"></script>
+  <script src="js/engine/core/Scene.js"></script>
+  <script src="js/engine/core/SceneManager.js"></script>
+  <script src="js/engine/objects/Sprite.js"></script>
+  <script src="js/engine/animation/SheetAnimator.js"></script>
+  <script src="js/engine/core/Game.js"></script>
+  <script src="js/motor2D.js"></script>
+  <script src="js/objects.js"></script>
+  <script src="js/coreScene.js"></script>
+  <script src="js/novela.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/titleScene.js"></script>
+  <script src="js/sheets.js"></script>
+  <script src="js/save.js"></script>
+
+  <script src="js/areas/aritmetica/overworld_aritmetica.js"></script>
+  <script src="js/areas/aritmetica/niveles/escribaScene.js"></script>
+  <script src="js/areas/aritmetica/niveles/cajaRapidaScene.js"></script>
+  <script src="js/areas/aritmetica/niveles/sumasScene.js"></script>
+  <script src="js/areas/aritmetica/niveles/restasScene.js"></script>
+  <script src="js/areas/aritmetica/niveles/elevadorScene.js"></script>
+  <script src="js/areas/aritmetica/niveles/tablasScene.js"></script>
+  <script src="js/areas/aritmetica/niveles/armoniaScene.js"></script>
+  <script src="js/areas/aritmetica/niveles/jerarquiaScene.js"></script>
+  <script src="js/areas/aritmetica/niveles/generalSignosScene.js"></script>
+  <script src="js/areas/aritmetica/niveles/divisoresScene.js"></script>
+  <script src="js/areas/aritmetica/niveles/razonamientoScene.js"></script>
+  <script src="js/areas/aritmetica/area_aritmetica.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
