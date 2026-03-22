@@ -46,6 +46,23 @@
         this._setMousePos(e);
       });
       canvas.addEventListener("mousemove", (e) => this._setMousePos(e));
+
+      canvas.addEventListener("pointerdown", (e) => {
+        this.mouse.down = true;
+        this._setMousePos(e);
+      });
+      canvas.addEventListener("pointermove", (e) => this._setMousePos(e));
+      canvas.addEventListener("pointerup", (e) => {
+        this.mouse.down = false;
+        this._setMousePos(e);
+      });
+      canvas.addEventListener("pointercancel", (e) => {
+        this.mouse.down = false;
+        this._setMousePos(e);
+      });
+      canvas.addEventListener("pointerleave", () => {
+        this.mouse.down = false;
+      });
     }
 
     isDown(key) {

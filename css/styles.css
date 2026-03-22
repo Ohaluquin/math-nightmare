@@ -49,6 +49,7 @@ body {
   width: 100%;
   height: 100%;
   animation: fadeInStart 0.6s ease-out forwards;
+  touch-action: none;
 }
 
 @keyframes fadeInStart {
@@ -272,8 +273,8 @@ body {
 
 .touch-panel--dpad {
   display: grid;
-  grid-template-columns: 64px 64px 64px;
-  grid-template-rows: 64px 64px;
+  grid-template-columns: 64px 64px;
+  grid-template-rows: 64px 64px 64px;
   gap: 8px;
   align-items: end;
 }
@@ -309,7 +310,7 @@ body {
 }
 
 .touch-btn--up {
-  grid-column: 2;
+  grid-column: 1 / span 2;
   grid-row: 1;
 }
 
@@ -319,21 +320,31 @@ body {
 }
 
 .touch-btn--down {
-  grid-column: 2;
-  grid-row: 2;
+  grid-column: 1 / span 2;
+  grid-row: 3;
 }
 
 .touch-btn--right {
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 2;
 }
 
 .touch-btn--action,
 .touch-btn--confirm,
-.touch-btn--space {
+.touch-btn--space,
+.touch-btn--escape {
   min-width: 108px;
   height: 64px;
   padding: 0 18px;
+}
+
+.touch-panel--dpad .touch-btn {
+  width: 64px;
+}
+
+.touch-panel--dpad .touch-btn--up,
+.touch-panel--dpad .touch-btn--down {
+  width: 136px;
 }
 
 .touch-panel--numpad .touch-btn {
@@ -871,8 +882,8 @@ p.project-modal__note {
   }
 
   .touch-panel--dpad {
-    grid-template-columns: 56px 56px 56px;
-    grid-template-rows: 56px 56px;
+    grid-template-columns: 56px 56px;
+    grid-template-rows: 56px 56px 56px;
   }
 
   .touch-btn {
@@ -882,10 +893,20 @@ p.project-modal__note {
 
   .touch-btn--action,
   .touch-btn--confirm,
-  .touch-btn--space {
+  .touch-btn--space,
+  .touch-btn--escape {
     min-width: 92px;
     height: 56px;
     padding: 0 14px;
+  }
+
+  .touch-panel--dpad .touch-btn {
+    width: 56px;
+  }
+
+  .touch-panel--dpad .touch-btn--up,
+  .touch-panel--dpad .touch-btn--down {
+    width: 120px;
   }
 
   .touch-panel--numpad {

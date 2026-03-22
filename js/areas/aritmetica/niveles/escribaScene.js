@@ -649,7 +649,9 @@ class EscribaScene extends Scene {
     const input = this.game.input;
     const mouse = input.mouse || { down: false };
     const mouseDown = mouse.down;
-    const keys = input.keys || {};
+    const watchedKeys = ["Enter", " ", "Space", "Spacebar", "Escape"];
+    const keys = {};
+    for (const key of watchedKeys) keys[key] = !!input.isDown(key);
     const isJustPressed = (key) => keys[key] && !this._prevKeys[key];
 
     // 🔹 Juego ya terminó: esperar salida
@@ -661,7 +663,13 @@ class EscribaScene extends Scene {
         return;
       }
 
-      const wantsExit = input.isDown("Enter") || input.isDown(" ") || mouseDown;
+      const wantsExit =
+        input.isDown("Enter") ||
+        input.isDown(" ") ||
+        input.isDown("Space") ||
+        input.isDown("Spacebar") ||
+        input.isDown("Escape") ||
+        mouseDown;
 
       if (wantsExit) {
         window.MN_APP?.toOverworld?.();
@@ -674,11 +682,24 @@ class EscribaScene extends Scene {
 
     // 🔹 INTRO: solo mostramos instrucciones, no corre el tiempo ni hay arrastre
     if (this.state === "intro") {
-      if (isJustPressed("Enter") || isJustPressed(" ") || mouseDown) {
+      if (
+        isJustPressed("Enter") ||
+        isJustPressed(" ") ||
+        isJustPressed("Space") ||
+        isJustPressed("Spacebar") ||
+        mouseDown
+      ) {
         this.state = "playing";
       }
       this._prevKeys = { ...keys };
       this._prevMouseDown = mouseDown;      
+      return;
+    }
+
+    if (isJustPressed("Escape")) {
+      window.MN_APP?.toOverworld?.();
+      this._prevKeys = { ...keys };
+      this._prevMouseDown = mouseDown;
       return;
     }
 
