@@ -620,6 +620,11 @@ body {
 
 .touch-controls.touch-controls--eratostenes .touch-panel--actions [data-touch-key-id="Escape"] {
   order: 1;
+  min-width: 3.55rem;
+  width: 3.55rem;
+  height: 2.55rem;
+  font-size: 0.8rem;
+  align-self: flex-start;
 }
 
 .touch-controls.touch-controls--eratostenes .touch-panel--actions [data-touch-key-id="_SPACE_"] {
