@@ -156,13 +156,124 @@
     );
   }
 
+  const MN_NUMERIC_TOUCH_SCENES = new Set([
+    "caja_rapida",
+    "escalera_sumas",
+    "restas_luciernagas",
+    "galileo_tablas",
+    "leonardo_razonamiento",
+  ]);
+
+  function MN_isNumericTouchScene(sceneKey) {
+    return MN_NUMERIC_TOUCH_SCENES.has(sceneKey);
+  }
+
+  function MN_getTouchProfile(sceneKey, override = null) {
+    const isOverworld = !!sceneKey && sceneKey.startsWith("overworld");
+    const isNumeric = MN_isNumericTouchScene(sceneKey);
+    const base = {
+      movement: isOverworld,
+      actions: !!sceneKey && sceneKey !== "title" && sceneKey !== "novela",
+      numpad: isNumeric,
+      expanded: {
+        movement: isOverworld,
+        actions: true,
+        numpad: isNumeric,
+      },
+    };
+
+    if (!override || typeof override !== "object") return base;
+
+    return {
+      movement:
+        typeof override.movement === "boolean"
+          ? override.movement
+          : base.movement,
+      actions:
+        typeof override.actions === "boolean" ? override.actions : base.actions,
+      numpad:
+        typeof override.numpad === "boolean" ? override.numpad : base.numpad,
+      expanded: {
+        movement:
+          typeof override.expanded?.movement === "boolean"
+            ? override.expanded.movement
+            : base.expanded.movement,
+        actions:
+          typeof override.expanded?.actions === "boolean"
+            ? override.expanded.actions
+            : base.expanded.actions,
+        numpad:
+          typeof override.expanded?.numpad === "boolean"
+            ? override.expanded.numpad
+            : base.expanded.numpad,
+      },
+    };
+  }
+
   function MN_initTouchControls(game) {
     const root = document.getElementById("mnTouchControls");
     if (!root || !game?.input || !MN_isTouchDevice()) return;
 
     const input = game.input;
     const dirButtons = root.querySelectorAll("[data-touch-key]");
-    const tapButtons = root.querySelectorAll("[data-touch-tap]");
+    const tapButtons = root.querySelectorAll("[data-touch-tap-key]");
+    const toggleButtons = root.querySelectorAll("[data-touch-toggle]");
+    const wrappers = {
+      movement: root.querySelector('[data-touch-group-wrap="movement"]'),
+      actions: root.querySelector('[data-touch-group-wrap="actions"]'),
+      numpad: root.querySelector('[data-touch-group-wrap="numpad"]'),
+    };
+    const panels = {
+      movement: root.querySelector('[data-touch-panel="movement"]'),
+      actions: root.querySelector('[data-touch-panel="actions"]'),
+      numpad: root.querySelector('[data-touch-panel="numpad"]'),
+    };
+    const state = {
+      override: null,
+      expanded: {
+        movement: true,
+        actions: true,
+        numpad: false,
+      },
+    };
+
+    const setPanelExpanded = (name, expanded) => {
+      state.expanded[name] = !!expanded;
+      const panel = panels[name];
+      const toggle = root.querySelector(`[data-touch-toggle="${name}"]`);
+      if (panel) {
+        panel.classList.toggle("is-collapsed", !expanded);
+        panel.setAttribute("aria-hidden", expanded ? "false" : "true");
+      }
+      if (toggle) {
+        toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+      }
+    };
+
+    const setGroupVisible = (name, visible) => {
+      const wrap = wrappers[name];
+      if (!wrap) return;
+      wrap.classList.toggle("hidden", !visible);
+      if (!visible) setPanelExpanded(name, false);
+    };
+
+    const applyProfile = (sceneKey = game.sceneManager?.currentKey) => {
+      const profile = MN_getTouchProfile(sceneKey, state.override);
+      setGroupVisible("movement", profile.movement);
+      setGroupVisible("actions", profile.actions);
+      setGroupVisible("numpad", profile.numpad);
+
+      if (profile.movement) {
+        setPanelExpanded("movement", profile.expanded.movement);
+      }
+      if (profile.actions) {
+        setPanelExpanded("actions", profile.expanded.actions);
+      }
+      if (profile.numpad) {
+        setPanelExpanded("numpad", profile.expanded.numpad);
+      }
+    };
+
     const releaseAllDirections = () => {
       dirButtons.forEach((btn) => {
         const key = btn.dataset.touchKey;
@@ -193,9 +304,9 @@
       btn.addEventListener("pointerleave", release);
     });
 
-    tapButtons.forEach((btn) => {
-      const action = btn.dataset.touchTap;
-      if (!action) return;
+    toggleButtons.forEach((btn) => {
+      const name = btn.dataset.touchToggle;
+      if (!name) return;
 
       btn.addEventListener("pointerdown", (event) => {
         event.preventDefault();
@@ -205,11 +316,7 @@
       btn.addEventListener("pointerup", (event) => {
         event.preventDefault();
         btn.classList.remove("is-pressed");
-        if (action === "interact") {
-          input.tapVirtualKeys(["e", "E", "KeyE"]);
-        } else if (action === "confirm") {
-          input.tapVirtualKeys(["Enter", " ", "Space", "Spacebar"]);
-        }
+        setPanelExpanded(name, !state.expanded[name]);
       });
 
       btn.addEventListener("pointercancel", () => {
@@ -217,17 +324,57 @@
       });
     });
 
+    tapButtons.forEach((btn) => {
+      const keyMap = btn.dataset.touchTapKey;
+      if (!keyMap) return;
+      const keys = keyMap
+        .split(",")
+        .map((key) => key.trim())
+        .filter(Boolean)
+        .map((key) => (key === "_SPACE_" ? " " : key));
+
+      btn.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        btn.classList.add("is-pressed");
+      });
+
+      btn.addEventListener("pointerup", (event) => {
+        event.preventDefault();
+        btn.classList.remove("is-pressed");
+        input.tapVirtualKeys(keys);
+      });
+
+      btn.addEventListener("pointercancel", () => {
+        btn.classList.remove("is-pressed");
+      });
+    });
+
+    window.MN_configureTouchControls = function (override = null) {
+      state.override = override;
+      applyProfile();
+    };
+
+    window.MN_refreshTouchControls = function (sceneKey) {
+      applyProfile(sceneKey);
+    };
+
     window.addEventListener("blur", releaseAllDirections);
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) releaseAllDirections();
     });
+
+    applyProfile();
   }
 
   function MN_setTouchControlsVisible(visible) {
     const root = document.getElementById("mnTouchControls");
     if (!root || !MN_isTouchDevice()) return;
+    const nextVisible = !!visible;
     root.classList.toggle("hidden", !visible);
     root.setAttribute("aria-hidden", visible ? "false" : "true");
+    if (nextVisible) {
+      window.MN_refreshTouchControls?.();
+    }
   }
 
   function MN_resetState() {
@@ -323,6 +470,13 @@
     window.MN_GAME = game;
     const router = new SceneRouter(game);
     MN_initTouchControls(game);
+
+    const originalSceneSwitch = game.sceneManager.switch.bind(game.sceneManager);
+    game.sceneManager.switch = function (name) {
+      const didSwitch = originalSceneSwitch(name);
+      if (didSwitch) window.MN_refreshTouchControls?.(game.sceneManager.currentKey);
+      return didSwitch;
+    };
 
     initGlobals(game, router);
 
