@@ -380,6 +380,10 @@
 
     const applyProfile = (sceneKey = game.sceneManager?.currentKey) => {
       const profile = MN_getTouchProfile(sceneKey, state.override);
+      root.classList.toggle(
+        "touch-controls--overworld",
+        !!sceneKey && sceneKey.startsWith("overworld")
+      );
       setLayout(profile.layout || "default");
       setNumpadKeys(profile.numpadKeys || null);
       setGroupVisible("movement", profile.movement);

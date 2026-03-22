@@ -350,11 +350,7 @@ body {
 }
 
 .touch-panel--dpad {
-  display: grid;
-  grid-template-columns: 4rem;
-  grid-template-rows: repeat(4, 4rem);
-  gap: 0.5rem;
-  align-items: end;
+  flex-direction: column;
 }
 
 .touch-panel--actions {
@@ -1169,6 +1165,92 @@ body.mn-is-fullscreen .mn-save-btn {
   .touch-controls.touch-controls--split
     .touch-controls__cluster[data-touch-group-wrap="numpad"] {
     align-items: flex-end;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld {
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 0.5rem;
+    padding:
+      max(10px, env(safe-area-inset-top))
+      max(10px, env(safe-area-inset-right))
+      max(10px, calc(env(safe-area-inset-bottom) + 10px))
+      max(10px, env(safe-area-inset-left));
+    background: none;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-toggle {
+    display: none;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-controls__cluster--left {
+    align-self: flex-end;
+    transform: none;
+    margin-left: auto;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-controls__rail--right {
+    align-self: flex-end;
+    flex-direction: row;
+    gap: 0.5rem;
+    transform: none;
+    margin-left: 0;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-controls__cluster {
+    max-width: none;
+    gap: 0;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-panel--dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 3rem);
+    grid-template-areas:
+      ". up ."
+      "left down right";
+    gap: 0.35rem;
+    align-items: end;
+    justify-items: center;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-btn--up {
+    grid-area: up;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-btn--left {
+    grid-area: left;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-btn--right {
+    grid-area: right;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-btn--down {
+    grid-area: down;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-panel--dpad .touch-btn {
+    width: 3rem;
+    min-width: 3rem;
+    height: 2.75rem;
+    padding: 0;
+    border-radius: 0.95rem;
+    font-size: 0.7rem;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld .touch-panel--actions {
+    gap: 0.35rem;
+  }
+
+  body.mn-is-fullscreen .touch-controls.touch-controls--overworld
+    .touch-panel--actions
+    .touch-btn {
+    min-width: 4.5rem;
+    width: 4.5rem;
+    height: 2.75rem;
+    padding: 0 0.5rem;
+    border-radius: 0.95rem;
+    font-size: 0.72rem;
   }
 }
 /* la clase/selector real del <img> del modal */
