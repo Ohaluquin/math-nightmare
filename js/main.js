@@ -169,6 +169,8 @@
       "mn-mobile-portrait",
       MN_isPortraitTouchLayout()
     );
+    document.body.classList.toggle("mn-is-fullscreen", !!MN_getFullscreenElement());
+    MN_syncFullscreenButton();
   }
 
   function MN_setLoadingState(visible, message = "Cargando juego...") {
@@ -178,6 +180,64 @@
     if (!overlay) return;
     overlay.classList.toggle("hidden", !visible);
     overlay.setAttribute("aria-hidden", visible ? "false" : "true");
+  }
+
+  function MN_getFullscreenElement() {
+    return document.fullscreenElement || document.webkitFullscreenElement || null;
+  }
+
+  function MN_isFullscreenSupported() {
+    const root = document.documentElement;
+    return !!(
+      root?.requestFullscreen ||
+      root?.webkitRequestFullscreen ||
+      document.exitFullscreen ||
+      document.webkitExitFullscreen
+    );
+  }
+
+  function MN_syncFullscreenButton() {
+    const btn = document.getElementById("mnFullscreenBtn");
+    if (!btn) return;
+
+    const supported = MN_isFullscreenSupported();
+    const visible = MN_isTouchDevice() && supported;
+    btn.classList.toggle("hidden", !visible);
+    btn.setAttribute("aria-hidden", visible ? "false" : "true");
+    if (!visible) return;
+
+    const isFullscreen = !!MN_getFullscreenElement();
+    btn.textContent = isFullscreen ? "Salir" : "Maximizar";
+    btn.title = isFullscreen
+      ? "Salir de pantalla completa"
+      : "Entrar en pantalla completa";
+    document.body.classList.toggle("mn-is-fullscreen", isFullscreen);
+  }
+
+  async function MN_toggleFullscreen() {
+    if (!MN_isFullscreenSupported()) return;
+
+    const root = document.documentElement;
+    const isFullscreen = !!MN_getFullscreenElement();
+
+    try {
+      if (isFullscreen) {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      } else if (root.requestFullscreen) {
+        await root.requestFullscreen({ navigationUI: "hide" });
+      } else if (root.webkitRequestFullscreen) {
+        root.webkitRequestFullscreen();
+      }
+    } catch (error) {
+      console.warn("[MathNightmare] No se pudo cambiar pantalla completa:", error);
+    } finally {
+      MN_syncFullscreenButton();
+      MN_syncViewportMode();
+    }
   }
 
   const MN_NUMERIC_TOUCH_SCENES = new Set([
@@ -468,6 +528,7 @@
   const btnAbout = document.getElementById("mnBtnAbout");
   const aboutClose = document.getElementById("mnAboutClose");
   const aboutModal = document.getElementById("mnAboutModal");
+  const fullscreenBtn = document.getElementById("mnFullscreenBtn");
   const btnGuest = document.getElementById("mnBtnGuest");
   const btnLoad = document.getElementById("mnBtnLoad");
 
@@ -479,6 +540,11 @@
 
   if (btnAbout) btnAbout.onclick = () => MN_setAboutModal(true);
   if (aboutClose) aboutClose.onclick = () => MN_setAboutModal(false);
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener("click", () => {
+      MN_toggleFullscreen();
+    });
+  }
   if (aboutModal) {
     aboutModal.addEventListener("click", (event) => {
       if (event.target?.dataset?.closeAbout === "true") {
@@ -639,6 +705,8 @@
 
   window.addEventListener("resize", MN_syncViewportMode);
   window.addEventListener("orientationchange", MN_syncViewportMode);
+  document.addEventListener("fullscreenchange", MN_syncViewportMode);
+  document.addEventListener("webkitfullscreenchange", MN_syncViewportMode);
 
   document.addEventListener("DOMContentLoaded", startMathNightmare);
 })();
