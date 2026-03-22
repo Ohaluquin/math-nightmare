@@ -189,6 +189,84 @@ body {
   background: rgba(35, 35, 35, 0.85);
 }
 
+.touch-controls {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9996;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 16px;
+  pointer-events: none;
+}
+
+.touch-controls.hidden {
+  display: none;
+}
+
+.touch-controls__dpad,
+.touch-controls__actions {
+  display: flex;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.touch-controls__dpad {
+  display: grid;
+  grid-template-columns: 64px 64px 64px;
+  grid-template-rows: 64px 64px;
+  gap: 8px;
+  align-items: end;
+}
+
+.touch-btn {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(8, 10, 15, 0.72);
+  color: #f4e4d4;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
+  touch-action: none;
+  user-select: none;
+}
+
+.touch-btn:active,
+.touch-btn.is-pressed {
+  background: rgba(176, 63, 28, 0.92);
+}
+
+.touch-btn--up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.touch-btn--left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.touch-btn--down {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.touch-btn--right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.touch-btn--action,
+.touch-btn--confirm {
+  min-width: 88px;
+  height: 64px;
+  padding: 0 18px;
+}
+
 .project-modal {
   position: fixed;
   inset: 0;
@@ -698,6 +776,27 @@ p.project-modal__note {
 
   .project-modal__panel {
     padding: 22px;
+  }
+
+  .touch-controls {
+    padding: 12px;
+  }
+
+  .touch-controls__dpad {
+    grid-template-columns: 56px 56px 56px;
+    grid-template-rows: 56px 56px;
+  }
+
+  .touch-btn {
+    border-radius: 16px;
+    font-size: 12px;
+  }
+
+  .touch-btn--action,
+  .touch-btn--confirm {
+    min-width: 76px;
+    height: 56px;
+    padding: 0 14px;
   }
 
   .sheet-controls {

@@ -148,6 +148,88 @@
     modal.setAttribute("aria-hidden", open ? "false" : "true");
   }
 
+  function MN_isTouchDevice() {
+    return (
+      window.matchMedia?.("(pointer: coarse)")?.matches ||
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0
+    );
+  }
+
+  function MN_initTouchControls(game) {
+    const root = document.getElementById("mnTouchControls");
+    if (!root || !game?.input || !MN_isTouchDevice()) return;
+
+    const input = game.input;
+    const dirButtons = root.querySelectorAll("[data-touch-key]");
+    const tapButtons = root.querySelectorAll("[data-touch-tap]");
+    const releaseAllDirections = () => {
+      dirButtons.forEach((btn) => {
+        const key = btn.dataset.touchKey;
+        if (key) input.setVirtualKey(key, false);
+        btn.classList.remove("is-pressed");
+      });
+    };
+
+    dirButtons.forEach((btn) => {
+      const key = btn.dataset.touchKey;
+      if (!key) return;
+
+      const press = (event) => {
+        event.preventDefault();
+        input.setVirtualKey(key, true);
+        btn.classList.add("is-pressed");
+      };
+
+      const release = (event) => {
+        event.preventDefault();
+        input.setVirtualKey(key, false);
+        btn.classList.remove("is-pressed");
+      };
+
+      btn.addEventListener("pointerdown", press);
+      btn.addEventListener("pointerup", release);
+      btn.addEventListener("pointercancel", release);
+      btn.addEventListener("pointerleave", release);
+    });
+
+    tapButtons.forEach((btn) => {
+      const action = btn.dataset.touchTap;
+      if (!action) return;
+
+      btn.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        btn.classList.add("is-pressed");
+      });
+
+      btn.addEventListener("pointerup", (event) => {
+        event.preventDefault();
+        btn.classList.remove("is-pressed");
+        if (action === "interact") {
+          input.tapVirtualKeys(["e", "E", "KeyE"]);
+        } else if (action === "confirm") {
+          input.tapVirtualKeys(["Enter", " ", "Space", "Spacebar"]);
+        }
+      });
+
+      btn.addEventListener("pointercancel", () => {
+        btn.classList.remove("is-pressed");
+      });
+    });
+
+    window.addEventListener("blur", releaseAllDirections);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) releaseAllDirections();
+    });
+  }
+
+  function MN_setTouchControlsVisible(visible) {
+    const root = document.getElementById("mnTouchControls");
+    if (!root || !MN_isTouchDevice()) return;
+    root.classList.toggle("hidden", !visible);
+    root.setAttribute("aria-hidden", visible ? "false" : "true");
+  }
+
   function MN_resetState() {
     window.MN_STATE = {
       nivelActual: 0,
@@ -166,6 +248,7 @@
   async function MN_startFlow() {
     window.MN_setSaveVisible?.(false);
     MN_hideMenu();
+    MN_setTouchControlsVisible(true);
     if (typeof window.MN_APP.startNewGame === "function") {
       window.MN_APP.startNewGame();
     }
@@ -239,6 +322,7 @@
     const game = new Game("gameCanvas", 1020, 680, 60);
     window.MN_GAME = game;
     const router = new SceneRouter(game);
+    MN_initTouchControls(game);
 
     initGlobals(game, router);
 
@@ -296,8 +380,10 @@
         if (skipStartMenu) {
           MN_hideMenu();
           window.MN_BOOT.saveMode = "none";
+          MN_setTouchControlsVisible(true);
           window.MN_APP.toOverworld();
         } else {
+          MN_setTouchControlsVisible(false);
           game.sceneManager.switch("title");
         }
       })

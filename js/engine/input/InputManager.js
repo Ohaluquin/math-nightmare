@@ -2,6 +2,7 @@
   class InputManager {
     constructor(canvas) {
       this.keys = {};
+      this.virtualKeys = {};
       this.mouse = { x: 0, y: 0, down: false };
 
       const BLOCK = new Set([
@@ -48,7 +49,19 @@
     }
 
     isDown(key) {
-      return !!this.keys[key];
+      return !!this.keys[key] || !!this.virtualKeys[key];
+    }
+
+    setVirtualKey(key, isDown) {
+      this.virtualKeys[key] = !!isDown;
+    }
+
+    tapVirtualKeys(keys, duration = 120) {
+      const list = Array.isArray(keys) ? keys : [keys];
+      list.forEach((key) => this.setVirtualKey(key, true));
+      window.setTimeout(() => {
+        list.forEach((key) => this.setVirtualKey(key, false));
+      }, duration);
     }
 
     _setMousePos(e) {
@@ -70,4 +83,3 @@
 
   global.InputManager = global.InputManager || InputManager;
 })(window);
-
