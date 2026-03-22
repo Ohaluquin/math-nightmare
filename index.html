@@ -3,13 +3,20 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Math Nightmare - Demo v2</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
   <div class="game-container">
+    <div id="mnLoadingOverlay" class="loading-overlay" aria-live="polite">
+      <div class="loading-overlay__panel">
+        <p class="loading-overlay__eyebrow">Math Nightmare</p>
+        <p id="mnLoadingMessage" class="loading-overlay__message">Cargando juego...</p>
+      </div>
+    </div>
+
     <div id="mnStartMenu" class="startMenu">
       <div class="menuOptions menuOptions--minimal">
         <button id="mnBtnNew" class="button button-primary">Nueva partida</button>

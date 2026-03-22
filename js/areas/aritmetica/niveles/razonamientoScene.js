@@ -1221,49 +1221,79 @@ class RazonamientoScene extends Scene {
       byDiff[d].push(tpl);
     }
 
-    const pickTpl = (arr) => arr[this._randInt(0, arr.length - 1)];
-
     const chosen = [];
+    const usedTemplateIds = new Set();
+
+    const pickTpl = (arr) => {
+      if (!arr.length) return null;
+
+      const previousId = chosen.length
+        ? chosen[chosen.length - 1].templateId
+        : null;
+
+      const preferred = arr.filter(
+        (tpl) => !usedTemplateIds.has(tpl.id) && tpl.id !== previousId,
+      );
+      if (preferred.length) {
+        return preferred[this._randInt(0, preferred.length - 1)];
+      }
+
+      const nonConsecutive = arr.filter((tpl) => tpl.id !== previousId);
+      if (nonConsecutive.length) {
+        return nonConsecutive[this._randInt(0, nonConsecutive.length - 1)];
+      }
+
+      return arr[this._randInt(0, arr.length - 1)];
+    };
+
+    const buildProblem = (tpl, difficulty, guideMode, guide) => {
+      if (!tpl) return null;
+      const p = tpl.generate();
+      p.templateId = tpl.id ?? null;
+      p.difficulty = difficulty;
+      p.guideMode = guideMode;
+      p.guide = guide;
+      if (tpl.id) usedTemplateIds.add(tpl.id);
+      return p;
+    };
 
     // --- 1) Dificultad 1 ---
     if (byDiff[1]?.length) {
       const tpl = pickTpl(byDiff[1]);
-      const p = tpl.generate();
-      p.difficulty = 1;
-      p.guideMode = "full";
-      p.guide = Array.isArray(tpl.guide) ? tpl.guide.slice(0) : null;
-      chosen.push(p);
+      const p = buildProblem(
+        tpl,
+        1,
+        "full",
+        Array.isArray(tpl?.guide) ? tpl.guide.slice(0) : null,
+      );
+      if (p) chosen.push(p);
     }
 
     // --- 2) Dificultad 2 (guía completa) ---
     if (byDiff[2]?.length) {
       const tpl = pickTpl(byDiff[2]);
-      const p = tpl.generate();
-      p.difficulty = 2;
-      p.guideMode = "full";
-      p.guide = Array.isArray(tpl.guide) ? tpl.guide.slice(0) : null;
-      chosen.push(p);
+      const p = buildProblem(
+        tpl,
+        2,
+        "full",
+        Array.isArray(tpl?.guide) ? tpl.guide.slice(0) : null,
+      );
+      if (p) chosen.push(p);
     }
 
     // --- 3) Dificultad 3 (ritual) ---
     if (byDiff[3]?.length) {
       const tpl = pickTpl(byDiff[3]);
-      const p = tpl.generate();
-      p.difficulty = 3;
-      p.guideMode = "ritual";
-      p.guide = null; // ritual es general, no depende del template
-      chosen.push(p);
+      const p = buildProblem(tpl, 3, "ritual", null);
+      if (p) chosen.push(p);
     }
 
     // --- 4) Extra (dificultad 2 o 3, SIN GUÍA) ---
     const pool = [...(byDiff[2] || []), ...(byDiff[3] || [])];
     if (pool.length) {
       const tpl = pickTpl(pool);
-      const p = tpl.generate();
-      p.difficulty = tpl.difficulty ?? 2;
-      p.guideMode = "none";
-      p.guide = null;
-      chosen.push(p);
+      const p = buildProblem(tpl, tpl?.difficulty ?? 2, "none", null);
+      if (p) chosen.push(p);
     }
 
     // En caso raro de que falten plantillas y salgan menos de 4, rellenamos con lo que haya.
@@ -1275,10 +1305,8 @@ class RazonamientoScene extends Scene {
       ];
       if (!fallbackPool.length) break;
       const tpl = pickTpl(fallbackPool);
-      const p = tpl.generate();
-      p.difficulty = tpl.difficulty ?? 2;
-      p.guideMode = "none";
-      p.guide = null;
+      const p = buildProblem(tpl, tpl?.difficulty ?? 2, "none", null);
+      if (!p) break;
       chosen.push(p);
     }
 

@@ -748,14 +748,14 @@ class CajaRapidaScene extends Scene {
     return { w, h };
   }
 
-  _drawLabel(ctx, text, x, y) {
+  _drawLabel(ctx, text, x, y, scale = 1) {
     ctx.save();
-    ctx.font = "18px Arial";
+    ctx.font = `${18 * scale}px Arial`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
     // contorno para legibilidad
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 5 * scale;
     ctx.strokeStyle = "rgba(0,0,0,0.75)";
     ctx.strokeText(text, x, y);
 
@@ -765,7 +765,8 @@ class CajaRapidaScene extends Scene {
   }
 
   _drawRepeatedItems(ctx, img, price, startX, startY, qty) {
-    const scale = 0.4;
+    const scaleBoost = 1.2;
+    const scale = 0.4 * scaleBoost;
     const spacing = 42; // distancia entre sprites
     const maxPerRow = 3; // mÃ¡x por fila
 
@@ -780,7 +781,7 @@ class CajaRapidaScene extends Scene {
       this._drawSpriteCentered(ctx, img, cx, cy, scale);
 
       // etiqueta de precio encima (como monstruos)
-      this._drawLabel(ctx, `$${price}`, cx, cy - 35);
+      this._drawLabel(ctx, `$${price}`, cx, cy - 35, scaleBoost);
     }
   }
 

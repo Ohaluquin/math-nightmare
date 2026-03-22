@@ -156,6 +156,30 @@
     );
   }
 
+  function MN_isPortraitTouchLayout() {
+    return (
+      MN_isTouchDevice() &&
+      !!window.matchMedia?.("(orientation: portrait)")?.matches
+    );
+  }
+
+  function MN_syncViewportMode() {
+    document.body.classList.toggle("mn-touch-device", MN_isTouchDevice());
+    document.body.classList.toggle(
+      "mn-mobile-portrait",
+      MN_isPortraitTouchLayout()
+    );
+  }
+
+  function MN_setLoadingState(visible, message = "Cargando juego...") {
+    const overlay = document.getElementById("mnLoadingOverlay");
+    const messageEl = document.getElementById("mnLoadingMessage");
+    if (messageEl) messageEl.textContent = message;
+    if (!overlay) return;
+    overlay.classList.toggle("hidden", !visible);
+    overlay.setAttribute("aria-hidden", visible ? "false" : "true");
+  }
+
   const MN_NUMERIC_TOUCH_SCENES = new Set([
     "caja_rapida",
     "escalera_sumas",
@@ -499,9 +523,15 @@
   };
 
   function startMathNightmare() {
+    MN_syncViewportMode();
+    MN_setLoadingState(
+      true,
+      "Cargando juego... En móvil puede tardar unos segundos."
+    );
     const canvas = document.getElementById("gameCanvas");
     if (!canvas) {
       console.error("[MathNightmare] No se encontró el canvas #gameCanvas");
+      MN_setLoadingState(true, "No se pudo iniciar el juego.");
       return;
     }
 
@@ -528,12 +558,15 @@
     game
       .start(manifest)
       .then(() => {
+        MN_setLoadingState(false);
+
         // 1) Escenas base (siempre)
         const titleScene = new TitleScene(game);
         game.sceneManager.register("title", titleScene);
 
         // 2) Registrar área actual (aritmetica hoy)
         if (!window.MN_AREA || typeof window.MN_AREA.register !== "function") {
+          MN_setLoadingState(true, "Falta configurar el área actual del juego.");
           console.error(
             "[MathNightmare] MN_AREA no está definido o no tiene register(game). " +
               "Asegúrate de cargar js/areas/<area>/area.js en index.html antes de main.js"
@@ -581,6 +614,7 @@
         }
       })
       .catch((err) => {
+        MN_setLoadingState(true, "Hubo un problema al cargar el juego.");
         console.error("[MathNightmare] Error al iniciar el juego:", err);
       });
   }
@@ -602,6 +636,9 @@
     window.MN_resetSheetView?.();
     window.MN_updateBookNav?.();
   };
+
+  window.addEventListener("resize", MN_syncViewportMode);
+  window.addEventListener("orientationchange", MN_syncViewportMode);
 
   document.addEventListener("DOMContentLoaded", startMathNightmare);
 })();
