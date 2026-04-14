@@ -1,0 +1,92 @@
+(function () {
+  if (!window.MN_TOUCH_CONTROLS?.registerProfiles) return;
+
+  window.MN_TOUCH_CONTROLS.registerProfiles({
+    balanza: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: true,
+      layout: "split",
+      variant: "quick-numpad",
+      expanded: { numpad: true },
+    },
+    balanceo_ecuaciones: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: true,
+      layout: "split",
+      variant: "quick-numpad",
+      expanded: { numpad: true },
+    },
+    despejes: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: false,
+      layout: "default",
+      expanded: { actions: true, numpad: false },
+    },
+    algebra_sustitucion_laberinto: {
+      movement: true,
+      actions: true,
+      actionKeys: ["Enter", "Escape"],
+      numpad: false,
+      layout: "default",
+      variant: "eratostenes",
+      showMovementToggle: false,
+      expanded: { movement: true, actions: true },
+    },
+    incrementos: {
+      movement: true,
+      actions: true,
+      movementKeys: ["ArrowLeft", "ArrowRight"],
+      actionKeys: ["_SPACE_", "Escape"],
+      actionLabels: {
+        _SPACE_: "DISPARO",
+        Escape: "ESC",
+      },
+      numpad: false,
+      layout: "default",
+      variant: "horizontal-move",
+      showMovementToggle: false,
+      expanded: { movement: true, actions: true },
+    },
+    brahmagupta_enigmas: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Escape"],
+      numpad: true,
+      layout: "split",
+      variant: "quick-numpad",
+      expanded: { numpad: true },
+    },
+    modelar: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Enter", "Escape"],
+      numpad: false,
+      layout: "default",
+    },
+    lenguaje_natural: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Enter", "Escape"],
+      numpad: false,
+      layout: "default",
+    },
+    anagrama: {
+      movement: false,
+      actions: true,
+      actionKeys: ["Enter", "Escape"],
+      actionLabels: {
+        Enter: "ENTER",
+        Escape: "ESC",
+      },
+      showActionToggle: false,
+      numpad: false,
+      layout: "default",
+    },
+  });
+})();

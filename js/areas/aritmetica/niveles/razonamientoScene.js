@@ -530,9 +530,11 @@ class RazonamientoScene extends Scene {
     const p = this.currentProblem;
     if (!p) return [];
     const genericGuide = [
-      "🧠 ¿Qué necesitas para responder lo que te están preguntando?",
-      "🧠 ¿Qué debes calcular primero?",
-      "🧠 ¿Eso es la respuesta final o un resultado parcial?",
+      "🧠 Guía genérica: identifica qué te están preguntando exactamente.",
+      "🧠 Separa los datos importantes y decide qué debes calcular primero.",
+      "🧠 Si ayuda, haz un dibujo, esquema o lista para ordenar la información.",
+      "🧠 Prueba un caso concreto o un número pequeño para entender mejor el problema.",
+      "🧠 Revisa si tu resultado final realmente responde la pregunta.",
     ];
 
     // Problema 4 (extra) siempre va sin guía (guideMode="none")

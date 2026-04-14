@@ -6,34 +6,3 @@ Desktop.ini
 .idea/
 
 *.log
-
-# Areas en desarrollo: mantener fuera de Git por ahora.
-algebra.html
-geometria.html
-css/algebra.css
-css/geometria.css
-js/areas/algebra/
-js/areas/geometria/
-
-# Assets privados de algebra y geometria.
-assets/algebra/**
-assets/geometria/**
-
-# Reabrir carpetas para permitir excepciones concretas.
-!assets/algebra/
-!assets/algebra/**/
-!assets/geometria/
-!assets/geometria/**/
-
-# Mantener versionables las imagenes.
-!assets/algebra/**/*.webp
-!assets/algebra/**/*.png
-!assets/algebra/**/*.jpg
-!assets/algebra/**/*.jpeg
-!assets/geometria/**/*.webp
-!assets/geometria/**/*.png
-!assets/geometria/**/*.jpg
-!assets/geometria/**/*.jpeg
-
-# Mantener versionable la historia de algebra.
-!assets/algebra/data/historia_algebra.js

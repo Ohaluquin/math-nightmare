@@ -1,3 +1,158 @@
+window.MN_ARITMETICA_SHEET_KEYS = [
+  "sheet_numero",
+  "sheet_contar",
+  "sheet_operaciones",
+  "sheet_aldea",
+  "sheet_sistema_decimal",
+  "sheet_suma",
+  "sheet_resta",
+  "sheet_cero",
+  "sheet_multiplicacion",
+  "sheet_dos_caras",
+  "sheet_division",
+  "sheet_al_juarizmi",
+  "sheet_negativos",
+  "sheet_misteriosos",
+  "sheet_primos",
+  "sheet_leonardo",
+];
+window.MN_ALGEBRA_SHEET_KEYS = [
+  "sheet_algebra_1",
+  "sheet_algebra_2",
+  "sheet_algebra_3",
+  "sheet_algebra_4",
+  "sheet_algebra_5",
+  "sheet_algebra_6",
+  "sheet_algebra_7",
+  "sheet_algebra_8",
+  "sheet_algebra_9",
+];
+window.MN_GEOMETRIA_SHEET_KEYS = [
+  "sheet_igualdad",
+  "sheet_deduccion",
+  "sheet_demostracion",
+  "sheet_angulos",
+  "sheet_isosceles",
+  "sheet_angulos_ecuaciones",
+  "sheet_poligonos",
+  "sheet_perimetro",
+  "sheet_areas",
+  "sheet_cartesiano",
+  "sheet_graficas",
+  "sheet_regla_y_compas",
+  "sheet_pitagoras",
+];
+window.MN_TOTAL_EXPECTED_SHEETS =
+  window.MN_ARITMETICA_SHEET_KEYS.length +
+  window.MN_ALGEBRA_SHEET_KEYS.length +
+  window.MN_GEOMETRIA_SHEET_KEYS.length;
+window.MN_AREA_BOOKS = [
+  {
+    id: "aritmetica",
+    label: "Aritmética",
+    shortLabel: "Aritmética",
+    flag: "aritmeticaBookBound",
+    keys: window.MN_ARITMETICA_SHEET_KEYS,
+  },
+  {
+    id: "algebra",
+    label: "Álgebra",
+    shortLabel: "Álgebra",
+    flag: "algebraBookBound",
+    keys: window.MN_ALGEBRA_SHEET_KEYS,
+  },
+  {
+    id: "geometria",
+    label: "Geometría",
+    shortLabel: "Geometría",
+    flag: "geometriaBookBound",
+    keys: window.MN_GEOMETRIA_SHEET_KEYS,
+  },
+];
+
+function MN_ensureProgressHUD() {
+  let hud = document.getElementById("progress-hud");
+  if (hud) return hud;
+
+  const hudRoot = document.querySelector(".hud");
+  if (!hudRoot) return null;
+
+  hud = document.createElement("div");
+  hud.id = "progress-hud";
+  hud.className = "progress-hud";
+  hud.setAttribute("aria-label", "Progreso total del juego");
+  hud.innerHTML = `
+    <span class="progress-hud__ring" aria-hidden="true">
+      <span class="progress-hud__value">0%</span>
+    </span>
+    <span class="progress-hud__meta">Progreso</span>
+    <div class="progress-hud__books"></div>
+  `;
+  const booksWrap = hud.querySelector(".progress-hud__books");
+  window.MN_AREA_BOOKS.forEach((book) => {
+    if (!booksWrap) return;
+    const btn = document.createElement("button");
+    btn.className = "progress-hud__book";
+    btn.type = "button";
+    btn.dataset.bookArea = book.id;
+    btn.setAttribute("aria-label", `Abrir libro de ${book.label}`);
+    btn.innerHTML = `
+      <img class="progress-hud__book-icon" alt="" />
+      <span class="progress-hud__book-label">${book.shortLabel}</span>
+    `;
+    btn.addEventListener("click", () => {
+      window.MN_openAreaBook?.(book.id);
+    });
+    booksWrap.appendChild(btn);
+  });
+  const leafHUD = document.getElementById("leaf-hud");
+  if (leafHUD && leafHUD.style.display === "none") {
+    hud.style.display = "none";
+  }
+  hudRoot.appendChild(hud);
+  return hud;
+}
+
+window.MN_updateProgressHUD = function () {
+  const hud = MN_ensureProgressHUD();
+  if (!hud) return;
+
+  const unlocked = window.MN_STATE?.sheetsUnlocked || [];
+  const collected = unlocked.length;
+  const total = Math.max(1, window.MN_TOTAL_EXPECTED_SHEETS || 38);
+  const ratio = Math.max(0, Math.min(1, collected / total));
+  const percent = Math.round(ratio * 100);
+  const hue = 10 + ratio * 120;
+  const value = hud.querySelector(".progress-hud__value");
+  const game = window.MN_APP?.game;
+  const bookImg = game?.assets?.getImage?.("ui_book") || null;
+  const unlockedSheets = window.MN_STATE?.sheetsUnlocked || [];
+
+  hud.style.setProperty("--mn-progress-ratio", ratio.toFixed(4));
+  hud.style.setProperty("--mn-progress-color", `hsl(${hue.toFixed(1)} 78% 52%)`);
+  hud.title = `${percent}% completado (${collected}/${total} hojas)`;
+  if (value) value.textContent = `${percent}%`;
+  window.MN_AREA_BOOKS.forEach((book) => {
+    const bookBtn = hud.querySelector(`[data-book-area="${book.id}"]`);
+    const bookIcon = bookBtn?.querySelector(".progress-hud__book-icon");
+    if (!bookBtn) return;
+    if (bookIcon && bookImg?.src) bookIcon.src = bookImg.src;
+
+    const isBound = !!window.MN_STATE?.flags?.[book.flag];
+    const areaSet = new Set(book.keys || []);
+    const unlockedAreaSheets = unlockedSheets.filter((key) => areaSet.has(key));
+    const hasAreaSheets = unlockedAreaSheets.length > 0;
+
+    bookBtn.hidden = !isBound;
+    bookBtn.disabled = !isBound || !hasAreaSheets;
+    bookBtn.title = !isBound
+      ? `El Libro de ${book.label} aparecerá tras el encuadernado`
+      : hasAreaSheets
+      ? `Abrir Libro de ${book.label} (${unlockedAreaSheets.length} hojas)`
+      : `Aún no has ganado hojas de ${book.label}`;
+  });
+};
+
 window.MN_awardSheetsForProgress = function (minigameId, prevTier, newTier) {
   const map = window.MN_SHEETS_REWARD?.[minigameId];
   if (!map) return 0;
@@ -10,11 +165,22 @@ window.MN_awardSheetsForProgress = function (minigameId, prevTier, newTier) {
   return 0;
 };
 
+window.MN_getBookForSheetKey = function (sheetKey) {
+  return (window.MN_AREA_BOOKS || []).find((book) =>
+    Array.isArray(book.keys) && book.keys.includes(sheetKey)
+  ) || null;
+};
+
 window.MN_updateLeafHUD = function () {
   const hud = document.getElementById("leaf-hud");
   if (!hud) return;
   hud.innerHTML = "";
   const unlocked = window.MN_STATE.sheetsUnlocked || [];
+  const looseSheets = unlocked.filter((key) => {
+    const book = window.MN_getBookForSheetKey?.(key);
+    if (!book) return true;
+    return !window.MN_STATE?.flags?.[book.flag];
+  });
   const game = window.MN_APP?.game;
   if (!game) return;
   const leafImg = game.assets.getImage("ui_leaf");
@@ -22,17 +188,18 @@ window.MN_updateLeafHUD = function () {
     console.warn("[HUD] ui_leaf no cargado en assets");
     return;
   }
-  for (let i = 0; i < unlocked.length; i++) {
+  for (let i = 0; i < looseSheets.length; i++) {
     const img = document.createElement("img");
     img.src = leafImg.src;
     img.className = "leaf-icon";
     img.dataset.index = i;
     img.addEventListener("click", () => {
-      const k = unlocked[i];
+      const k = looseSheets[i];
       window.MN_openUnlockedBookAtKey(k);
     });
     hud.appendChild(img);
   }
+  window.MN_updateProgressHUD?.();
 };
 
 
@@ -76,6 +243,54 @@ window.MN_openUnlockedBookAtKey = function (sheetKey) {
   window.MN_updateBookNav?.();
 };
 
+window.MN_openAreaBook = function (areaId) {
+  const unlocked = window.MN_STATE?.sheetsUnlocked || [];
+  const book = (window.MN_AREA_BOOKS || []).find((entry) => entry.id === areaId);
+  if (!book) return false;
+
+  const areaKeySet = new Set(book.keys || []);
+  const catalog = unlocked.filter((key) => areaKeySet.has(key));
+  if (!catalog.length) return false;
+
+  window.MN_BOOK = window.MN_BOOK || { index: 0, catalog: [] };
+  window.MN_BOOK.catalog = catalog;
+  const idx = Math.max(
+    0,
+    Math.min(window.MN_BOOK.index || 0, catalog.length - 1)
+  );
+  window.MN_BOOK.index = idx;
+  const k = catalog[idx];
+  if (k) window.MN_openSheetByKey(k);
+  window.MN_updateBookNav?.();
+  return !!k;
+};
+
+window.MN_openAreaBookAtKey = function (areaId, sheetKey) {
+  const unlocked = window.MN_STATE?.sheetsUnlocked || [];
+  const book = (window.MN_AREA_BOOKS || []).find((entry) => entry.id === areaId);
+  if (!book) return false;
+
+  const areaKeySet = new Set(book.keys || []);
+  const catalog = unlocked.filter((key) => areaKeySet.has(key));
+  if (!catalog.length) return false;
+
+  const targetIndex = Math.max(0, catalog.indexOf(sheetKey));
+  const idx = targetIndex >= 0 ? targetIndex : 0;
+
+  window.MN_BOOK = window.MN_BOOK || { index: 0, catalog: [] };
+  window.MN_BOOK.catalog = catalog;
+  window.MN_BOOK.index = idx;
+
+  const k = catalog[idx];
+  if (k) window.MN_openSheetByKey(k);
+  window.MN_updateBookNav?.();
+  return !!k;
+};
+
+window.MN_openAritmeticaBook = function () {
+  return window.MN_openAreaBook?.("aritmetica") || false;
+};
+
 window.MN_openUnlockedBook = function () {
   const unlocked = window.MN_STATE?.sheetsUnlocked || [];
   window.MN_BOOK = window.MN_BOOK || { index: 0, catalog: [] };
@@ -93,6 +308,10 @@ window.MN_openUnlockedBook = function () {
 window.MN_openPendingSheetReward = function () {
   const k = window.MN_STATE?.pendingSheets?.[0];
   if (!k) return false;
+  const book = window.MN_getBookForSheetKey?.(k);
+  if (book && window.MN_STATE?.flags?.[book.flag]) {
+    return window.MN_openAreaBookAtKey?.(book.id, k) || false;
+  }
   window.MN_openUnlockedBookAtKey(k);
   return true;
 };
@@ -145,6 +364,9 @@ window.MN_BOOK = window.MN_BOOK || { index: 0 };
   function MN_closeSheetModal() {
     document.getElementById("sheet-modal")?.classList.add("hidden");
     MN_clearPendingSheets();
+    const onClose = window.MN_onSheetModalClosed;
+    window.MN_onSheetModalClosed = null;
+    if (typeof onClose === "function") onClose();
   }
 
   function getEls() {

@@ -1,17 +1,22 @@
 // main.js – Bootstrap de Math Nightmare con pantalla de título + intro
 (function () {
   function initGlobals(game, router) {
-    const MN_STATE = window.MN_STATE || {
-      nivelActual: 0,
-      puntajeTotal: 0,
-      flags: {},
-      sheets: 0,
-      minigames: {},
-      sheetsUnlocked: [],
-      pendingSheets: [],
-      // ✅ nuevo: área actual (aritmetica hoy, algebra mañana)
-      area: window.MN_STATE?.area || "aritmetica",
-    };
+    const MN_STATE =
+      window.MN_STATE ||
+      window.MN_createInitialState?.({
+        area: window.MN_STATE?.area || "aritmetica",
+      }) || {
+        nivelActual: 0,
+        puntajeTotal: 0,
+        flags: {},
+        sheets: 0,
+        minigames: {},
+        sheetsUnlocked: [],
+        pendingSheets: [],
+        seenStories: {},
+        checkpoints: {},
+        area: window.MN_STATE?.area || "aritmetica",
+      };
 
     window.MN_STATE = MN_STATE;
     window.MN_APP = { game, router, state: MN_STATE };
@@ -51,6 +56,8 @@
     function setLeafHUDVisible(visible) {
       if (!leafHUD) return;
       leafHUD.style.display = visible ? "flex" : "none";
+      const progressHUD = document.getElementById("progress-hud");
+      if (progressHUD) progressHUD.style.display = visible ? "flex" : "none";
     }
     window.MN_setLeafHUDVisible = setLeafHUDVisible;
     setLeafHUDVisible(false);
@@ -93,17 +100,67 @@
 
     // --- Guardado ---
     const saveBtn = document.getElementById("mnSaveBtn");
+    const loadBtn = document.getElementById("mnLoadBtn");
+    const utilityDock = document.getElementById("mnUtilityDock");
+    const utilityToggle = document.getElementById("mnUtilityToggle");
+    const saveModal = document.getElementById("mnSaveModal");
+    const saveModalClose = document.getElementById("mnSaveModalClose");
+    const saveForm = document.getElementById("mnSaveForm");
+    const saveNameInput = document.getElementById("mnSaveNameInput");
+    let saveModalOpen = false;
+    let saveFormVisible = false;
+
+    function syncSaveForm() {
+      if (!saveForm) return;
+      saveForm.classList.toggle("hidden", !saveFormVisible);
+      if (saveNameInput && saveFormVisible) {
+        saveNameInput.value = window.MN_BOOT.student || "";
+        window.requestAnimationFrame(() => saveNameInput.focus());
+      }
+    }
+
+    function setSaveModal(open) {
+      if (!saveModal || !utilityToggle) return;
+      saveModalOpen = !!open;
+      if (!saveModalOpen) saveFormVisible = false;
+      saveModal.classList.toggle("hidden", !saveModalOpen);
+      saveModal.setAttribute("aria-hidden", saveModalOpen ? "false" : "true");
+      utilityToggle.setAttribute("aria-expanded", saveModalOpen ? "true" : "false");
+      utilityToggle.title = saveModalOpen
+        ? "Cerrar opciones de partida"
+        : "Abrir opciones de partida";
+      syncSaveForm();
+    }
+
+    if (utilityToggle) {
+      utilityToggle.onclick = () => {
+        setSaveModal(!saveModalOpen);
+      };
+      setSaveModal(false);
+    }
+
+    if (saveModalClose) {
+      saveModalClose.onclick = () => setSaveModal(false);
+    }
+
+    if (saveModal) {
+      saveModal.addEventListener("click", (event) => {
+        if (event.target?.dataset?.closeSaveModal === "true") {
+          setSaveModal(false);
+        }
+      });
+    }
+
     function setSaveVisible(visible) {
-      if (!saveBtn) return;
-      saveBtn.classList.toggle("hidden", !visible);
+      if (utilityDock) utilityDock.classList.toggle("hidden", !visible);
+      if (!visible) setSaveModal(false);
     }
     window.MN_setSaveVisible = setSaveVisible;
+    window.MN_setSaveModal = setSaveModal;
     setSaveVisible(false);
 
     if (saveBtn) {
       saveBtn.onclick = () => {
-        if (window.MN_BOOT?.saveMode !== "file") return;
-
         if (!window.MN_BOOT.student) {
           const s = prompt(
             "Nombre o ID del alumno/a (para nombrar el archivo):",
@@ -126,13 +183,99 @@
         }
       };
     }
+
+    if (loadBtn) {
+      loadBtn.onclick = () => {
+        const input = document.getElementById("mnImport");
+        if (!input) return;
+        input.value = "";
+        input.onchange = async () => {
+          const file = input.files?.[0];
+          if (!file) return;
+          try {
+            const data = await window.MN_importSaveFromFile(file);
+            window.MN_BOOT.saveMode = "file";
+            window.MN_BOOT.student = data.student || "";
+            window.MN_BOOT.group = data.group || "";
+            const targetHref = MN_getAreaHref(data.state?.area);
+            if (targetHref !== MN_getCurrentAreaHref()) {
+              if (!window.MN_stageImportedSave?.(data)) {
+                throw new Error("No se pudo transferir la partida al area correcta.");
+              }
+              window.location.href = targetHref;
+              return;
+            }
+            MN_resumeFlow();
+          } catch (e) {
+            alert("Error al cargar: " + e.message);
+          }
+        };
+        input.click();
+      };
+    }
+
+    if (saveBtn) {
+      saveBtn.onclick = () => {
+        saveFormVisible = true;
+        syncSaveForm();
+      };
+    }
+
+    if (saveForm) {
+      saveForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const studentName = saveNameInput?.value?.trim() || "";
+        if (!studentName) {
+          alert("Escribe un nombre para guardar la partida.");
+          saveNameInput?.focus();
+          return;
+        }
+
+        window.MN_BOOT.student = studentName;
+        window.MN_BOOT.group = "";
+
+        if (typeof window.MN_exportSave === "function") {
+          window.MN_exportSave({
+            student: window.MN_BOOT.student || "",
+          });
+          setSaveModal(false);
+        } else {
+          alert("MN_exportSave no estÃ¡ disponible.");
+        }
+      });
+    }
+
+    if (loadBtn) {
+      const originalLoadClick = loadBtn.onclick;
+      loadBtn.onclick = () => {
+        setSaveModal(false);
+        return originalLoadClick?.();
+      };
+    }
   }
 
   window.MN_BOOT = {
-    saveMode: "none", // "file" | "none"
+    saveMode: "file", // "file" | "none"
     student: "",
     group: "",
   };
+
+  function MN_getAreaHref(area) {
+    if (area === "algebra") return "algebra.html";
+    if (area === "geometria") return "geometria.html";
+    return "index.html";
+  }
+
+  function MN_getCurrentAreaHref() {
+    const path = (window.location.pathname || "").toLowerCase();
+    if (path.endsWith("/algebra.html") || path.endsWith("algebra.html")) {
+      return "algebra.html";
+    }
+    if (path.endsWith("/geometria.html") || path.endsWith("geometria.html")) {
+      return "geometria.html";
+    }
+    return "index.html";
+  }
 
   function MN_hideMenu() {
     const el = document.getElementById("mnStartMenu");
@@ -204,15 +347,15 @@
     if (!btn) return;
 
     const supported = MN_isFullscreenSupported();
-    const visible = MN_isTouchDevice() && supported;
+    const visible = supported;
     btn.classList.toggle("hidden", !visible);
     btn.setAttribute("aria-hidden", visible ? "false" : "true");
     if (!visible) return;
 
     const isFullscreen = !!MN_getFullscreenElement();
-    btn.textContent = isFullscreen ? "Salir" : "Maximizar";
+    btn.textContent = isFullscreen ? "🗗 Restaurar" : "⛶ Maximizar";
     btn.title = isFullscreen
-      ? "Salir de pantalla completa"
+      ? "Restaurar tamaño normal"
       : "Entrar en pantalla completa";
     document.body.classList.toggle("mn-is-fullscreen", isFullscreen);
   }
@@ -248,27 +391,44 @@
   }
 
   function MN_resetState() {
-    window.MN_STATE = {
-      nivelActual: 0,
-      puntajeTotal: 0,
-      flags: {},
-      sheets: 0,
-      minigames: {},
-      sheetsUnlocked: [],
-      pendingSheets: [],
-      area: window.MN_STATE?.area || "aritmetica", // ✅ persistir área si ya estaba
-    };
-    if (window.MN_APP) window.MN_APP.state = window.MN_STATE;
+    window.MN_replaceState?.(
+      window.MN_createInitialState?.({
+        area: window.MN_STATE?.area || "aritmetica",
+      }) || {
+        nivelActual: 0,
+        puntajeTotal: 0,
+        flags: {},
+        sheets: 0,
+        minigames: {},
+        sheetsUnlocked: [],
+        pendingSheets: [],
+        seenStories: {},
+        checkpoints: {},
+        area: window.MN_STATE?.area || "aritmetica",
+      },
+    );
+    window.MN_syncSeenStoriesToRegistry?.();
     if (window.MN_updateLeafHUD) window.MN_updateLeafHUD();
   }
 
-  async function MN_startFlow() {
-    window.MN_setSaveVisible?.(false);
+  function MN_prepareGameplayUI() {
     MN_hideMenu();
     MN_setTouchControlsVisible(true);
+    window.MN_setSaveVisible?.(true);
+    window.MN_BOOT.saveMode = "file";
+  }
+
+  async function MN_startFlow() {
+    MN_prepareGameplayUI();
     if (typeof window.MN_APP.startNewGame === "function") {
       window.MN_APP.startNewGame();
     }
+  }
+
+  function MN_resumeFlow() {
+    MN_prepareGameplayUI();
+    window.MN_syncSeenStoriesToRegistry?.();
+    window.MN_APP?.toOverworld?.();
   }
 
   const btnNew = document.getElementById("mnBtnNew");
@@ -280,7 +440,6 @@
   const btnLoad = document.getElementById("mnBtnLoad");
 
   if (btnNew) btnNew.onclick = () => {
-    window.MN_BOOT.saveMode = "none";
     MN_resetState();
     MN_startFlow();
   };
@@ -303,11 +462,11 @@
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       MN_setAboutModal(false);
+      window.MN_setSaveModal?.(false);
     }
   });
 
   if (btnGuest) btnGuest.onclick = () => {
-    window.MN_BOOT.saveMode = "none";
     MN_resetState();
     MN_startFlow();
   };
@@ -323,9 +482,15 @@
         window.MN_BOOT.saveMode = "file";
         window.MN_BOOT.student = data.student || "";
         window.MN_BOOT.group = data.group || "";
-        // si guardas el área en el save, respétala:
-        if (data.state?.area) window.MN_STATE.area = data.state.area;
-        MN_startFlow();
+        const targetHref = MN_getAreaHref(data.state?.area);
+        if (targetHref !== MN_getCurrentAreaHref()) {
+          if (!window.MN_stageImportedSave?.(data)) {
+            throw new Error("No se pudo transferir la partida al area correcta.");
+          }
+          window.location.href = targetHref;
+          return;
+        }
+        MN_resumeFlow();
       } catch (e) {
         alert("Error al cargar: " + e.message);
       }
@@ -352,6 +517,13 @@
     window.MN_GAME = game;
     const router = new SceneRouter(game);
     window.MN_TOUCH_CONTROLS?.init?.(game);
+    const stagedSave = window.MN_consumeStagedImportedSave?.() || null;
+    if (stagedSave?.state) {
+      window.MN_replaceState?.(stagedSave.state);
+      window.MN_BOOT.saveMode = "file";
+      window.MN_BOOT.student = stagedSave.student || "";
+      window.MN_BOOT.group = stagedSave.group || "";
+    }
 
     const originalSceneSwitch = game.sceneManager.switch.bind(game.sceneManager);
     game.sceneManager.switch = function (name) {
@@ -418,11 +590,14 @@
         const skipStartMenu = !!window.MN_PAGE_CONFIG?.skipStartMenu;
         if (skipStartMenu) {
           MN_hideMenu();
-          window.MN_BOOT.saveMode = "none";
           MN_setTouchControlsVisible(true);
+          window.MN_setSaveVisible?.(true);
           window.MN_APP.toOverworld();
+        } else if (stagedSave?.state) {
+          MN_resumeFlow();
         } else {
           MN_setTouchControlsVisible(false);
+          window.MN_setSaveVisible?.(true);
           game.sceneManager.switch("title");
         }
       })

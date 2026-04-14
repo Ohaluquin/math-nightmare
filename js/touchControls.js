@@ -22,7 +22,7 @@
       items: [
         { type: "tap", className: "touch-btn touch-btn--action", keyMap: "e,E,KeyE", keyId: "e", label: "Hablar" },
         { type: "tap", className: "touch-btn touch-btn--space", keyMap: "_SPACE_,Space,Spacebar", keyId: "_SPACE_", label: "Espacio" },
-        { type: "tap", className: "touch-btn touch-btn--confirm", keyMap: "Enter", keyId: "Enter", label: "OK" },
+        { type: "tap", className: "touch-btn touch-btn--confirm", keyMap: "Enter", keyId: "Enter", label: "ENTER" },
         { type: "tap", className: "touch-btn touch-btn--escape", keyMap: "Escape", keyId: "Escape", label: "ESC" },
       ],
     },
@@ -41,6 +41,8 @@
         { type: "tap", className: "touch-btn", keyMap: "7", keyId: "7", label: "7" },
         { type: "tap", className: "touch-btn", keyMap: "8", keyId: "8", label: "8" },
         { type: "tap", className: "touch-btn", keyMap: "9", keyId: "9", label: "9" },
+        { type: "tap", className: "touch-btn touch-btn--decimal", keyMap: ".", keyId: ".", label: "." },
+        { type: "tap", className: "touch-btn touch-btn--minus", keyMap: "-,Subtract,NumpadSubtract", keyId: "-", label: "-" },
         { type: "tap", className: "touch-btn touch-btn--zero", keyMap: "0", keyId: "0", label: "0" },
         { type: "tap", className: "touch-btn touch-btn--backspace", keyMap: "Backspace", keyId: "Backspace", label: "Borrar" },
         { type: "tap", className: "touch-btn touch-btn--enter", keyMap: "Enter", keyId: "Enter", label: "Enter" },
@@ -104,7 +106,6 @@
     const ariaHidden = config.ariaHidden || "false";
     return `
       <div class="${config.wrapClass}" data-touch-group-wrap="${name}">
-        <button class="touch-toggle" type="button" data-touch-toggle="${name}" aria-expanded="true">${config.toggleLabel}</button>
         <div class="${config.panelClass}" data-touch-panel="${name}" aria-hidden="${ariaHidden}">
           ${itemsMarkup}
         </div>
@@ -134,10 +135,13 @@
       actions: !!sceneKey && sceneKey !== "title" && sceneKey !== "novela",
       numpad: false,
       layout: "default",
+      movementKeys: null,
       actionKeys: null,
       numpadKeys: null,
       actionLabels: null,
       variant: isOverworld ? "overworld" : null,
+      showMovementToggle: true,
+      showActionToggle: true,
       expanded: {
         movement: isOverworld,
         actions: true,
@@ -165,8 +169,15 @@
       if (typeof registered.numpad === "boolean") profile.numpad = registered.numpad;
       if (typeof registered.layout === "string") profile.layout = registered.layout;
       if (typeof registered.variant === "string") profile.variant = registered.variant;
+      if (Array.isArray(registered.movementKeys)) profile.movementKeys = registered.movementKeys;
       if (Array.isArray(registered.actionKeys)) profile.actionKeys = registered.actionKeys;
       if (Array.isArray(registered.numpadKeys)) profile.numpadKeys = registered.numpadKeys;
+      if (typeof registered.showMovementToggle === "boolean") {
+        profile.showMovementToggle = registered.showMovementToggle;
+      }
+      if (typeof registered.showActionToggle === "boolean") {
+        profile.showActionToggle = registered.showActionToggle;
+      }
       if (registered.actionLabels && typeof registered.actionLabels === "object") {
         profile.actionLabels = registered.actionLabels;
       }
@@ -196,6 +207,9 @@
         typeof override.numpad === "boolean" ? override.numpad : profile.numpad,
       layout:
         typeof override.layout === "string" ? override.layout : profile.layout,
+      movementKeys: Array.isArray(override.movementKeys)
+        ? override.movementKeys
+        : profile.movementKeys,
       actionKeys: Array.isArray(override.actionKeys)
         ? override.actionKeys
         : profile.actionKeys,
@@ -208,6 +222,14 @@
         : profile.numpadKeys,
       variant:
         typeof override.variant === "string" ? override.variant : profile.variant,
+      showMovementToggle:
+        typeof override.showMovementToggle === "boolean"
+          ? override.showMovementToggle
+          : profile.showMovementToggle,
+      showActionToggle:
+        typeof override.showActionToggle === "boolean"
+          ? override.showActionToggle
+          : profile.showActionToggle,
       expanded: {
         movement:
           typeof override.expanded?.movement === "boolean"
@@ -229,7 +251,6 @@
     const input = game.input;
     const dirButtons = root.querySelectorAll("[data-touch-key]");
     const tapButtons = root.querySelectorAll("[data-touch-tap-key]");
-    const toggleButtons = root.querySelectorAll("[data-touch-toggle]");
     const wrappers = {
       movement: root.querySelector('[data-touch-group-wrap="movement"]'),
       actions: root.querySelector('[data-touch-group-wrap="actions"]'),
@@ -263,13 +284,9 @@
     const setPanelExpanded = (name, expanded) => {
       state.expanded[name] = !!expanded;
       const panel = panels[name];
-      const toggle = root.querySelector(`[data-touch-toggle="${name}"]`);
       if (panel) {
         panel.classList.toggle("is-collapsed", !expanded);
         panel.setAttribute("aria-hidden", expanded ? "false" : "true");
-      }
-      if (toggle) {
-        toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
       }
     };
 
@@ -277,7 +294,7 @@
       const wrap = wrappers[name];
       if (!wrap) return;
       wrap.classList.toggle("hidden", !visible);
-      if (!visible) setPanelExpanded(name, false);
+      setPanelExpanded(name, !!visible);
     };
 
     const setLayout = (layout) => {
@@ -295,17 +312,27 @@
       });
     };
 
+    const setAllowedDirectionKeys = (buttons, allowedKeys) => {
+      const allowed = Array.isArray(allowedKeys) ? new Set(allowedKeys) : null;
+      buttons.forEach((btn) => {
+        const key = btn.dataset.touchKey || "";
+        const visible = !allowed || allowed.has(key);
+        btn.classList.toggle("hidden", !visible);
+      });
+    };
+
     const applyProfile = (sceneKey = game.sceneManager?.currentKey) => {
       const profile = getTouchProfile(sceneKey, state.override);
-      const variants = ["overworld", "escriba", "quick-numpad", "eratostenes"];
+      const variants = ["overworld", "escriba", "quick-numpad", "eratostenes", "horizontal-move"];
       variants.forEach((name) => {
         root.classList.toggle(`touch-controls--${name}`, profile.variant === name);
       });
       setLayout(profile.layout || "default");
+      setAllowedDirectionKeys(dirButtons, profile.movementKeys || null);
       setAllowedTapKeys(actionButtons, profile.actionKeys || null);
       setAllowedTapKeys(numpadButtons, profile.numpadKeys || null);
       const defaultActionLabels = {
-        Enter: "OK",
+        Enter: "ENTER",
         _SPACE_: "Espacio",
         Escape: "ESC",
         e: "Hablar",
@@ -317,9 +344,9 @@
       setGroupVisible("actions", profile.actions);
       setGroupVisible("numpad", profile.numpad);
 
-      if (profile.movement) setPanelExpanded("movement", profile.expanded.movement);
-      if (profile.actions) setPanelExpanded("actions", profile.expanded.actions);
-      if (profile.numpad) setPanelExpanded("numpad", profile.expanded.numpad);
+      if (profile.movement) setPanelExpanded("movement", true);
+      if (profile.actions) setPanelExpanded("actions", true);
+      if (profile.numpad) setPanelExpanded("numpad", true);
     };
 
     const releaseAllDirections = () => {
@@ -350,26 +377,6 @@
       btn.addEventListener("pointerup", release);
       btn.addEventListener("pointercancel", release);
       btn.addEventListener("pointerleave", release);
-    });
-
-    toggleButtons.forEach((btn) => {
-      const name = btn.dataset.touchToggle;
-      if (!name) return;
-
-      btn.addEventListener("pointerdown", (event) => {
-        event.preventDefault();
-        btn.classList.add("is-pressed");
-      });
-
-      btn.addEventListener("pointerup", (event) => {
-        event.preventDefault();
-        btn.classList.remove("is-pressed");
-        setPanelExpanded(name, !state.expanded[name]);
-      });
-
-      btn.addEventListener("pointercancel", () => {
-        btn.classList.remove("is-pressed");
-      });
     });
 
     tapButtons.forEach((btn) => {

@@ -59,20 +59,30 @@
     loadAudio(key, src) {
       return new Promise((resolve) => {
         const audio = new Audio(src);
+        let settled = false;
+        const finish = (result) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeout);
+          resolve(result);
+        };
         const timeout = setTimeout(() => {
           console.warn("[AssetLoader] Timeout cargando audio:", key, src);
-          resolve(null);
+          finish(null);
         }, 10000);
 
-        audio.oncanplaythrough = () => {
-          clearTimeout(timeout);
+        const markReady = () => {
           this.sounds[key] = audio;
-          resolve(audio);
+          finish(audio);
         };
+
+        audio.preload = "auto";
+        audio.addEventListener("canplaythrough", markReady, { once: true });
+        audio.addEventListener("canplay", markReady, { once: true });
+        audio.addEventListener("loadeddata", markReady, { once: true });
         audio.onerror = () => {
-          clearTimeout(timeout);
           console.warn("[AssetLoader] No se pudo cargar audio:", key, src);
-          resolve(null);
+          finish(null);
         };
         audio.load();
       });
@@ -133,17 +143,28 @@
     }
 
     playMusic(key, { loop = true, volume = 1 } = {}) {
+      const original = this.sounds[key];
+      if (!original) return null;
+
       if (this.currentMusic) {
         this.currentMusic.pause();
         this.currentMusic.currentTime = 0;
+        this.currentMusic = null;
       }
-      const original = this.sounds[key];
-      if (!original) return;
+
       const music = original.cloneNode();
       music.loop = loop;
       music.volume = volume * this.masterVolume;
-      music.play().catch(() => {});
+      const playAttempt = music.play();
+      if (playAttempt && typeof playAttempt.catch === "function") {
+        playAttempt.catch(() => {
+          if (this.currentMusic === music) {
+            this.currentMusic = null;
+          }
+        });
+      }
       this.currentMusic = music;
+      return music;
     }
 
     stopMusic() {

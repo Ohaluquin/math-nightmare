@@ -218,7 +218,7 @@ class Player extends Sprite {
 }
 
 // === NPC - Entidad con interaccion (tecla E) ===
-const INTERACT_KEY = "e";
+const INTERACT_KEYS = ["e", "E", "KeyE"];
 
 class FootSprite extends Sprite {
   constructor(
@@ -339,10 +339,14 @@ class NPC extends FootSprite {
 
     const hud = document.getElementById("hint");
     if (hud) {
-      hud.textContent = near ? `Pulsa "E" para hablar con ${this.name}` : "";
+      hud.textContent = near ? `Pulsa "e" o "E" para hablar con ${this.name}` : "";
     }
 
-    if (near && this.scene.game.input.isDown(INTERACT_KEY)) {
+    const wantsInteract = INTERACT_KEYS.some((key) =>
+      this.scene.game.input.isDown(key)
+    );
+
+    if (near && wantsInteract) {
       if (typeof this.onInteract === "function") {
         this.onInteract(this, player, this.scene);
       }

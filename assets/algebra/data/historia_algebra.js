@@ -47,7 +47,7 @@ const MN_SOFIA_ALGEBRA_CHARACTERS = [
     image: "ch_sofia",
     x: 600,
     y: 530,
-    scale: 0.6,
+    scale: 1,
     flipX: false,
     name: "Sofia",
   },
@@ -56,13 +56,13 @@ const MN_SOFIA_ALGEBRA_CHARACTERS = [
 const MN_SOFIA_ALGEBRA_TOPICS = [
   {
     id: "felipon",
-    label: "Felipon el Confundido",
+    label: "Felipón el Confundido",
     page: 1,
     helpSheetKey: "sheet_algebra_1",
     mechanic:
-      "Ordena las letras para reconstruir conceptos del algebra. No se trata de calcular, sino de reconocer el vocabulario correcto antes de que la confusion avance.",
+      "Ordena las letras para reconstruir conceptos del álgebra. No se trata de calcular, sino de reconocer el vocabulario correcto antes de que la confusión avance.",
     tip:
-      "Fijate en palabras base como variable, constante, coeficiente o expresion. Si reconoces el concepto, despues sera mas facil interpretar ejercicios algebraicos.",
+      "Fíjate en palabras base como variable, constante, coeficiente o expresión. Si reconoces el concepto, después será más fácil interpretar ejercicios algebraicos.",
   },
   {
     id: "bodeguero",
@@ -72,7 +72,7 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     mechanic:
       "Observa la balanza y realiza acciones que mantengan el equilibrio. Si quitas o agregas algo en un lado, debes hacer lo mismo en el otro.",
     tip:
-      "La idea central es la igualdad. Una ecuacion sigue siendo verdadera solo si ambos lados se transforman de manera equivalente.",
+      "La idea central es la igualdad. Una ecuación sigue siendo verdadera solo si ambos lados se transforman de manera equivalente.",
   },
   {
     id: "brahmagupta",
@@ -80,39 +80,39 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_algebra_3",
     mechanic:
-      "Lee el enigma con calma, identifica la cantidad desconocida y elige el numero que satisface las relaciones descritas.",
+      "Lee el enigma con calma, identifica la cantidad desconocida y elige el número que satisface las relaciones descritas.",
     tip:
-      "No adivines. Primero traduce lo que cambia, lo que permanece y como se relacionan las cantidades; despues busca el numero oculto.",
+      "No adivines. Primero traduce lo que cambia, lo que permanece y cómo se relacionan las cantidades; después busca el número oculto.",
   },
   {
-    id: "silvano",
-    label: "Silvano el Guia",
+    id: "mateo",
+    label: "Mateo",
     page: 1,
     helpSheetKey: "sheet_algebra_4",
     mechanic:
-      "Debes interpretar correctamente instrucciones y expresiones para tomar el camino adecuado. Leer rapido suele llevar al error.",
+      "Clasifica y junta términos semejantes. Solo pueden combinarse los que tienen la misma parte literal o ambos son constantes.",
     tip:
-      "Palabras como doble, mitad, suma o diferencia cambian por completo el significado. Traduce cada frase con precision antes de decidir.",
+      "Mira la letra y su exponente antes del número. Primero decide si los términos son semejantes; después suma o resta coeficientes.",
+  },
+  {
+    id: "silvano",
+    label: "Silvano el Guía",
+    page: 1,
+    helpSheetKey: "sheet_algebra_5",
+    mechanic:
+      "Debes interpretar correctamente instrucciones y expresiones para tomar el camino adecuado. Leer rápido suele llevar al error.",
+    tip:
+      "Palabras como doble, mitad, suma o diferencia cambian por completo el significado. Traduce cada frase con precisión antes de decidir.",
   },
   {
     id: "ariadna",
     label: "Ariadna",
     page: 1,
-    helpSheetKey: "sheet_algebra_5",
-    mechanic:
-      "Sustituye el valor de la variable y resuelve respetando signos, parentesis y jerarquia de operaciones para avanzar por el laberinto.",
-    tip:
-      "Haz una cosa a la vez: sustituir bien, conservar signos y luego operar en orden. La prisa suele romper el procedimiento.",
-  },
-  {
-    id: "mateo",
-    label: "Mateo",
-    page: 2,
     helpSheetKey: "sheet_algebra_6",
     mechanic:
-      "Clasifica y junta terminos semejantes. Solo pueden combinarse los que tienen la misma parte literal o ambos son constantes.",
+      "Sustituye el valor de la variable y resuelve respetando signos, paréntesis y jerarquía de operaciones para avanzar por el laberinto.",
     tip:
-      "Mira la letra y su exponente antes del numero. Primero decide si los terminos son semejantes; despues suma o resta coeficientes.",
+      "Haz una cosa a la vez: sustituir bien, conservar signos y luego operar en orden. La prisa suele romper el procedimiento.",
   },
   {
     id: "howdin",
@@ -120,9 +120,9 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 2,
     helpSheetKey: "sheet_algebra_7",
     mechanic:
-      "Abre puertas haciendo el movimiento correcto para aislar la incognita. Cada accion debe acercarte a dejarla sola.",
+      "Abre puertas haciendo el movimiento correcto para aislar la incógnita. Cada acción debe acercarte a dejarla sola.",
     tip:
-      "Piensa en capas: quita primero lo que estorba mas por fuera y avanza paso a paso sin romper la igualdad.",
+      "Piensa en capas: quita primero lo que estorba más por fuera y avanza paso a paso sin romper la igualdad.",
   },
   {
     id: "aljuarismi",
@@ -130,9 +130,9 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 2,
     helpSheetKey: "sheet_algebra_8",
     mechanic:
-      "Distribuye, simplifica, mueve terminos y resuelve sin perder el equilibrio. Si dudas demasiado, la presion de la pesadilla aumenta.",
+      "Distribuye, simplifica, mueve términos y resuelve sin perder el equilibrio. Si dudas demasiado, la presión de la pesadilla aumenta.",
     tip:
-      "No intentes hacerlo todo de golpe. Busca siempre el siguiente paso valido: distribuir, combinar, mover o despejar.",
+      "No intentes hacerlo todo de golpe. Busca siempre el siguiente paso válido: distribuir, combinar, mover o despejar.",
   },
   {
     id: "clara",
@@ -140,9 +140,9 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 2,
     helpSheetKey: "sheet_algebra_9",
     mechanic:
-      "Primero eliges la ecuacion que modela la situacion y despues resuelves su resultado. Si fallas, repites la misma situacion.",
+      "Primero eliges la ecuación que modela la situación y después resuelves su resultado. Si fallas, repites la misma situación.",
     tip:
-      "Antes de calcular, decide que representa la variable, que cantidades cambian y cual es la relacion entre ellas.",
+      "Antes de calcular, decide qué representa la variable, qué cantidades cambian y cuál es la relación entre ellas.",
   },
 ];
 
@@ -156,36 +156,36 @@ function MN_buildSofiaAlgebraStory() {
       dialogs: [
         {
           speaker: "Sofia",
-          text: "Hola. Aqui puedo ayudarte a entender que se trabaja en Algebra o darte ayuda puntual para cualquier reto.",
+          text: "Hola. Aquí puedo ayudarte a entender qué se trabaja en Álgebra o darte ayuda puntual para cualquier reto.",
           stage: { focus: "Sofia" },
           choices: [
             {
-              text: "Explicame el area de Algebra",
+              text: "Explícame el área de Álgebra",
               next: "sofia_algebra",
             },
             {
               text: "Necesito ayuda con un minijuego",
               next: "sofia_help_menu_1",
             },
-            { text: "Adios.", action: { type: "CLOSE_NOVELA" } },
+            { text: "Adiós.", action: { type: "CLOSE_NOVELA" } },
           ],
         },
       ],
     },
     sofia_algebra: {
-      title: "Area de Algebra",
+      title: "Área de Álgebra",
       background: "bg_sofia",
       music: "bgm_quiet",
       characters: MN_SOFIA_ALGEBRA_CHARACTERS,
       dialogs: [
         {
           speaker: "Sofia",
-          text: "En Algebra empiezas a usar letras para representar cantidades desconocidas o cambiantes.",
+          text: "En Álgebra empiezas a usar letras para representar cantidades desconocidas o cambiantes.",
           stage: { focus: "Sofia" },
         },
         {
           speaker: "Sofia",
-          text: "Aqui practicas conceptos, equilibrio, traduccion de frases, sustitucion, terminos semejantes, despejes, resolucion de ecuaciones y modelado.",
+          text: "Aquí practicas conceptos, equilibrio, traducción de frases, sustitución, términos semejantes, despejes, resolución de ecuaciones y modelado.",
         },
         {
           speaker: "Sofia",
@@ -193,48 +193,48 @@ function MN_buildSofiaAlgebraStory() {
         },
         {
           speaker: "Sofia",
-          text: "Si te atoras en un reto, usa mi ayuda por minijuego. Te dire que hacer, que habilidad se trabaja y que hoja consultar.",
+          text: "Si te atoras en un reto, usa mi ayuda por minijuego. Te diré qué hacer, qué habilidad se trabaja y qué hoja consultar.",
           choices: [
             {
               text: "Quiero ayuda con un minijuego",
               next: "sofia_help_menu_1",
             },
-            { text: "Volver con Sofia", next: "sofia_menu" },
+            { text: "Volver con Sofía", next: "sofia_menu" },
           ],
         },
       ],
     },
     sofia_help_menu_1: {
-      title: "Ayuda de Sofia",
+      title: "Ayuda de Sofía",
       background: "bg_sofia",
       music: "bgm_quiet",
       characters: MN_SOFIA_ALGEBRA_CHARACTERS,
       dialogs: [
         {
           speaker: "Sofia",
-          text: "Dime con cual reto de Algebra necesitas apoyo.",
+          text: "Dime con cuál reto de Álgebra necesitas apoyo.",
           stage: { focus: "Sofia" },
           choices: [],
         },
       ],
     },
     sofia_help_menu_2: {
-      title: "Ayuda de Sofia",
+      title: "Ayuda de Sofía",
       background: "bg_sofia",
       music: "bgm_quiet",
       characters: MN_SOFIA_ALGEBRA_CHARACTERS,
       dialogs: [
         {
           speaker: "Sofia",
-          text: "Aqui estan los retos restantes. Elige uno y te ayudo.",
+          text: "Aquí están los retos restantes. Elige uno y te ayudo.",
           stage: { focus: "Sofia" },
           choices: [],
         },
       ],
     },
     exit: {
-      title: "Exit de Sofia",
-      music: "bgm_overworld",
+      title: "Salida de Sofía",
+      music: "bgm_algebra",
       dialogs: [],
     },
   };
@@ -256,10 +256,10 @@ function MN_buildSofiaAlgebraStory() {
       dialogs: [
         {
           speaker: "Sofia",
-          text: "Que ayuda necesitas en este reto?",
+          text: "¿Qué ayuda necesitas en este reto?",
           choices: [
-            { text: "Mecanica del juego", next: mechanicKey },
-            { text: "Consejo matematico", next: tipKey },
+            { text: "Mecánica del juego", next: mechanicKey },
+            { text: "Consejo matemático", next: tipKey },
             {
               text: "Ver hoja relacionada",
               action: {
@@ -270,7 +270,7 @@ function MN_buildSofiaAlgebraStory() {
               next: sceneKey,
             },
             { text: "Elegir otro minijuego", next: chooseMenu },
-            { text: "Adios.", action: { type: "CLOSE_NOVELA" } },
+            { text: "Adiós.", action: { type: "CLOSE_NOVELA" } },
           ],
         },
       ],
@@ -289,7 +289,7 @@ function MN_buildSofiaAlgebraStory() {
           choices: [
             { text: "Volver al submenu", next: sceneKey },
             { text: "Elegir otro minijuego", next: chooseMenu },
-            { text: "Adios.", action: { type: "CLOSE_NOVELA" } },
+            { text: "Adiós.", action: { type: "CLOSE_NOVELA" } },
           ],
         },
       ],
@@ -308,7 +308,7 @@ function MN_buildSofiaAlgebraStory() {
           choices: [
             { text: "Volver al submenu", next: sceneKey },
             { text: "Elegir otro minijuego", next: chooseMenu },
-            { text: "Adios.", action: { type: "CLOSE_NOVELA" } },
+            { text: "Adiós.", action: { type: "CLOSE_NOVELA" } },
           ],
         },
       ],
@@ -320,12 +320,12 @@ function MN_buildSofiaAlgebraStory() {
   });
 
   page1Choices.push({ text: "Ver mas minijuegos", next: "sofia_help_menu_2" });
-  page1Choices.push({ text: "Adios.", action: { type: "CLOSE_NOVELA" } });
+  page1Choices.push({ text: "Adiós.", action: { type: "CLOSE_NOVELA" } });
   page2Choices.push({
     text: "Ver minijuegos anteriores",
     next: "sofia_help_menu_1",
   });
-  page2Choices.push({ text: "Adios.", action: { type: "CLOSE_NOVELA" } });
+  page2Choices.push({ text: "Adiós.", action: { type: "CLOSE_NOVELA" } });
 
   return {
     start: "sofia_menu",
@@ -349,7 +349,7 @@ window.FELIPON_CONCEPTOS_STORY = {
           image: "ch_nico",
           x: 390,
           y: 620,
-          scale: 0.8,
+          scale: 1,
           flipX: false,
           name: "Nico",
         },
@@ -357,7 +357,7 @@ window.FELIPON_CONCEPTOS_STORY = {
           image: "ch_felipon",
           x: 730,
           y: 620,
-          scale: 0.44,
+          scale: 0.9,
           flipX: false,
           name: "Felipón",
         },
@@ -380,7 +380,7 @@ window.FELIPON_CONCEPTOS_STORY = {
         },
         {
           speaker: "Felipón",
-          text: "Variable... constante... coeficiente... expresión...",
+          text: "Término... producto... constante... coeficiente... expresión...",
         },
         {
           speaker: "Felipón",
@@ -388,11 +388,11 @@ window.FELIPON_CONCEPTOS_STORY = {
         },
         {
           speaker: "Felipón",
-          text: "Mira... yo sé que algo estoy haciendo mal.",
+          text: "Las escucho en clase, pero cuando veo un ejercicio ya no sé qué significan.",
         },
         {
           speaker: "Felipón",
-          text: "Veo la x y pienso en multiplicar... pero luego me dicen que no siempre significa eso.",
+          text: "Veo la x y pienso en multiplicar... pero luego me dicen que ya no significa eso.",
         },
         {
           speaker: "Felipón",
@@ -404,7 +404,7 @@ window.FELIPON_CONCEPTOS_STORY = {
         },
         {
           speaker: "Felipón",
-          text: "o que un término ya trae su propio signo.",
+          text: "o peor... a veces veo dos signos menos y resulta que el resultado termina siendo una suma.",
         },
         {
           speaker: "Nico",
@@ -413,12 +413,8 @@ window.FELIPON_CONCEPTOS_STORY = {
         },
         {
           speaker: "Nico",
-          text: "Pero en álgebra no siempre son órdenes.",
-        },
-        {
-          speaker: "Nico",
-          text: "A veces solo indican qué representa una cantidad.",
-        },
+          text: "Pero en álgebra esos símbolos no siempre te dicen 'haz esto ahora'. A veces forman parte de lo que estás describiendo.",
+        },        
         {
           speaker: "Felipón",
           text: "¡Eso! ¡Eso es justo lo que me confunde!",
@@ -462,7 +458,11 @@ window.FELIPON_CONCEPTOS_STORY = {
         },
         {
           speaker: "Felipón",
-          text: "Vamos... ayudemos a poner en orden el lenguaje del álgebra.",
+          text: "Si recuperamos esas palabras, tal vez la biblioteca vuelva a tener sentido.",
+        },
+        {
+          speaker: "Felipón",
+          text: "Y también nosotros...",
         },
       ],
     },
@@ -490,7 +490,7 @@ window.BODEGUERO_BALANZA_STORY = {
           image: "ch_bodeguero",
           x: 620,
           y: 520,
-          scale: 0.56,
+          scale: 0.9,
           flipX: false,
           name: "Bodeguero",
         },
@@ -507,11 +507,11 @@ window.BODEGUERO_BALANZA_STORY = {
         },
         {
           speaker: "Bodeguero",
-          text: "Mi trabajo es preparar las cargas para las carrozas.",
+          text: "Mi trabajo es preparar las cargas para que todo quede bien acomodado.",
         },
         {
           speaker: "Bodeguero",
-          text: "Si una carroza queda demasiado pesada de un lado...",
+          text: "Si una carroza queda más pesada de un lado que del otro...",
         },
         {
           speaker: "Bodeguero",
@@ -537,11 +537,11 @@ window.BODEGUERO_BALANZA_STORY = {
         },
         {
           speaker: "Bodeguero",
-          text: "Pero aquí hay otro problema...",
+          text: "Pero aquí hay un problema...",
         },
         {
           speaker: "Bodeguero",
-          text: "Muchas cajas y costales llegan sin ninguna etiqueta.",
+          text: "Algunas cajas y costales llegan sin etiqueta.",
         },
         {
           speaker: "Bodeguero",
@@ -549,7 +549,7 @@ window.BODEGUERO_BALANZA_STORY = {
         },
         {
           speaker: "Nico",
-          text: "Entonces… ¿cómo descubres su peso?",
+          text: "Entonces... ¿cómo descubres su peso?",
           stage: { focus: "Nico" },
         },
         {
@@ -571,7 +571,7 @@ window.BODEGUERO_BALANZA_STORY = {
         },
         {
           speaker: "Bodeguero",
-          text: "Con paciencia podemos descubrir el peso de cualquier cosa.",
+          text: "Con paciencia, podemos descubrir el peso de cualquier costal.",
         },
         {
           speaker: "Bodeguero",
@@ -603,7 +603,7 @@ window.BRAHMAGUPTA_ENIGMAS_STORY = {
           image: "ch_brahmagupta",
           x: 620,
           y: 520,
-          scale: 0.56,
+          scale: 0.8,
           flipX: false,
           name: "Brahmagupta",
         },
@@ -611,17 +611,12 @@ window.BRAHMAGUPTA_ENIGMAS_STORY = {
       dialogs: [
         {
           speaker: "Brahmagupta",
-          text: "Hola! Soy Brahmagupta, astrónomo y matemático de la India.",
+          text: "Saludos. Soy Brahmagupta, estudioso de los astros, de los números y de las relaciones que no siempre se muestran a simple vista.",
           stage: { focus: "Brahmagupta" },
-        },
-        {
-          speaker: "Brahmagupta",
-          text: "He dedicado mucho tiempo a estudiar números, relaciones y cantidades que no se muestran a simple vista.",
         },
         {
           speaker: "Brahmagupta",
           text: "Muchos creen que un enigma numérico se resuelve adivinando.",
-          stage: { focus: "Brahmagupta" },
         },
         {
           speaker: "Brahmagupta",
@@ -629,19 +624,23 @@ window.BRAHMAGUPTA_ENIGMAS_STORY = {
         },
         {
           speaker: "Brahmagupta",
-          text: "Primero nombro la cantidad desconocida.",
+          text: "Cuando una cantidad se esconde, no desaparece. Solo deja de mostrarse con claridad.",
         },
         {
           speaker: "Brahmagupta",
-          text: "Luego escucho con atención: qué se suma, qué se quita, qué se multiplica, qué permanece igual.",
+          text: "Por eso, lo primero es nombrarla.",
         },
         {
           speaker: "Brahmagupta",
-          text: "Cuando el lenguaje se ordena, el número deja de esconderse.",
+          text: "Después hay que escuchar con atención lo que el problema dice: qué se suma, qué se quita, qué se multiplica, qué permanece igual.",
+        },
+        {
+          speaker: "Brahmagupta",
+          text: "Si entiendes la relación entre las cantidades, el número deja de ocultarse.",
         },
         {
           speaker: "Nico",
-          text: "Entonces no basta con calcular... primero hay que entender lo que el enigma está diciendo.",
+          text: "Entonces no basta con calcular... primero hay que entender lo que el enigma realmente está diciendo.",
           stage: { focus: "Nico" },
         },
         {
@@ -651,15 +650,130 @@ window.BRAHMAGUPTA_ENIGMAS_STORY = {
         },
         {
           speaker: "Brahmagupta",
-          text: "A veces el número está oculto, pero la relación entre las cantidades está a la vista.",
+          text: "A veces el número permanece oculto, pero la relación entre las cantidades está a la vista.",
         },
         {
           speaker: "Brahmagupta",
-          text: "Si logras expresarla con claridad, podrás descubrirlo.",
+          text: "Si logras expresarla con claridad, podrás encontrarlo.",
         },
         {
           speaker: "Brahmagupta",
-          text: "Te presentaré tres enigmas. Escucha bien sus palabras y encuentra el número que esconden.",
+          text: "Te presentaré tres enigmas.",
+        },
+        {
+          speaker: "Brahmagupta",
+          text: "Escucha con cuidado sus palabras... y descubre el número que esconden.",
+        },
+      ],
+    },
+  },
+};
+
+window.MATEO_CLASIFICADOR_STORY = {
+  start: "mateo_intro",
+  order: ["mateo_intro"],
+  scenes: {
+    mateo_intro: {
+      title: "Mateo el astronauta",
+      background: "bg_jardin",
+      music: "bgm_quiet",
+      characters: [
+        {
+          image: "ch_nico",
+          x: 280,
+          y: 560,
+          scale: 0.8,
+          flipX: false,
+          name: "Nico",
+        },
+        {
+          image: "ch_mateo",
+          x: 620,
+          y: 520,
+          scale: 0.7,
+          flipX: false,
+          name: "Mateo",
+        },
+      ],
+      dialogs: [
+        {
+          speaker: "Mateo",
+          text: "¡Hola! Soy Mateo.",
+          stage: { focus: "Mateo" },
+        },
+        {
+          speaker: "Mateo",
+          text: "Estoy preparando una misión espacial muy importante.",
+        },
+        {
+          speaker: "Nico",
+          text: "¿De verdad vas a ir al espacio?",
+          stage: { focus: "Nico" },
+        },
+        {
+          speaker: "Mateo",
+          text: "Bueno... todavía no.",
+          stage: { focus: "Mateo" },
+        },
+        {
+          speaker: "Mateo",
+          text: "Pero ya tengo el traje, el casco y la misión.",
+        },
+        {
+          speaker: "Mateo",
+          text: "El problema es que todo se revolvió.",
+        },
+        {
+          speaker: "Mateo",
+          text: "Las piezas, las muestras y los paquetes quedaron mezclados como si la nave hubiera pasado por una tormenta.",
+        },
+        {
+          speaker: "Nico",
+          text: "Entonces solo hay que volver a juntarlos, ¿no?",
+          stage: { focus: "Nico" },
+        },
+        {
+          speaker: "Mateo",
+          text: "Sí... pero no de cualquier manera.",
+          stage: { focus: "Mateo" },
+        },
+        {
+          speaker: "Mateo",
+          text: "Algunas cosas se parecen, pero no pertenecen al mismo grupo.",
+        },
+        {
+          speaker: "Mateo",
+          text: "Si mezclas piezas distintas solo porque tienen algo en común, al final todo sale mal.",
+        },
+        {
+          speaker: "Mateo",
+          text: "Para ordenarlo bien, hay que fijarse en qué tipo de objeto es exactamente cada uno.",
+        },
+        {
+          speaker: "Nico",
+          text: "Como si no bastara con mirar rápido... hay que ver si realmente son del mismo tipo.",
+          stage: { focus: "Nico" },
+        },
+        {
+          speaker: "Mateo",
+          text: "¡Exacto!",
+          stage: { focus: "Mateo" },
+        },
+        {
+          speaker: "Mateo",
+          text: "En esta misión solo pueden juntarse los que son verdaderamente semejantes.",
+        },
+        {
+          speaker: "Mateo",
+          text: "Los que tienen la misma parte literal van en el mismo compartimento.",
+        },
+        {
+          speaker: "Mateo",
+          text: "Los que no, se quedan separados.",
+        },
+        {
+          speaker: "Mateo",
+          text: "¿Me ayudas a clasificar todo antes de que la nave despegue?",
         },
       ],
     },
@@ -687,7 +801,7 @@ window.SILVANO_LENGUAJE_NATURAL_STORY = {
           image: "ch_silvano",
           x: 620,
           y: 520,
-          scale: 0.56,
+          scale: 0.9,
           flipX: false,
           name: "Silvano",
         },
@@ -832,7 +946,7 @@ window.ARIADNA_SUSTITUIR_EVALUAR_STORY = {
           image: "ch_ariadna",
           x: 620,
           y: 520,
-          scale: 0.56,
+          scale: 0.8,
           flipX: false,
           name: "Ariadna",
         },
@@ -948,109 +1062,6 @@ window.ARIADNA_SUSTITUIR_EVALUAR_STORY = {
   },
 };
 
-window.MATEO_CLASIFICADOR_STORY = {
-  start: "mateo_intro",
-  order: ["mateo_intro"],
-  scenes: {
-    mateo_intro: {
-      title: "Mateo el astronauta",
-      background: "bg_mateo_exterior",
-      music: "bgm_quiet",
-      characters: [
-        {
-          image: "ch_nico",
-          x: 280,
-          y: 560,
-          scale: 0.8,
-          flipX: false,
-          name: "Nico",
-        },
-        {
-          image: "ch_mateo",
-          x: 620,
-          y: 520,
-          scale: 0.4,
-          flipX: false,
-          name: "Mateo",
-        },
-      ],
-      dialogs: [
-        {
-          speaker: "Mateo",
-          text: "¡Hola! Soy Mateo.",
-          stage: { focus: "Mateo" },
-        },
-        {
-          speaker: "Mateo",
-          text: "¿Quieres jugar conmigo?",
-        },
-        {
-          speaker: "Mateo",
-          text: "Estoy jugando a los astronautas.",
-        },
-        {
-          speaker: "Mateo",
-          text: "Cuando los astronautas tienen problemas en el espacio...",
-        },
-        {
-          speaker: "Mateo",
-          text: "tienen que resolverlos con lo que tengan a la mano.",
-        },
-        {
-          speaker: "Mateo",
-          text: "Por eso me hice este traje.",
-        },
-        {
-          speaker: "Mateo",
-          text: "Usé botellas, cartón y mucha cinta adhesiva.",
-        },
-        {
-          speaker: "Nico",
-          text: "Parece un traje espacial de verdad.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Mateo",
-          text: "¡Gracias!",
-          stage: { focus: "Mateo" },
-        },
-        {
-          speaker: "Mateo",
-          text: "Pero ahora tenemos una misión.",
-        },
-        {
-          speaker: "Mateo",
-          text: "Debemos explorar el espacio y recoger todo lo que encontremos.",
-        },
-        {
-          speaker: "Mateo",
-          text: "Pero hay un problema...",
-        },
-        {
-          speaker: "Mateo",
-          text: "todo está mezclado y desordenado.",
-        },
-        {
-          speaker: "Mateo",
-          text: "Así que debemos clasificar las cosas y juntarlas correctamente.",
-        },
-        {
-          speaker: "Mateo",
-          text: "Si logramos organizarlas bien, la misión será un éxito.",
-        },
-        {
-          speaker: "Mateo",
-          text: "¿Quieres ayudarme?",
-        },
-        {
-          speaker: "Mateo",
-          text: "¡Es muy divertido!",
-        },
-      ],
-    },
-  },
-};
-
 window.HOWDIN_CERRAJERO_STORY = {
   start: "howdin_intro",
   order: ["howdin_intro"],
@@ -1072,7 +1083,7 @@ window.HOWDIN_CERRAJERO_STORY = {
           image: "ch_howdin",
           x: 620,
           y: 520,
-          scale: 0.56,
+          scale: 0.9,
           flipX: false,
           name: "Howdin",
         },
@@ -1080,45 +1091,68 @@ window.HOWDIN_CERRAJERO_STORY = {
       dialogs: [
         {
           speaker: "Howdin",
-          text: "Muchos intentan forzar estas puertas… pero así no se abren.",
+          text: "Muchos creen que una puerta cerrada se vence con fuerza.",
           stage: { focus: "Howdin" },
         },
         {
+          speaker: "Howdin",
+          text: "Por eso golpean, empujan o prueban cualquier cosa... y fracasan.",
+        },
+        {
           speaker: "Nico",
-          text: "¿Entonces cómo se abren?",
+          text: "Entonces, ¿cómo se abre una cerradura como esta?",
           stage: { focus: "Nico" },
         },
         {
           speaker: "Howdin",
-          text: "Cada cerradura tiene un mecanismo. Si presionas la pieza correcta… el candado se abre.",
+          text: "Entendiendo su mecanismo.",
+          stage: { focus: "Howdin" },
         },
         {
           speaker: "Howdin",
-          text: "Las ecuaciones funcionan igual.",
+          text: "Cada pieza que estorba debe retirarse en el momento correcto.",
         },
         {
           speaker: "Howdin",
-          text: "En este pasillo encontrarás cinco puertas cerradas.",
+          text: "Si mueves algo que no debes, la cerradura sigue bloqueada.",
         },
         {
           speaker: "Howdin",
-          text: "Para abrirlas tendrás que ejecutar la combinación correcta.",
+          text: "Las ecuaciones se parecen más a una cerradura de lo que imaginas.",
         },
         {
           speaker: "Howdin",
-          text: "Un número está atrapado detrás de otros… como un mecanismo oculto.",
+          text: "La incógnita está ahí, pero queda atrapada detrás de números, operaciones y símbolos.",
+        },
+        {
+          speaker: "Nico",
+          text: "Entonces no se trata de hacer cualquier operación...",
+          stage: { focus: "Nico" },
         },
         {
           speaker: "Howdin",
-          text: "Si sabes retirar el obstáculo correcto en cada paso, la cerradura cede…",
+          text: "Exactamente.",
+          stage: { focus: "Howdin" },
         },
         {
           speaker: "Howdin",
-          text: "…y la incógnita queda libre.",
+          text: "Debes elegir el movimiento que realmente la libere.",
         },
         {
           speaker: "Howdin",
-          text: "Cruza el pasillo y abre las cinco puertas.",
+          text: "Un paso correcto abre el mecanismo.",
+        },
+        {
+          speaker: "Howdin",
+          text: "Un paso inútil solo te hace perder tiempo.",
+        },
+        {
+          speaker: "Howdin",
+          text: "En este pasillo encontrarás varias puertas cerradas.",
+        },
+        {
+          speaker: "Howdin",
+          text: "Si entiendes qué estorba primero y qué debe quitarse después, podrás abrirlas una a una.",
         },
         {
           speaker: "Howdin",
@@ -1126,385 +1160,7 @@ window.HOWDIN_CERRAJERO_STORY = {
         },
         {
           speaker: "Howdin",
-          text: "Solo saber cómo liberar la incógnita.",
-        },
-      ],
-    },
-  },
-};
-
-window.ALJUARISMI_BALANCEO_STORY = {
-  start: "aljuarismi_intro",
-  order: ["aljuarismi_intro"],
-  scenes: {
-    aljuarismi_intro: {
-      title: "Al-Juarismi",
-      background: "bg_aljuarizmi",
-      music: "bgm_quiet",
-      characters: [
-        {
-          image: "ch_nico",
-          x: 280,
-          y: 560,
-          scale: 0.8,
-          flipX: false,
-          name: "Nico",
-        },
-        {
-          image: "ch_aljuarismi",
-          x: 620,
-          y: 520,
-          scale: 0.56,
-          flipX: false,
-          name: "Al-Juarismi",
-        },
-      ],
-      dialogs: [
-        {
-          speaker: "Al-Juarismi",
-          text: "No avances todavía.",
-          stage: { focus: "Al-Juarismi" },
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "He visto lo que ocurre cuando alguien enfrenta una ecuación sin orden.",
-        },
-        {
-          speaker: "Nico",
-          text: "A veces... no sé por dónde empezar.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "No es falta de conocimiento.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Es falta de estructura.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Mira esto.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Una ecuación es como una balanza en equilibrio.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Si mueves algo de un lado… debes hacer lo mismo en el otro.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Si no respetas ese equilibrio… todo se rompe.",
-        },
-        {
-          speaker: "Nico",
-          text: "Entonces no es solo hacer operaciones...",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Exactamente.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "En mi tiempo lo llamamos al-jabr y al-muqabala.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Restaurar lo que falta… y equilibrar lo que sobra.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Mover términos. Simplificar. Ordenar.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Cada paso tiene un propósito.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Pero aquí ocurre algo más...",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Cuando dudas demasiado… el tiempo se detiene.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Y la pesadilla avanza.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Tu cuerpo se vuelve pesado… como si te convirtieras en piedra.",
-        },
-        {
-          speaker: "Nico",
-          text: "Entonces tengo que pensar rápido… pero con orden.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "No rápido.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Claro.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Si entiendes el siguiente paso… el resto sigue.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Te daré tres ecuaciones.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "No busques adivinar.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Mantén el equilibrio… y la incógnita se liberará.",
-        },
-      ],
-    },
-  },
-};
-window.ALJUARISMI_BALANCEO_STORY = {
-  start: "aljuarismi_intro",
-  order: ["aljuarismi_intro"],
-  scenes: {
-    aljuarismi_intro: {
-      title: "Al-Juarismi",
-      background: "bg_aljuarizmi",
-      music: "bgm_quiet",
-      characters: [
-        {
-          image: "ch_nico",
-          x: 280,
-          y: 560,
-          scale: 0.8,
-          flipX: false,
-          name: "Nico",
-        },
-        {
-          image: "ch_aljuarismi",
-          x: 620,
-          y: 520,
-          scale: 0.56,
-          flipX: false,
-          name: "Al-Juarismi",
-        },
-      ],
-      dialogs: [
-        {
-          speaker: "Al-Juarismi",
-          text: "Te he estado observando.",
-          stage: { focus: "Al-Juarismi" },
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "No es que no sepas resolver ecuaciones... es que a veces te quedas inmóvil.",
-        },
-        {
-          speaker: "Nico",
-          text: "Es que... cuando veo tantos símbolos no sé qué hacer primero.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Eso tiene nombre. Se llama desorden.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "En mi tierra lo llamamos al-jabr y al-muqabala.",
-        },
-        {
-          speaker: "Nico",
-          text: "¿Qué significa eso?",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Restaurar lo que falta... y equilibrar lo que sobra.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Una ecuación es una balanza. Si tocas un lado, debes tocar el otro.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Si un término estorba, muévelo. Si dos son semejantes, únelos.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Pero si no sabes qué hacer... te petrificas.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Aquí tu miedo se convierte en piedra. Tu color se desvanece.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "No porque la ecuación sea imposible... sino porque dudas del siguiente paso.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Te daré tres ecuaciones.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "No basta con resolver una. Debes demostrar que entiendes el procedimiento.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Si tardas demasiado, la pesadilla avanzará.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "Pero si mantienes el orden... el equilibrio te devolverá el color.",
-        },
-        {
-          speaker: "Al-Juarismi",
-          text: "¿Practicarás primero... o enfrentarás el desafío real?",
-        },
-      ],
-    },
-  },
-};
-
-window.CLARA_MODELACION_STORY = {
-  start: "clara_intro",
-  order: ["clara_intro"],
-  scenes: {
-    clara_intro: {
-      title: "Clara",
-      background: "bg_clara_mercado",
-      music: "bgm_quiet",
-      characters: [
-        {
-          image: "ch_nico",
-          x: 280,
-          y: 560,
-          scale: 0.8,
-          flipX: false,
-          name: "Nico",
-        },
-        {
-          image: "ch_clara",
-          x: 620,
-          y: 520,
-          scale: 0.56,
-          flipX: false,
-          name: "Clara",
-        },
-      ],
-      dialogs: [
-        {
-          speaker: "Clara",
-          text: "Espera… antes de avanzar.",
-          stage: { focus: "Clara" },
-        },
-        {
-          speaker: "Clara",
-          text: "Aquí no basta con hacer cuentas.",
-        },
-        {
-          speaker: "Nico",
-          text: "¿Entonces qué hay que hacer?",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Clara",
-          text: "Entender lo que realmente está pasando.",
-        },
-        {
-          speaker: "Clara",
-          text: "Mira a tu alrededor.",
-        },
-        {
-          speaker: "Clara",
-          text: "Precios. Cantidades. Cambios.",
-        },
-        {
-          speaker: "Clara",
-          text: "Todo está relacionado… pero no siempre es evidente.",
-        },
-        {
-          speaker: "Nico",
-          text: "A veces leo el problema… pero no sé cómo empezar.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Clara",
-          text: "Eso es porque intentas resolver… antes de entender.",
-        },
-        {
-          speaker: "Clara",
-          text: "Primero hay que decidir qué representa cada cosa.",
-        },
-        {
-          speaker: "Clara",
-          text: "¿Qué cambia?",
-        },
-        {
-          speaker: "Clara",
-          text: "¿Qué se mantiene?",
-        },
-        {
-          speaker: "Clara",
-          text: "¿Qué depende de qué?",
-        },
-        {
-          speaker: "Clara",
-          text: "Si ves esas relaciones… la ecuación aparece sola.",
-        },
-        {
-          speaker: "Nico",
-          text: "Entonces modelar es como traducir la situación.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Clara",
-          text: "Exactamente.",
-        },
-        {
-          speaker: "Clara",
-          text: "Pero cuidado…",
-        },
-        {
-          speaker: "Clara",
-          text: "Si interpretas mal una relación… todo el resultado será incorrecto.",
-        },
-        {
-          speaker: "Clara",
-          text: "Aquí la pesadilla no está en los números…",
-        },
-        {
-          speaker: "Clara",
-          text: "está en las interpretaciones equivocadas.",
-        },
-        {
-          speaker: "Clara",
-          text: "Te mostraré varias situaciones.",
-        },
-        {
-          speaker: "Clara",
-          text: "No empieces calculando.",
-        },
-        {
-          speaker: "Clara",
-          text: "Primero entiende qué está pasando.",
-        },
-        {
-          speaker: "Clara",
-          text: "Después… exprésalo con una ecuación.",
-        },
-        {
-          speaker: "Clara",
-          text: "Si lo haces bien… todo tendrá sentido.",
+          text: "Necesitas orden... y saber cómo dejar sola a la incógnita.",
         },
       ],
     },
@@ -1523,7 +1179,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
   scenes: {
     aljuarismi_bloqueado: {
       title: "Al-Juarismi",
-      background: "bg_aljuarizmi",
+      background: "bg_palacio",
       music: "bgm_quiet",
       characters: [
         {
@@ -1538,7 +1194,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
           image: "ch_aljuarismi",
           x: 620,
           y: 520,
-          scale: 0.56,
+          scale: 0.9,
           flipX: false,
           name: "Al-Juarismi",
         },
@@ -1546,12 +1202,12 @@ window.ALJUARISMI_BALANCEO_STORY = {
       dialogs: [
         {
           speaker: "Al-Juarismi",
-          text: "Aun no has reunido suficientes hojas del Libro del Algebra. Antes de enfrentarme, debes demostrar dominio en los otros retos.",
+          text: "Te doy la bienvenida. Soy Al-Juarismi, custodio de esta area. Veo que todavia no has reunido las 6 hojas necesarias para abrir el paso a Geometria.",
           stage: { focus: "Al-Juarismi" },
         },
         {
           speaker: "Al-Juarismi",
-          text: "Cuando tengas al menos cinco hojas, vuelve. Entonces sabre que ya puedes sostener el equilibrio de una ecuacion completa.",
+          text: "Vuelve cuando las tengas y yo mismo abrire el camino. Mientras tanto, demuestrame que tu procedimiento y tus habilidades siguen en orden.",
           stage: { focus: "Al-Juarismi" },
           next: "exit",
         },
@@ -1559,7 +1215,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
     },
     aljuarismi_reto: {
       title: "Al-Juarismi",
-      background: "bg_aljuarizmi",
+      background: "bg_palacio",
       music: "bgm_quiet",
       characters: [
         {
@@ -1574,7 +1230,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
           image: "ch_aljuarismi",
           x: 620,
           y: 520,
-          scale: 0.56,
+          scale: 0.9,
           flipX: false,
           name: "Al-Juarismi",
         },
@@ -1600,7 +1256,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
     },
     aljuarismi_aprobado: {
       title: "Al-Juarismi",
-      background: "bg_aljuarizmi",
+      background: "bg_palacio",
       music: "bgm_quiet",
       characters: [
         {
@@ -1615,7 +1271,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
           image: "ch_aljuarismi",
           x: 620,
           y: 520,
-          scale: 0.56,
+          scale: 0.9,
           flipX: false,
           name: "Al-Juarismi",
         },
@@ -1646,7 +1302,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
     },
     aljuarismi_perfecto: {
       title: "Al-Juarismi",
-      background: "bg_aljuarizmi",
+      background: "bg_palacio",
       music: "bgm_quiet",
       characters: [
         {
@@ -1661,7 +1317,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
           image: "ch_aljuarismi",
           x: 620,
           y: 520,
-          scale: 0.56,
+          scale: 0.9,
           flipX: false,
           name: "Al-Juarismi",
         },
@@ -1687,7 +1343,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
     },
     exit: {
       title: "Exit de Al-Juarismi",
-      music: "bgm_overworld",
+      music: "bgm_algebra",
       dialogs: [],
     },
   },
@@ -1698,8 +1354,9 @@ window.ALJUARISMI_CIERRE_STORY = {
   order: ["cierre", "exit"],
   scenes: {
     cierre: {
-      title: "Cierre de Algebra",
-      background: "bg_aljuarizmi",
+      introVideo: "vid_cierre",
+      title: "Cierre de Álgebra",
+      background: "bg_palacio",
       music: "bgm_quiet",
       characters: [
         {
@@ -1714,7 +1371,7 @@ window.ALJUARISMI_CIERRE_STORY = {
           image: "ch_aljuarismi",
           x: 620,
           y: 520,
-          scale: 0.56,
+          scale: 0.9,
           flipX: false,
           name: "Al-Juarismi",
         },
@@ -1722,18 +1379,18 @@ window.ALJUARISMI_CIERRE_STORY = {
       dialogs: [
         {
           speaker: "Al-Juarismi",
-          text: "Bien. Con estas hojas, el Libro del Algebra ya puede cerrarse.",
+          text: "Bien. Con estas hojas, el Libro del Álgebra ya puede cerrarse.",
         },
         {
           speaker: "Al-Juarismi",
-          text: "Habla con Sofia. Ella te guiara hacia el Area de Geometria cuando decidas continuar.",
+          text: "Habla con Sofía. Ella te guiará hacia el Área de Geometría cuando decidas continuar.",
           next: "exit",
         },
       ],
     },
     exit: {
       title: "Exit",
-      music: "bgm_overworld",
+      music: "bgm_algebra",
       dialogs: [],
     },
   },
@@ -1760,7 +1417,7 @@ window.SOFIA_GEOMETRIA_GATE_STORY = {
           image: "ch_sofia",
           x: 600,
           y: 530,
-          scale: 0.6,
+          scale: 1,
           flipX: false,
           name: "Sofia",
         },
@@ -1768,20 +1425,20 @@ window.SOFIA_GEOMETRIA_GATE_STORY = {
       dialogs: [
         {
           speaker: "Sofia",
-          text: "Lo lograste. Al-Juarismi ya encuaderno el Libro del Algebra.",
+          text: "Lo lograste. Al-Juarismi ya encuadernó el Libro del Álgebra.",
           stage: { focus: "Sofia" },
         },
         {
           speaker: "Sofia",
-          text: "Estas listo para partir al Area de Geometria?",
+          text: "¿Estás listo para partir al Área de Geometría?",
           stage: { focus: "Sofia" },
           choices: [
             {
-              text: "Si. Llevame a Geometria.",
+              text: "Sí. Llévame a Geometría.",
               action: { type: "NAVIGATE", href: "geometria.html" },
             },
             {
-              text: "No todavia. Quiero terminar cosas aqui.",
+              text: "No todavía. Quiero terminar cosas aquí.",
               next: "exit",
             },
           ],
@@ -1790,7 +1447,7 @@ window.SOFIA_GEOMETRIA_GATE_STORY = {
     },
     exit: {
       title: "Exit",
-      music: "bgm_overworld",
+      music: "bgm_algebra",
       dialogs: [],
     },
   },

@@ -503,7 +503,7 @@ window.SOFIA_ALGEBRA_GATE_STORY = {
   scenes: {
     sofia_gate: {
       title: "Sofía",
-      background: "bg_sofia",
+      background: "bg_general",
       music: "bgm_quiet",
       characters: [
         {
@@ -1432,7 +1432,7 @@ window.LEONARDO_PISA_STORY = {
     "exit",
   ],
   scenes: {
-    // ───────────────── Estado 1: aún no se activa el reto final (< 9 hojas) ─────────────────
+    // ───────────────── Estado 1: aún no se activa el reto final (< 10 hojas) ─────────────────
     leonardo_bloqueado: {
       title: "Leonardo de Pisa",
       background: "bg_leonardo",
@@ -1458,20 +1458,20 @@ window.LEONARDO_PISA_STORY = {
       dialogs: [
         {
           speaker: "Leonardo de Pisa",
-          text: "Veo que apenas llevas unas cuantas hojas del libro. Aún no estás listo para avanzar.",
+          text: "Hola. Soy Leonardo de Pisa, guardián de esta área. Veo que todavía no reúnes las 11 hojas necesarias para abrir el paso al Álgebra.",
           stage: { focus: "Leonardo de Pisa" },
         },
         {
           speaker: "Leonardo de Pisa",
-          text: "No te apresures: el conocimiento se encuaderna hoja por hoja. Vuelve cuando hayas reunido más.",
+          text: "Cuando las tengas, regresa conmigo y encuadernaré el libro para mostrarte el siguiente camino. Por ahora, probemos tu razonamiento.",
           stage: { focus: "Leonardo de Pisa" },
           next: "exit",
         },
       ],
     },
 
-    // ───────────────── Estado 2: umbral (exactamente 9 hojas) ─────────────────
-    // Aquí el reto sí importa: si lo ganas, obtienes la hoja 10 y se abre el camino al Álgebra.
+    // ───────────────── Estado 2: umbral (exactamente 10 hojas) ─────────────────
+    // Aquí el reto sí importa: si lo ganas, obtienes la hoja 11 y se abre el camino al Álgebra.
     leonardo_reto: {
       title: "Leonardo de Pisa",
       background: "bg_leonardo",
@@ -1489,7 +1489,7 @@ window.LEONARDO_PISA_STORY = {
           image: "ch_leonardo",
           x: 620,
           y: 515,
-          scale: 0.56,
+          scale: 1,
           flipX: false,
           name: "Leonardo de Pisa",
         },
@@ -1514,7 +1514,7 @@ window.LEONARDO_PISA_STORY = {
       ],
     },
 
-    // ───────────────── Estado 3: ya tienes suficientes hojas (10–14) ─────────────────
+    // ───────────────── Estado 3: ya tienes suficientes hojas (11–15) ─────────────────
     // Pierdas o ganes, el camino puede abrirse. El reto queda como desafío opcional.
     leonardo_aprobado: {
       title: "Leonardo de Pisa",
@@ -1533,7 +1533,7 @@ window.LEONARDO_PISA_STORY = {
           image: "ch_leonardo",
           x: 620,
           y: 515,
-          scale: 0.56,
+          scale: 1,
           flipX: false,
           name: "Leonardo de Pisa",
         },
@@ -1586,7 +1586,7 @@ window.LEONARDO_PISA_STORY = {
           image: "ch_leonardo",
           x: 620,
           y: 515,
-          scale: 0.56,
+          scale: 1,
           flipX: false,
           name: "Leonardo de Pisa",
         },
@@ -1647,7 +1647,7 @@ window.LEONARDO_CIERRE_STORY = {
           image: "ch_leonardo",
           x: 620,
           y: 515,
-          scale: 0.56,
+          scale: 1,
           flipX: false,
           name: "Leonardo de Pisa",
         },

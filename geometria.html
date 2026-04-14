@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />    
+  <title>Math Nightmare - Geometria</title>
+  <link rel="stylesheet" href="css/general.css">
+  <link rel="stylesheet" href="css/geometria.css">
+</head>
+
+<body class="area-geometria">
+  <div class="game-container">
+    <div id="mnUtilityDock" class="mn-utility-dock hidden">
+      <button id="mnUtilityToggle" class="mn-utility-toggle" type="button" title="Abrir opciones de partida">
+        💾 Partida
+      </button>
+      <button id="mnFullscreenBtn" class="mn-fullscreen-btn hidden" type="button" title="Alternar pantalla completa">
+        ⛶ Maximizar
+      </button>
+    </div>
+    <div id="mnSaveModal" class="mn-save-modal hidden" aria-hidden="true">
+      <div class="mn-save-modal__backdrop" data-close-save-modal="true"></div>
+      <div class="mn-save-modal__panel" role="dialog" aria-modal="true" aria-labelledby="mnSaveModalTitle">
+        <button id="mnSaveModalClose" class="mn-save-modal__close" type="button" aria-label="Cerrar">X</button>
+        <div class="mn-save-modal__content">
+          <p class="mn-save-modal__eyebrow">Partida</p>
+          <h2 id="mnSaveModalTitle" class="mn-save-modal__title">Gestionar progreso</h2>
+          <div class="mn-save-modal__actions">
+            <button id="mnSaveBtn" class="mn-save-action" type="button" title="Guardar progreso">💾 Guardar progreso</button>
+            <button id="mnLoadBtn" class="mn-save-action mn-save-action--secondary" type="button" title="Cargar partida">📂 Cargar partida</button>
+          </div>
+          <form id="mnSaveForm" class="mn-save-form hidden" novalidate>
+            <label class="mn-save-form__label" for="mnSaveNameInput">Nombre de la partida</label>
+            <input id="mnSaveNameInput" class="mn-save-form__input" type="text" maxlength="40" placeholder="Ej. Oscar_Abril" autocomplete="off" />
+            <div class="mn-save-form__buttons">
+              <button id="mnSaveConfirmBtn" class="mn-save-form__submit" type="submit">Guardar archivo</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <input id="mnImport" type="file" accept=".json,.mnsave.json" style="display:none" />
+
+    <div class="game-overlay" id="gameOverlay">
+      <div class="game-message" id="gameMessage">GAME OVER</div>
+    </div>
+
+    <canvas id="gameCanvas" width="1020" height="680"></canvas>
+
+    <div class="hud">
+      <div id="leaf-hud" class="leaf-hud"></div>
+    </div>
+
+    <div id="dialog-box" class="dialog-box hidden">
+      <div id="speaker" class="speaker"></div>
+      <div id="message" class="message"></div>
+      <div id="choices-root"></div>
+      <div class="dialog-buttons">
+        <button id="continue-btn">Continuar</button>
+        <button id="skip-dialog-btn">Saltar</button>
+      </div>
+    </div>
+
+    <div id="video-overlay" class="hidden">
+      <video id="cutscene" playsinline preload="auto"></video>
+      <button id="skip-video">Saltar</button>
+    </div>
+
+    <div id="hint"></div>
+
+    <div id="input-mode-icon" class="input-mode-icon hidden">
+      <img id="input-mode-img" src="" alt="Modo de control">
+    </div>
+
+    <div id="mnTouchControls" class="touch-controls hidden" aria-hidden="true"></div>
+  </div>
+
+  <div id="sheet-modal" class="sheet-modal hidden">
+    <div class="sheet-panel">
+      <button id="sheet-close">X</button>
+      <div class="sheet-controls">
+        <div class="sheet-zoom">
+          <button id="sheet-zoom-out" class="sheet-btn">-</button>
+          <button id="sheet-zoom-in" class="sheet-btn">+</button>
+          <button id="sheet-reset" class="sheet-btn">Reset</button>
+          <button id="sheet-prev" class="sheet-btn">Prev.</button>
+          <button id="sheet-next" class="sheet-btn">Sig.</button>
+        </div>
+
+        <div class="sheet-pad">
+          <button id="sheet-up" class="sheet-btn">U</button>
+          <button id="sheet-left" class="sheet-btn">L</button>
+          <button id="sheet-right" class="sheet-btn">R</button>
+          <button id="sheet-down" class="sheet-btn">D</button>
+        </div>
+      </div>
+
+      <div class="sheet-viewport" id="sheet-viewport">
+        <img id="sheet-img" draggable="false" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.MN_PAGE_CONFIG = window.MN_PAGE_CONFIG || {};
+    window.MN_PAGE_CONFIG.skipStartMenu = true;
+    window.MN_PAGE_CONFIG.problemasReviewMode = true;
+
+    window.MN_STATE = window.MN_STATE || {};
+    window.MN_STATE.area = "geometria";
+  </script>
+
+  <!-- DATA -->
+  <script src="assets/geometria/data/assets_geometria.js"></script>
+  <script src="assets/geometria/data/historia_geometria.js"></script>
+  <script src="assets/geometria/data/registro_geometria.js"></script>
+
+  <!-- CORE -->
+  <script src="js/engine/core/EventEmitter.js"></script>
+  <script src="js/engine/animation/Animation.js"></script>
+  <script src="js/engine/core/StateMachine.js"></script>
+  <script src="js/engine/assets/AssetLoader.js"></script>
+  <script src="js/engine/input/InputManager.js"></script>
+  <script src="js/engine/core/Camera.js"></script>
+  <script src="js/engine/physics/QuadTree.js"></script>
+  <script src="js/engine/core/Scene.js"></script>
+  <script src="js/engine/core/SceneManager.js"></script>
+  <script src="js/engine/objects/Sprite.js"></script>
+  <script src="js/engine/animation/SheetAnimator.js"></script>
+  <script src="js/engine/core/Game.js"></script>
+  <script src="js/motor2D.js"></script>
+  <script src="js/objects.js"></script>
+  <script src="js/coreScene.js"></script>
+  <script src="js/novela.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/titleScene.js"></script>
+  <script src="js/sheets.js"></script>
+  <script src="js/save.js"></script>
+  <script src="js/touchControls.js"></script>
+
+  <!-- AREA GEOMETRIA -->
+  <script src="js/areas/geometria/overworld_geometria.js"></script>
+  <script src="js/areas/geometria/touch_geometria.js"></script>
+  <script src="js/areas/geometria/niveles/angulosScene.js"></script>
+  <script src="js/areas/geometria/niveles/isoscelesScene.js"></script>
+  <script src="js/areas/geometria/niveles/angulosEcuacionesScene.js"></script>
+  <script src="js/areas/geometria/niveles/congruenciaScene.js"></script>
+  <script src="js/areas/geometria/niveles/deduccionScene.js"></script>
+  <script src="js/areas/geometria/niveles/poligonosScene.js"></script>
+  <script src="js/areas/geometria/niveles/areasScene.js"></script>
+  <script src="js/areas/geometria/niveles/cartesianoScene.js"></script>
+  <script src="js/areas/geometria/niveles/graficasScene.js"></script>
+  <script src="js/areas/geometria/niveles/ProblemasScene.js"></script>
+  <script src="js/areas/geometria/niveles/ReglaYCompasScene.js"></script>
+  <script src="js/areas/geometria/area_geometria.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

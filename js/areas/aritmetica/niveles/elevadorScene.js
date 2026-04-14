@@ -1199,8 +1199,10 @@ class elevadorScene extends Scene {
     this.win = !failed;
 
     // tier: 1 hoja por todo
-    // roundsCompleted = round-1 (porque round empieza en 1)
-    const roundsCompleted = Math.max(0, this.round - 1);
+    // Si ganó, completó las 10 rondas; si falló, se quedó en la última ronda superada.
+    const roundsCompleted = failed
+      ? Math.max(0, this.round - 1)
+      : this.maxRounds;
 
     let tier = 0;
     if (!failed) tier = 1;

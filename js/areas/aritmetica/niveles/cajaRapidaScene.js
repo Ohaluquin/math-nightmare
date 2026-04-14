@@ -319,11 +319,15 @@ class CajaRapidaScene extends Scene {
 
   _drawReputation(ctx) {
     const W = this.game.canvas.width;
+    const t = Math.max(0, this.timeLeft);
 
     ctx.save();
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     ctx.font = "16px Arial";
+    ctx.fillStyle = t <= 5 ? "#ff8a80" : "#c8e6c9";
+    ctx.fillText(`Tiempo: ${t.toFixed(1)} s`, 22, 46);
+
     ctx.fillStyle = "#ffffff";
     ctx.fillText("Reputación:", 22, 70);
 
@@ -375,12 +379,6 @@ class CajaRapidaScene extends Scene {
     const panelH = 260;
     const X = (W - panelW) / 2;
     const Y = 200;
-
-    // Tiempo/paciencia
-    ctx.font = "16px Arial";
-    const t = Math.max(0, this.timeLeft);
-    ctx.fillStyle = t <= 5 ? "#ff8a80" : "#c8e6c9";
-    ctx.fillText(`Tiempo: ${t.toFixed(1)} s`, X + panelW - 150, Y + 14);
 
     ctx.font = "16px Arial";
     ctx.fillStyle = "#dbe9ff";
@@ -534,13 +532,19 @@ class CajaRapidaScene extends Scene {
     const imgBody = assets?.getImage?.(this.keyBody(this.npc.body));
     const imgBeard = assets?.getImage?.(this.keyBeard(this.npc.beard));
     const imgFace = assets?.getImage?.(this.faceKeys[mood]);
+    const referenceImg = imgBody || imgHeadHair || imgFace || imgBeard;
+    const normalizedScale = this._getNormalizedScale(
+      referenceImg,
+      432 * scale
+    );
+    const drawY = y + 24;
 
     // Tu orden (tal cual lo pediste):
     // cabeza/peinado, cuerpo, barba, expresion
-    this._drawSpriteCentered(ctx, imgHeadHair, x, y, scale);
-    this._drawSpriteCentered(ctx, imgBody, x, y, scale);
-    this._drawSpriteCentered(ctx, imgBeard, x, y, scale);
-    this._drawSpriteCentered(ctx, imgFace, x, y, scale);
+    this._drawSpriteCentered(ctx, imgHeadHair, x, drawY, normalizedScale);
+    this._drawSpriteCentered(ctx, imgBody, x, drawY, normalizedScale);
+    this._drawSpriteCentered(ctx, imgBeard, x, drawY, normalizedScale);
+    this._drawSpriteCentered(ctx, imgFace, x, drawY, normalizedScale);
   }
 
   // =======================================================
@@ -748,6 +752,11 @@ class CajaRapidaScene extends Scene {
     return { w, h };
   }
 
+  _getNormalizedScale(img, targetHeight, fallbackScale = 1) {
+    if (!img || !img.height) return fallbackScale;
+    return targetHeight / img.height;
+  }
+
   _drawLabel(ctx, text, x, y, scale = 1) {
     ctx.save();
     ctx.font = `${18 * scale}px Arial`;
@@ -766,7 +775,7 @@ class CajaRapidaScene extends Scene {
 
   _drawRepeatedItems(ctx, img, price, startX, startY, qty) {
     const scaleBoost = 1.2;
-    const scale = 0.4 * scaleBoost;
+    const scale = this._getNormalizedScale(img, 54 * scaleBoost, 0.4 * scaleBoost);
     const spacing = 42; // distancia entre sprites
     const maxPerRow = 3; // mÃ¡x por fila
 

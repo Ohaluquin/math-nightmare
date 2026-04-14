@@ -21,6 +21,9 @@
         console.warn(`[SceneManager] Escena no registrada: "${name}"`);
         return false;
       }
+      if (name !== "novela" && !String(name).startsWith("overworld")) {
+        this.game?.assets?.stopMusic?.();
+      }
       this.current = next;
       this.currentKey = name;
       if (this.current.init) this.current.init();

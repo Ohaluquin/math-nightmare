@@ -23,6 +23,7 @@
         this._initialized = true;
       }
 
+      this.game.assets?.playMusic?.("bgm_overworld", { loop: true, volume: 0.2 });
       window.MN_openPendingSheetReward?.();
 
       // Cada vez que volvemos al overworld:
@@ -53,6 +54,7 @@
       if (window.MN_setLeafHUDVisible) {
         window.MN_setLeafHUDVisible(true);
       }
+      window.MN_updateLeafHUD?.();
 
       if (!MN_STATE.flags.tutorialShown) {
         MN_STATE.flags.tutorialShown = true;
@@ -60,7 +62,7 @@
         const overlay = document.getElementById("gameOverlay");
         const msg = document.getElementById("gameMessage");
 
-        msg.innerHTML = "Moverse: ← → ↑ ↓<br>" + "Hablar con NPCs: E";
+        msg.innerHTML = "Moverse: ← → ↑ ↓<br>" + 'Hablar con NPCs: "e" o "E"';
 
         overlay.classList.add("show");
 
@@ -83,6 +85,17 @@
 
       // 2) Dibujar todo normalmente
       super.draw(ctx);
+    }
+
+    update(dt) {
+      super.update(dt);
+      if (this.player) {
+        window.MN_storeCheckpoint?.("aritmetica", {
+          scene: "overworld",
+          playerX: this.player.x,
+          playerY: this.player.y,
+        });
+      }
     }
 
     getEntityDepthScale(entity) {
@@ -339,7 +352,7 @@
             return;
           }
 
-          storyEntry._seen = true;
+          window.MN_markStorySeen?.(storyKey);
 
           const r = router || window.MN_APP?.router;
           if (!r || typeof r.pushNovela !== "function") {
@@ -362,11 +375,11 @@
               if (action?.type === "NAVIGATE" && action.href) {
                 window.MN_STATE = window.MN_STATE || {};
                 const href = String(action.href).toLowerCase();
-                if (href.includes("algebra")) {
-                  window.MN_STATE.area = "algebra";
-                } else {
-                  window.MN_STATE.area = window.MN_STATE.area || "aritmetica";
-                }
+                const nextArea = href.includes("algebra")
+                  ? "algebra"
+                  : window.MN_STATE.area || "aritmetica";
+                window.MN_STATE.area = nextArea;
+                window.MN_stageCurrentStateForNavigation?.(nextArea);
                 window.location.href = action.href;
                 return true;
               }
@@ -424,8 +437,8 @@
           };
 
           // Si hay historia y no se ha visto, primero novela
-          if (storyEntry && !storyEntry._seen) {
-            storyEntry._seen = true;
+          if (storyEntry && !window.MN_isStorySeen?.(storyKey)) {
+            window.MN_markStorySeen?.(storyKey);
 
             const r = router || window.MN_APP?.router;
             if (!r || typeof r.pushNovela !== "function") {
@@ -468,14 +481,14 @@
       const pickLeonardoScene = () => {
         const sheets = window.MN_STATE?.sheets || 0;
         if (sheets >= 16) return "leonardo_perfecto";
-        if (sheets >= 10) return "leonardo_aprobado";
-        if (sheets >= 9) return "leonardo_reto";
+        if (sheets >= 11) return "leonardo_aprobado";
+        if (sheets >= 10) return "leonardo_reto";
         return "leonardo_bloqueado";
       };
 
       const ensureAlgebraUnlockedIfNeeded = () => {
         const sheets = window.MN_STATE?.sheets || 0;
-        if (sheets >= 10) {
+        if (sheets >= 11) {
           window.MN_STATE.flags = window.MN_STATE.flags || {};
           window.MN_STATE.flags.algebraUnlocked = true;
         }
@@ -520,6 +533,8 @@
               for (const old of this.npcs || []) this.remove?.(old);
             }
             this._buildNPCs();
+            window.MN_updateLeafHUD?.();
+            window.MN_updateProgressHUD?.();
 
             if (this.player && window.MN_STATE?.flags?.algebraUnlocked) {
               this.player.x = 5480;
@@ -567,7 +582,7 @@
           };
 
           let onExit = null;
-          if (sheets >= 10 && !bookBound) {
+          if (sheets >= 11 && !bookBound) {
             onExit = () => launchBookBindCinematic();
           } else {
             onExit = () => launchMinigame();            
@@ -616,12 +631,17 @@
     // ---------------------------------------------------------------------
     _ensurePlayer() {
       if (!this.player) {
+        const checkpoint = window.MN_getCheckpoint?.("aritmetica");
+        const startX =
+          typeof checkpoint?.playerX === "number" ? checkpoint.playerX : 120;
+        const startY =
+          typeof checkpoint?.playerY === "number" ? checkpoint.playerY : 360;
         try {
-          this.player = new Player(120, 360);
+          this.player = new Player(startX, startY);
           this.add(this.player, "actors", "player");
         } catch (e) {
           try {
-            const p = new Sprite(120, 360, 40, 60, "#4caf50");
+            const p = new Sprite(startX, startY, 40, 60, "#4caf50");
             this.player = p;
             this.add(p, "player");
           } catch (_) {}

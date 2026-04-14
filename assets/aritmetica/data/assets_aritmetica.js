@@ -38,19 +38,20 @@ const MATHNM_ASSETS = [
   { type: "audio", key: "text_blip", src: "assets/general/sounds/sfx/text_blip.mp3" },
   
   // MUSIC
-  { type: "audio", key: "bgm_overworld", src: "assets/aritmetica/music/bgm_overworld.mp3" },
-  { type: "audio", key: "bgm_quiet",    src: "assets/aritmetica/music/bgm_quiet.mp3" },    
+  { type: "audio", key: "bgm_overworld", src: "assets/general/music/bgm_overworld.mp3" },
+  { type: "audio", key: "bgm_quiet",    src: "assets/general/music/bgm_quiet.mp3" },    
 
   // VIDEOS
   { type: "video", key: "vid_intro", src: "assets/general/videos/mn_intro.mp4" },
-  { type: "video", key: "vid_galileo", src: "assets/aritmetica/videos/mn_galileo.mp4" },
-  { type: "video", key: "vid_cierre", src: "assets/aritmetica/videos/mn_cierre.mp4" },
+  { type: "video", key: "vid_galileo", src: "assets/general/videos/mn_galileo.mp4" },
+  { type: "video", key: "vid_cierre", src: "assets/general/videos/mn_cierre_aritmetica.mp4" },
 
   // ========== UI ==========
   { type: "image", key: "title_bg", src: "assets/general/images/ui/title_bg.webp" },   
   { type: "image", key: "ui_mouse", src: "assets/general/images/ui/icon_mouse.webp" },   
   { type: "image", key: "ui_keyboard", src: "assets/general/images/ui/icon_keyboard.webp" },   
   { type: "image", key: "ui_leaf", src: "assets/general/images/ui/leaf.webp" },   
+  { type: "image", key: "ui_book", src: "assets/general/images/ui/libro.webp" },
   { type: "image", key: "obj_barril", src: "assets/general/images/objects/barril.webp" },
   { type: "image", key: "obj_cajas", src: "assets/general/images/objects/cajas.webp" },
   { type: "image", key: "obj_tronco", src: "assets/general/images/objects/tronco.webp" },
@@ -75,6 +76,29 @@ window.MN_ASSETS_SHEETS = [
   { type: "image", key: "sheet_misteriosos", src: "assets/aritmetica/hojas/9_Numeros_misteriosos.webp" },  
   { type: "image", key: "sheet_primos", src: "assets/aritmetica/hojas/9_Numeros_primos.webp" },
   { type: "image", key: "sheet_leonardo", src: "assets/aritmetica/hojas/10_Leonardo_de_Pisa.webp" },
+  { type: "image", key: "sheet_algebra_1", src: "assets/algebra/hojas/1_algebra.webp" },
+  { type: "image", key: "sheet_algebra_2", src: "assets/algebra/hojas/2_restaurar_y_equilibrar.webp" },
+  { type: "image", key: "sheet_algebra_3", src: "assets/algebra/hojas/3_brahmagupta.webp" },
+  { type: "image", key: "sheet_algebra_4", src: "assets/algebra/hojas/4_terminos_semejantes.webp" },
+  { type: "image", key: "sheet_algebra_5", src: "assets/algebra/hojas/5_lenguaje_natural.webp" },
+  { type: "image", key: "sheet_algebra_6", src: "assets/algebra/hojas/6_sustituir_y_evaluar.webp" },
+  { type: "image", key: "sheet_algebra_7", src: "assets/algebra/hojas/7_despejes.webp" },
+  { type: "image", key: "sheet_algebra_8", src: "assets/algebra/hojas/8_al_juarizmi.webp" },
+  { type: "image", key: "sheet_algebra_9", src: "assets/algebra/hojas/9_modelado.webp" },
+  { type: "image", key: "sheet_igualdad", src: "assets/geometria/hojas/1_igualdad.webp" },
+  { type: "image", key: "sheet_deduccion", src: "assets/geometria/hojas/2_deducir.webp" },
+  { type: "image", key: "sheet_demostracion", src: "assets/geometria/hojas/2_Demostracion.webp" },
+  { type: "image", key: "sheet_angulos", src: "assets/geometria/hojas/3_angulos.webp" },
+  { type: "image", key: "sheet_isosceles", src: "assets/geometria/hojas/4_isosceles.webp" },
+  { type: "image", key: "sheet_angulos_ecuaciones", src: "assets/geometria/hojas/5_angulos_ecuaciones.webp" },
+  { type: "image", key: "sheet_poligonos", src: "assets/geometria/hojas/6_PolÃ­gonos_regulares.webp" },
+  { type: "image", key: "sheet_perimetro", src: "assets/geometria/hojas/7_perimetro.webp" },
+  { type: "image", key: "sheet_areas", src: "assets/geometria/hojas/7_areas.webp" },
+  { type: "image", key: "sheet_cartesiano", src: "assets/geometria/hojas/8_plano_cartesiano.webp" },
+  { type: "image", key: "sheet_graficas", src: "assets/geometria/hojas/9_graficas.webp" },
+  { type: "image", key: "sheet_regla_y_compas", src: "assets/geometria/hojas/10_regla_y_compas.webp" },
+  { type: "image", key: "sheet_euclides", src: "assets/geometria/hojas/11_Euclides.webp" },
+  { type: "image", key: "sheet_mas_alla_figuras", src: "assets/geometria/hojas/11_Mas_all_de_las_figuras.webp" },
 ];
 
 // ASSETS para los minijuegos
@@ -173,5 +197,5 @@ window.MN_ASSETS_DIVISORES = [
 ];
 
 window.MN_ASSETS_RAZONAMIENTO = [
-  { type: "image", key: "bg_razonamiento", src: "assets/aritmetica/backgrounds/bg_board.webp",},        
+  { type: "image", key: "bg_razonamiento", src: "assets/aritmetica/minijuegos/razonamiento/bg_board.webp",},        
 ];

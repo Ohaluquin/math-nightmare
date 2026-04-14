@@ -1,0 +1,11 @@
+body.area-algebra {
+  --mn-page-background:
+    radial-gradient(circle at 18% 12%, rgba(98, 170, 112, 0.16), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(216, 184, 92, 0.12), transparent 24%),
+    linear-gradient(180deg, #101a14 0%, #0b1311 54%, #060a08 100%);
+  --mn-game-border: #c9d8b3;
+}
+
+body.area-algebra .game-container {
+  box-shadow: 0 0 0 1px rgba(124, 154, 114, 0.18), 0 24px 48px rgba(0, 0, 0, 0.28);
+}

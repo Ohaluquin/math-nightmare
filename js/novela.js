@@ -72,6 +72,20 @@ class NovelaScene extends Scene {
     this._startIdle();
   }
 
+  _playSceneMusic(musicConfig) {
+    if (!musicConfig || !this.game?.assets?.playMusic) return;
+    const music =
+      typeof musicConfig === "string"
+        ? { key: musicConfig, loop: true, volume: 0.2 }
+        : musicConfig;
+    const key = music?.key;
+    if (!key) return;
+    this.game.assets.playMusic(key, {
+      loop: "loop" in music ? music.loop : true,
+      volume: "volume" in music ? music.volume : 0.2,
+    });
+  }
+
   showScene(key) {
     if (!this._isActive) return;
     this.currentSceneKey = key;
@@ -103,9 +117,7 @@ class NovelaScene extends Scene {
       // 🔸 Música de escena:
       // Si hay introVideo pendiente, NO arrancamos música todavía.
       const hasPendingIntro = !!scene.introVideo && !this._playedIntro[key];
-      if (!hasPendingIntro && scene.music && this.game.assets.playMusic) {
-        this.game.assets.playMusic(scene.music, { loop: true, volume: 0.2 });
-      }
+      if (!hasPendingIntro) this._playSceneMusic(scene.music);
     });
 
     // --- Video de introducción (si existe y aún no se ha reproducido) ---
@@ -126,13 +138,22 @@ class NovelaScene extends Scene {
         autoplay: true,
         onEnd: () => {
           // al terminar el video, arrancamos la música de la escena (ahora sí)
-          if (scene.music && this.game.assets.playMusic) {
-            this.game.assets.playMusic(scene.music, {
-              loop: true,
-              volume: 0.2,
-            });
-          }
+          this._playSceneMusic(scene.music);
           scene.introVideo = null;
+
+          if (
+            scene.videoEndAction &&
+            this.options &&
+            typeof this.options.onAction === "function"
+          ) {
+            const handled = this.options.onAction(scene.videoEndAction, {
+              story: this.story,
+              sceneKey: key,
+              scene,
+            });
+            if (handled) return;
+          }
+
           this.showDialog(0);
           this.continueButton.focus();
         },
@@ -252,14 +273,7 @@ class NovelaScene extends Scene {
     // === music: cambiar música/volumen (opcional) ===
     //   music puede ser string o { key, volume, loop }
     if (stage.music) {
-      const m = stage.music;
-      const key = typeof m === "string" ? m : m.key;
-      if (key && this.game.assets.playMusic) {
-        this.game.assets.playMusic(key, {
-          loop: typeof m === "object" && "loop" in m ? m.loop : true,
-          volume: typeof m === "object" && "volume" in m ? m.volume : 0.2,
-        });
-      }
+      this._playSceneMusic(stage.music);
     }
 
     // === shake: sacudida de cámara/canvas (opcional) ===
