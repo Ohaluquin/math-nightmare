@@ -1,6 +1,7 @@
 param(
   [ValidateSet("current", "half-all")]
   [string]$Profile = "current",
+  [string[]]$Paths,
   [switch]$DryRun
 )
 
@@ -114,7 +115,42 @@ function Optimize-Image {
   Add-Result -Kind $Kind -Source $Source -SourceBytes $sourceLength -DestBytes ([int64]$dest.Length) -Scaled ([bool]$ScaleFilter)
 }
 
-if ($Profile -eq "half-all") {
+function Optimize-TargetedImage {
+  param([string]$Path)
+
+  $resolved = Resolve-Path -LiteralPath $Path -ErrorAction Stop
+  $fullPath = $resolved.Path
+  $relativePath = Get-RelativePath -FilePath $fullPath
+  $normalizedPath = $relativePath.Replace('\', '/')
+  $size = Get-ImageSize -FilePath $fullPath
+
+  if ($normalizedPath -like "assets/*/hojas/*") {
+    $maxWidth = 1024
+    $maxHeight = 1536
+    $needsResize = $size.Width -gt $maxWidth -or $size.Height -gt $maxHeight
+    $scaleFilter = $null
+
+    if ($needsResize) {
+      $widthRatio = $maxWidth / [double]$size.Width
+      $heightRatio = $maxHeight / [double]$size.Height
+      $ratio = [Math]::Min($widthRatio, $heightRatio)
+      $targetWidth = [Math]::Max(2, [int]([Math]::Round(($size.Width * $ratio) / 2) * 2))
+      $targetHeight = [Math]::Max(2, [int]([Math]::Round(($size.Height * $ratio) / 2) * 2))
+      $scaleFilter = "scale=${targetWidth}:${targetHeight}:flags=lanczos"
+    }
+
+    Optimize-Image -Source $fullPath -ScaleFilter $scaleFilter -Quality 86 -Kind "sheet"
+    return
+  }
+
+  throw "No hay una regla de optimización configurada para $relativePath"
+}
+
+if ($Paths -and $Paths.Count -gt 0) {
+  foreach ($path in $Paths) {
+    Optimize-TargetedImage -Path $path
+  }
+} elseif ($Profile -eq "half-all") {
   Get-ChildItem -Path (Join-Path $root "assets") -Recurse -File -Include *.webp, *.png, *.jpg, *.jpeg |
     Where-Object { $_.Name -notlike "*.tmp.webp" } |
     ForEach-Object {
