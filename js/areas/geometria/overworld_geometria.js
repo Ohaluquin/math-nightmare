@@ -232,7 +232,7 @@
           name: "Galileo",
           x: 5425,
           y: 260,
-          w: 95,
+          w: 75,
           h: 130,
           spriteKey: "ch_galileo",
           storyKey: "npc_galileo_graficas",
