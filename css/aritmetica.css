@@ -92,17 +92,38 @@ body.area-aritmetica {
 }
 
 .startLink {
-  border: none;
-  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--mn-ui-btn-bg-top), var(--mn-ui-btn-bg-bottom));
   color: rgba(255, 245, 235, 0.92);
   font: inherit;
   cursor: pointer;
-  padding: 0;
+  padding: 0.52rem 0.95rem;
+  box-shadow: var(--mn-ui-btn-shadow);
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease;
 }
 
 .startLink:hover {
   color: #ffffff;
-  text-decoration: underline;
+  border-color: var(--mn-ui-btn-hover-border);
+  background: linear-gradient(180deg, var(--mn-ui-btn-hover-top), var(--mn-ui-btn-hover-bottom));
+  transform: translateY(-1px);
+  box-shadow: var(--mn-ui-btn-shadow-hover);
+}
+
+.startLink:active {
+  transform: translateY(0);
+}
+
+.startLink:focus-visible,
+.project-modal__close:focus-visible {
+  outline: none;
+  box-shadow: var(--mn-ui-focus-ring), var(--mn-ui-btn-shadow-hover);
 }
 
 .project-modal {
@@ -122,7 +143,9 @@ body.area-aritmetica {
 .project-modal__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.72);
+  background: var(--mn-ui-backdrop);
+  backdrop-filter: blur(8px);
+  animation: mn-fade-in-soft 0.22s ease-out;
 }
 
 .project-modal__panel {
@@ -132,11 +155,11 @@ body.area-aritmetica {
   overflow-y: auto;
   padding: 28px;
   border-radius: 22px;
-  background:
-    linear-gradient(180deg, rgba(41, 20, 16, 0.98), rgba(19, 17, 24, 0.98));
-  color: #f1e1d3;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(180deg, var(--mn-ui-panel-bg-top), var(--mn-ui-panel-bg-bottom));
+  color: var(--mn-ui-panel-text);
+  border: 1px solid var(--mn-ui-panel-border);
+  box-shadow: var(--mn-ui-panel-shadow);
+  animation: mn-fade-up-soft 0.26s ease-out;
 }
 
 .project-modal__close {
@@ -145,12 +168,28 @@ body.area-aritmetica {
   right: 14px;
   width: 40px;
   height: 40px;
-  border: none;
+  border: 1px solid var(--mn-ui-btn-border);
   border-radius: 999px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.1);
-  color: #f1e1d3;
+  background: linear-gradient(180deg, var(--mn-ui-btn-bg-top), var(--mn-ui-btn-bg-bottom));
+  color: var(--mn-ui-btn-text);
   font-size: 15px;
+  box-shadow: var(--mn-ui-btn-shadow);
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.project-modal__close:hover {
+  background: linear-gradient(180deg, var(--mn-ui-btn-hover-top), var(--mn-ui-btn-hover-bottom));
+  border-color: var(--mn-ui-btn-hover-border);
+  box-shadow: var(--mn-ui-btn-shadow-hover);
+}
+
+.project-modal__close:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .project-modal__content {

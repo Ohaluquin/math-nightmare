@@ -292,8 +292,8 @@
   }
 
   function MN_isTouchDevice() {
-    if (window.MN_TOUCH_CONTROLS?.isEnabled) {
-      return window.MN_TOUCH_CONTROLS.isEnabled();
+    if (window.MN_TOUCH_CONTROLS?.isTouchDevice) {
+      return window.MN_TOUCH_CONTROLS.isTouchDevice();
     }
     return (
       window.matchMedia?.("(pointer: coarse)")?.matches ||

@@ -716,22 +716,20 @@ class ReglaYCompasScene extends Scene {
           )
         : { x: view.x + 255, y: view.y + 210 };
     const rayEnd = this._pointAlongRay(O, T, 210);
-
-    if (steps >= 1) {
-      this._drawSegment(ctx, O, A, "#e6efff", 3);
-      this._drawSegment(ctx, O, B, "#e6efff", 3);
-    }
-    if (steps >= 2)
+    
+    this._drawSegment(ctx, O, A, "#e6efff", 3);
+    this._drawSegment(ctx, O, B, "#e6efff", 3);    
+    if (steps >= 1)
       this._drawArc(ctx, O.x, O.y, firstArcRadius, -1.1, 0.05, "#7bdff2", 2);
-    if (steps >= 3) {
+    if (steps >= 2) {
       this._drawCompasArcToward(ctx, c1, c2, 88, 0.95, "#7bdff2", 2);
       this._drawCompasArcToward(ctx, c2, c1, 88, 0.95, "#7bdff2", 2);
     }
-    if (steps >= 4) this._drawSegment(ctx, O, rayEnd, "#ffd166", 3);
+    if (steps >= 3) this._drawSegment(ctx, O, rayEnd, "#ffd166", 3);
 
     this._drawPoint(ctx, O.x, O.y, 4, "#ffffff");
     this._label(ctx, "O", O.x - 12, O.y + 16);
-    if (steps >= 2) {
+    if (steps >= 1) {
       this._drawPoint(ctx, c1.x, c1.y, 4, "#ffffff");
       this._drawPoint(ctx, c2.x, c2.y, 4, "#ffffff");
       this._label(ctx, "P", c1.x + 8, c1.y + 12);
@@ -833,11 +831,11 @@ class ReglaYCompasScene extends Scene {
     if (steps >= 5)
       this._drawSegment(ctx, copiedStart, copiedLineEnd, "#ffd166", 3);
 
-    this._drawPoint(ctx, P.x, P.y, 4, "#ffffff");
-    this._drawPoint(ctx, S.x, S.y, 3, "#7bdff2");
-    this._label(ctx, "P", P.x - 10, P.y - 12);
-    if (steps >= 1) this._label(ctx, "A", S.x - 14, S.y + 18);
-    this._label(ctx, "r", B.x + 6, B.y - 6);
+    if (steps >= 1) this._drawPoint(ctx, P.x, P.y, 4, "#ffffff");
+    if (steps >= 2) this._drawPoint(ctx, S.x, S.y, 3, "#7bdff2");
+    if (steps >= 1) this._label(ctx, "P", P.x - 10, P.y - 12);
+    if (steps >= 2) this._label(ctx, "A", S.x - 14, S.y + 18);
+    if (steps >= 1) this._label(ctx, "r", B.x + 6, B.y - 6);
   }
 
   _drawPerpendicularPunto(ctx, view, steps) {
@@ -872,11 +870,11 @@ class ReglaYCompasScene extends Scene {
     }
     if (steps >= 4) this._drawSegment(ctx, lineBottom, lineTop, "#ffd166", 3);
 
-    this._drawPoint(ctx, P.x, P.y, 4, "#ffffff");
+    if (steps >= 1) this._drawPoint(ctx, P.x, P.y, 4, "#ffffff");
     if (steps >= 3) this._drawPoint(ctx, Q.x, Q.y, 3, "#7bdff2");
-    this._label(ctx, "A", A1.x - 12, A1.y + 16);
-    this._label(ctx, "B", B1.x + 8, B1.y + 16);
-    this._label(ctx, "P", P.x - 10, P.y + 16);
+    if (steps >= 2) this._label(ctx, "A", A1.x - 12, A1.y + 16);
+    if (steps >= 2) this._label(ctx, "B", B1.x + 8, B1.y + 16);
+    if (steps >= 1)this._label(ctx, "P", P.x - 10, P.y + 16);
     if (steps >= 3) this._label(ctx, "Q", Q.x + 8, Q.y - 12);
   }
 
@@ -921,15 +919,15 @@ class ReglaYCompasScene extends Scene {
     }
     if (steps >= 4) this._drawSegment(ctx, P, Q, "#ffd166", 3);
 
-    this._drawPoint(ctx, P.x, P.y, 4, "#ffffff");
+    if (steps >= 1) this._drawPoint(ctx, P.x, P.y, 4, "#ffffff");
     if (steps >= 2) {
       this._drawPoint(ctx, C1.x, C1.y, 4, "#ffffff");
       this._drawPoint(ctx, C2.x, C2.y, 4, "#ffffff");
       this._label(ctx, "A", C1.x - 12, C1.y + 16);
       this._label(ctx, "B", C2.x + 8, C2.y + 16);
     }
-    this._label(ctx, "P", P.x - 10, P.y - 12);
-    if (steps >= 4) {
+    if (steps >= 1) this._label(ctx, "P", P.x - 10, P.y - 12);
+    if (steps >= 3) {
       this._drawPoint(ctx, Q.x, Q.y, 3, "#7bdff2");
       this._label(ctx, "Q", Q.x + 8, Q.y);
     }
@@ -953,9 +951,9 @@ class ReglaYCompasScene extends Scene {
         this._drawSegment(ctx, pts[i], pts[(i + 1) % 6], "#ffd166", 3);
       }
     }
-    this._drawPoint(ctx, O.x, O.y, 3, "#ffffff");
+    if (steps >= 1) this._drawPoint(ctx, O.x, O.y, 3, "#ffffff");
     if (steps >= 2) this._label(ctx, "A", pts[0].x + 8, pts[0].y - 8);
-    this._label(ctx, "O", O.x + 8, O.y - 6);
+    if (steps >= 1) this._label(ctx, "O", O.x + 8, O.y - 6);
   }
 
   _drawCopiaSegmento(ctx, view, steps) {
@@ -977,11 +975,11 @@ class ReglaYCompasScene extends Scene {
 
     this._drawPoint(ctx, A.x, A.y, 4, "#ffffff");
     this._drawPoint(ctx, B.x, B.y, 4, "#ffffff");
-    this._drawPoint(ctx, P.x, P.y, 4, "#ffffff");
+    if (steps >= 1) this._drawPoint(ctx, P.x, P.y, 4, "#ffffff");
     if (steps >= 3) this._drawPoint(ctx, Q.x, Q.y, 3, "#7bdff2");
     this._label(ctx, "A", A.x - 12, A.y + 16);
     this._label(ctx, "B", B.x + 8, B.y + 16);
-    this._label(ctx, "P", P.x - 12, P.y + 16);
+    if (steps >= 1) this._label(ctx, "P", P.x - 12, P.y + 16);
   }
 
   _drawAngulo60(ctx, view, steps) {
@@ -997,7 +995,7 @@ class ReglaYCompasScene extends Scene {
           )
         : { x: view.x + 240, y: view.y + 124 };
     const arcOA = Math.atan2(A.y - O.y, A.x - O.x);
-    const arcOB = Math.atan2(B.y - O.y, B.x - O.x);
+    const arcOB = Math.atan2(B.y -1 - O.y, B.x -1 - O.x);
     const arcAO = Math.atan2(O.y - A.y, O.x - A.x);
     const arcAB = Math.atan2(B.y - A.y, B.x - A.x);
 
@@ -1008,11 +1006,11 @@ class ReglaYCompasScene extends Scene {
       this._drawMinorArc(ctx, A.x, A.y, r, arcAO, arcAB, "#7bdff2", 2);
     if (steps >= 4) this._drawSegment(ctx, O, B, "#ffd166", 3);
 
-    this._drawPoint(ctx, O.x, O.y, 4, "#ffffff");
+    if (steps >= 1) this._drawPoint(ctx, O.x, O.y, 4, "#ffffff");
     if (steps >= 2) this._drawPoint(ctx, A.x, A.y, 4, "#ffffff");
     if (steps >= 3) this._drawPoint(ctx, B.x, B.y, 3, "#7bdff2");
-    this._label(ctx, "O", O.x - 12, O.y + 16);
-    this._label(ctx, "A", A.x + 8, A.y + 16);
+    if (steps >= 1) this._label(ctx, "O", O.x - 12, O.y + 16);
+    if (steps >= 2) this._label(ctx, "A", A.x + 8, A.y + 16);
     if (steps >= 3) this._label(ctx, "B", B.x + 8, B.y - 12);
   }
 
@@ -1134,8 +1132,7 @@ class ReglaYCompasScene extends Scene {
         title: "Bisectriz de un Ángulo",
         prompt:
           "Ordena el procedimiento para construir la bisectriz de un ángulo.",
-        expectedSteps: [
-          "Traza el ángulo con vertice O.",
+        expectedSteps: [          
           "Con centro en O, dibuja un arco que corte ambos lados del ángulo.",
           "Desde esos dos cortes, dibuja arcos de igual radio que se crucen.",
           "Une O con el punto de cruce de esos arcos.",

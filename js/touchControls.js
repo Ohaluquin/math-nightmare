@@ -1,5 +1,6 @@
 (function () {
   const DEBUG_STORAGE_KEY = "mnTouchControlsDebug";
+  const DESKTOP_STORAGE_KEY = "mnTouchControlsDesktop";
   const DEBUG_QUERY_KEY = "touchcontrols";
   const sceneProfiles = new Map();
 
@@ -74,17 +75,33 @@
     }
   }
 
+  function readDesktopFlag() {
+    try {
+      return window.localStorage?.getItem(DESKTOP_STORAGE_KEY) === "1";
+    } catch (_) {
+      return false;
+    }
+  }
+
   let debugEnabled = readDebugFlag();
+  let desktopEnabled = readDesktopFlag();
   let activeApi = null;
 
   function isEnabled() {
-    return isTouchDevice() || debugEnabled;
+    return isTouchDevice();
   }
 
   function persistDebugFlag(enabled) {
     try {
       if (enabled) window.localStorage?.setItem(DEBUG_STORAGE_KEY, "1");
       else window.localStorage?.removeItem(DEBUG_STORAGE_KEY);
+    } catch (_) {}
+  }
+
+  function persistDesktopFlag(enabled) {
+    try {
+      if (enabled) window.localStorage?.setItem(DESKTOP_STORAGE_KEY, "1");
+      else window.localStorage?.removeItem(DESKTOP_STORAGE_KEY);
     } catch (_) {}
   }
 
@@ -117,10 +134,17 @@
     if (!root || root.dataset.touchControlsBuilt === "true") return;
 
     root.innerHTML = `
-      ${buildGroupMarkup("movement", GROUP_DEFS.movement)}
-      <div class="touch-controls__rail touch-controls__rail--right">
-        ${buildGroupMarkup("actions", GROUP_DEFS.actions)}
-        ${buildGroupMarkup("numpad", GROUP_DEFS.numpad)}
+      <div class="touch-controls__desktop-launch">
+        <button class="touch-desktop-toggle" type="button" data-touch-desktop-toggle="true" aria-pressed="false">
+          Touch
+        </button>
+      </div>
+      <div class="touch-controls__shell" data-touch-shell="true">
+        ${buildGroupMarkup("movement", GROUP_DEFS.movement)}
+        <div class="touch-controls__rail touch-controls__rail--right">
+          ${buildGroupMarkup("actions", GROUP_DEFS.actions)}
+          ${buildGroupMarkup("numpad", GROUP_DEFS.numpad)}
+        </div>
       </div>
     `;
 
@@ -249,6 +273,8 @@
 
   function createControlApi(game, root) {
     const input = game.input;
+    const desktopToggle = root.querySelector('[data-touch-desktop-toggle="true"]');
+    const controlsShell = root.querySelector('[data-touch-shell="true"]');
     const dirButtons = root.querySelectorAll("[data-touch-key]");
     const tapButtons = root.querySelectorAll("[data-touch-tap-key]");
     const wrappers = {
@@ -274,11 +300,49 @@
     });
     const state = {
       override: null,
+      visible: !root.classList.contains("hidden"),
+      desktopEnabled,
       expanded: {
         movement: true,
         actions: true,
         numpad: false,
       },
+    };
+
+    const syncDesktopMode = () => {
+      const desktopMode = !isTouchDevice();
+      const showDesktopToggle = desktopMode && !debugEnabled && state.visible;
+      const showControls =
+        state.visible && (!desktopMode || debugEnabled || state.desktopEnabled);
+
+      root.classList.toggle("touch-controls--desktop-mode", desktopMode);
+      root.classList.toggle("touch-controls--desktop-active", desktopMode && showControls);
+      controlsShell?.classList.toggle("hidden", !showControls);
+
+      if (desktopToggle) {
+        desktopToggle.textContent = showControls ? "Ocultar touch" : "Mostrar touch";
+        desktopToggle.setAttribute(
+          "aria-label",
+          showControls ? "Ocultar controles touch" : "Mostrar controles touch"
+        );
+        desktopToggle.setAttribute("aria-pressed", showControls ? "true" : "false");
+      }
+
+      root.setAttribute(
+        "aria-hidden",
+        state.visible && (showControls || showDesktopToggle) ? "false" : "true"
+      );
+    };
+
+    const setDesktopEnabled = (enabled, options = {}) => {
+      state.desktopEnabled = !!enabled;
+      desktopEnabled = state.desktopEnabled;
+      if (options.persist !== false) persistDesktopFlag(state.desktopEnabled);
+      if (!state.desktopEnabled) releaseAllDirections();
+      syncDesktopMode();
+      if (state.visible && (debugEnabled || state.desktopEnabled || isTouchDevice())) {
+        applyProfile();
+      }
     };
 
     const setPanelExpanded = (name, expanded) => {
@@ -347,6 +411,7 @@
       if (profile.movement) setPanelExpanded("movement", true);
       if (profile.actions) setPanelExpanded("actions", true);
       if (profile.numpad) setPanelExpanded("numpad", true);
+      syncDesktopMode();
     };
 
     const releaseAllDirections = () => {
@@ -410,6 +475,11 @@
 
     window.addEventListener("blur", releaseAllDirections);
     document.addEventListener("visibilitychange", visibilityHandler);
+    desktopToggle?.addEventListener("click", (event) => {
+      event.preventDefault();
+      setDesktopEnabled(!state.desktopEnabled);
+    });
+    window.addEventListener("resize", syncDesktopMode);
 
     return {
       applyProfile,
@@ -419,9 +489,15 @@
       },
       setVisible(visible) {
         const nextVisible = !!visible;
-        root.classList.toggle("hidden", !visible);
-        root.setAttribute("aria-hidden", visible ? "false" : "true");
+        state.visible = nextVisible;
+        root.classList.toggle("hidden", !nextVisible);
+        if (!nextVisible) releaseAllDirections();
         if (nextVisible) applyProfile();
+        else syncDesktopMode();
+      },
+      setDesktopEnabled,
+      isDesktopEnabled() {
+        return !!state.desktopEnabled;
       },
     };
   }
@@ -432,8 +508,6 @@
     if (activeApi) return activeApi;
 
     renderControls(root);
-    if (!isEnabled()) return null;
-
     activeApi = createControlApi(game, root);
 
     window.MN_configureTouchControls = function (override = null) {
@@ -453,7 +527,7 @@
 
   function setTouchControlsVisible(visible) {
     const root = document.getElementById("mnTouchControls");
-    if (!root || !isEnabled()) return;
+    if (!root) return;
     if (activeApi) {
       activeApi.setVisible(visible);
       return;
@@ -471,9 +545,6 @@
     }
     if (debugEnabled) {
       activeApi?.setVisible(true);
-    }
-    if (!debugEnabled && !isTouchDevice()) {
-      activeApi?.setVisible(false);
     }
     window.MN_refreshTouchControls?.(window.MN_GAME?.sceneManager?.currentKey);
     return debugEnabled;

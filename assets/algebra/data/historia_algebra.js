@@ -1279,22 +1279,22 @@ window.ALJUARISMI_BALANCEO_STORY = {
       dialogs: [
         {
           speaker: "Al-Juarismi",
-          text: "Veo que ya reuniste al menos seis hojas del Libro del Algebra. Con eso basta para encuadernarlo y abrir el camino a la Geometria.",
+          text: "Veo que ya reuniste al menos seis hojas del Libro del Álgebra. Con eso basta para encuadernarlo y abrir el camino a la Geometría.",
           stage: { focus: "Al-Juarismi" },
         },
         {
           speaker: "Al-Juarismi",
-          text: "Si aun quedan desafios pendientes, puedes seguir enfrentandolos. No por necesidad, sino para afinar tu mirada matematica.",
+          text: "Si aún quedan desafios pendientes, puedes seguir enfrentándolos. No por necesidad, sino para afinar tu mirada matemática.",
           stage: { focus: "Al-Juarismi" },
         },
         {
           speaker: "Nico",
-          text: "Entonces el camino ya puede abrirse, pero aun puedo volver para terminar el libro completo.",
+          text: "Entonces el camino ya puede abrirse, pero aún puedo volver para terminar el libro completo.",
           stage: { focus: "Nico" },
         },
         {
           speaker: "Al-Juarismi",
-          text: "Exactamente. Habla con Sofia cuando estes listo para dar el siguiente paso.",
+          text: "Exactamente. Habla con Sofía cuando estes listo para dar el siguiente paso.",
           stage: { focus: "Al-Juarismi" },
           next: "exit",
         },
@@ -1335,7 +1335,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
         },
         {
           speaker: "Al-Juarismi",
-          text: "Habla con Sofia cuando quieras partir. Y si deseas practicar de nuevo, aqui seguire.",
+          text: "Habla con Sofía cuando quieras partir. Y si deseas practicar de nuevo, aqui seguire.",
           stage: { focus: "Al-Juarismi" },
           next: "exit",
         },

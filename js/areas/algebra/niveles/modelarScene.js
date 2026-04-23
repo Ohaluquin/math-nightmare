@@ -415,20 +415,12 @@ class ModelarScene extends Scene {
   }
 
   _drawHUD(ctx) {
-    const W = this.game.canvas.width;
-
     ctx.save();
     for (let i = 0; i < this.maxLives; i++) {
       const x = 20 + i * 26;
       const y = 18;
       this._drawHeart(ctx, x, y, 20, i < this.lives ? "#ff4b5c" : "#3a1a1f");
     }
-
-    ctx.font = this.smallFont;
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.textAlign = "right";
-    ctx.textBaseline = "top";
-    ctx.fillText(`Problema: ${Math.min(this.roundIndex + 1, this.totalRounds)}/${this.totalRounds}`, W - 18, 16);
     ctx.restore();
   }
   _drawIntro(ctx) {
@@ -465,7 +457,8 @@ class ModelarScene extends Scene {
     if (!this.round) return;
     const W = this.game.canvas.width;
     const H = this.game.canvas.height;
-    const statementY = H * 0.11 + 20;
+    const statementYOffset = 20;
+    const statementY = H * 0.11 + 20 + statementYOffset;
     const boxW = W * 0.88;
     const boxH = 92;
     const boxX = (W - boxW) / 2;
@@ -487,7 +480,7 @@ class ModelarScene extends Scene {
     if (this.round.revealedEq) {
       ctx.font = "22px Arial";
       ctx.fillStyle = "rgba(255,235,59,0.95)";
-      ctx.fillText(this.round.model.correctEq, W / 2, H * 0.24);
+      ctx.fillText(this.round.model.correctEq, W / 2, H * 0.24 + statementYOffset);
     }
 
     ctx.restore();

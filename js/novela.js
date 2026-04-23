@@ -86,6 +86,17 @@ class NovelaScene extends Scene {
     });
   }
 
+  _freezeMessageHeight() {
+    if (!this.messageElement) return;
+    const height = Math.ceil(this.messageElement.getBoundingClientRect().height);
+    if (height > 0) this.messageElement.style.minHeight = `${height}px`;
+  }
+
+  _releaseMessageHeight() {
+    if (!this.messageElement) return;
+    this.messageElement.style.minHeight = "";
+  }
+
   showScene(key) {
     if (!this._isActive) return;
     this.currentSceneKey = key;
@@ -374,6 +385,7 @@ class NovelaScene extends Scene {
     if (!this._isActive) return;
     const scene = this.story.scenes[this.currentSceneKey];
     if (!scene) return;
+    this._freezeMessageHeight();
     if (this.dialogBox) {
       this.dialogBox.classList.remove("hidden");
     }
@@ -410,7 +422,6 @@ class NovelaScene extends Scene {
     this.dialogIndex = index;
     this.currentText = dialog.text || "";
     this.isTyping = true;
-    this.messageElement.textContent = "";
     this.speakerElement.textContent = dialog.speaker || "";
 
     // “direcciones” (cambio de sprite, movimiento, sfx, etc.)
@@ -444,8 +455,11 @@ class NovelaScene extends Scene {
     if (!this.currentText || this.currentText.length === 0) {
       this.isTyping = false;
       this.messageElement.textContent = "";
+      requestAnimationFrame(() => this._releaseMessageHeight());
       return;
     }
+
+    this.messageElement.textContent = "";
 
     let i = 0;
     let lastBeep = 0;
@@ -482,6 +496,7 @@ class NovelaScene extends Scene {
           this.renderChoices(this.pendingChoices);
           this.pendingChoices = null;
         }
+        this._releaseMessageHeight();
       }
     }, 30);
   }
@@ -760,6 +775,7 @@ class NovelaScene extends Scene {
         this.renderChoices(this.pendingChoices);
         this.pendingChoices = null;
       }
+      this._releaseMessageHeight();
       return;
     }
 
