@@ -1522,7 +1522,7 @@
       ctx.textAlign = "center";
       ctx.fillText("¡Bien hecho!", x + w / 2, y + 70);
       ctx.font = "18px Arial";
-      ctx.fillText("Presiona Enter, espacio ó haz clic para volver", x + w / 2, y + 120);
+      ctx.fillText("Presiona Enter, espacio o haz clic para volver", x + w / 2, y + 120);
       ctx.fillText(`Hojas ganadas: ${this.sheetsReward}.`, x + w / 2, y + 152);
       ctx.restore();
     }

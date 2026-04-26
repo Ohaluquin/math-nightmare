@@ -73,7 +73,7 @@ class SustituirYEvaluarScene extends Scene {
       timer: 0,
       sheets: {
         front: { key: "minotauro_enemy_front", cols: 15, rows: 1, img: null, w: 0, h: 0 },
-        back: { key: "minotauro_enemy_back", cols: 5, rows: 3, img: null, w: 0, h: 0 },
+        back: { key: "minotauro_enemy_back", cols: 6, rows: 3, img: null, w: 0, h: 0 },
         side: { key: "minotauro_enemy_side", cols: 5, rows: 3, img: null, w: 0, h: 0 },
       },
     };

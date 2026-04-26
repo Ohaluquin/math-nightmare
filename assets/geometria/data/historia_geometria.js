@@ -1729,80 +1729,49 @@ window.SOFIA_CASTILLO_FINAL_STORY = {
       dialogs: [
         {
           speaker: "Nico",
-          text: "Sofía... el castillo ya no se siente igual. Ya no parece un caos matemático.",
+          text: "Sofía... la puerta está abierta.",
           stage: { focus: "Nico" },
         },
         {
           speaker: "Sofia",
-          text: "Cuando llegaste, todo aquí estaba lleno de ruido, confusión y miedo.",
-          stage: { focus: "Sofia" },
-        },
-        {
-          speaker: "Sofia",
-          text: "Ahora está en calma. No porque los retos hayan desaparecido... sino porque tú ya no los miras igual.",
+          text: "Sí. El castillo reconoció los libros que reuniste.",
           stage: { focus: "Sofia" },
         },
         {
           speaker: "Nico",
-          text: "Al principio sentía que todo me rebasaba. Que si me equivocaba, ya no podría seguir.",
+          text: "¿Entonces ese era el camino desde el principio?",
           stage: { focus: "Nico" },
         },
         {
           speaker: "Sofia",
-          text: "Y aun así seguiste.",
+          text: "No exactamente. La puerta siempre estuvo ahí. Lo que faltaba era que pudieras llegar hasta ella.",
           stage: { focus: "Sofia" },
         },
         {
+          speaker: "Nico",
+          text: "Siento como si algo me estuviera llamando del otro lado.",
+          stage: { focus: "Nico" },
+        },
+        {
           speaker: "Sofia",
-          text: "La práctica no borra el miedo de un momento a otro. Pero ordena la mente... y poco a poco le quita fuerza.",
+          text: "Entonces vamos, no lo hagas esperar.",
           stage: { focus: "Sofia" },
+        },
+        {
+          speaker: "Nico",
+          text: "¿Vendrás conmigo?",
+          stage: { focus: "Nico" },
+        },
+        {
+          speaker: "Sofia",
+          text: "Hasta aquí puedo acompañarte. La puerta tienes que cruzarla tú.",
+          stage: { focus: "Sofia" },
+        },
+        {
+          speaker: "Nico",
+          text: "Gracias, Sofía.",
+          stage: { focus: "Nico" },
         },        
-        {
-          speaker: "Sofia",
-          text: "Los libros que llevas contigo no son solo un premio. Son la huella de todo lo que lograste comprender en el camino.",
-          stage: { focus: "Sofia" },
-        },
-        {
-          speaker: "Nico",
-          text: "Escucho que me llaman... creo que ya debo irme.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Sofia",
-          text: "Entonces llegó el momento.",
-          stage: { focus: "Sofia" },
-        },
-        {
-          speaker: "Nico",
-          text: "¿Si entro al castillo voy a despertar?",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Sofia",
-          text: "Tal vez. Pero no subestimes a los sueños. A veces ayudan a ordenar lo que parecía imposible.",
-          stage: { focus: "Sofia" },
-        },
-        {
-          speaker: "Nico",
-          text: "No sé si voy a recordar todo esto.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Sofia",
-          text: "No necesitas recordarlo todo. Basta con que no olvides que pudiste avanzar.",
-          stage: { focus: "Sofia" },
-        },
-        {
-          speaker: "Nico",
-          text: "Entonces... ya me tengo que ir.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Sofia",
-          text: "Ve, Nico. La salida de este mundo está ahí. Pero lo que ganaste aquí puede seguir contigo.",
-          stage: { focus: "Sofia" },
-          choices: [{ text: "Entrar al castillo", next: "final_video" }],
-        },
       ],
     },
 
