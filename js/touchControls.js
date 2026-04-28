@@ -1,6 +1,7 @@
 (function () {
   const DEBUG_STORAGE_KEY = "mnTouchControlsDebug";
   const DESKTOP_STORAGE_KEY = "mnTouchControlsDesktop";
+  const MOBILE_VISIBILITY_STORAGE_KEY = "mnTouchControlsMobileVisible";
   const DEBUG_QUERY_KEY = "touchcontrols";
   const sceneProfiles = new Map();
 
@@ -83,6 +84,14 @@
     }
   }
 
+  function readMobileVisibilityFlag() {
+    try {
+      return window.localStorage?.getItem(MOBILE_VISIBILITY_STORAGE_KEY) !== "0";
+    } catch (_) {
+      return true;
+    }
+  }
+
   let debugEnabled = readDebugFlag();
   let desktopEnabled = readDesktopFlag();
   let activeApi = null;
@@ -102,6 +111,13 @@
     try {
       if (enabled) window.localStorage?.setItem(DESKTOP_STORAGE_KEY, "1");
       else window.localStorage?.removeItem(DESKTOP_STORAGE_KEY);
+    } catch (_) {}
+  }
+
+  function persistMobileVisibilityFlag(enabled) {
+    try {
+      if (enabled) window.localStorage?.removeItem(MOBILE_VISIBILITY_STORAGE_KEY);
+      else window.localStorage?.setItem(MOBILE_VISIBILITY_STORAGE_KEY, "0");
     } catch (_) {}
   }
 
@@ -302,6 +318,7 @@
       override: null,
       visible: !root.classList.contains("hidden"),
       desktopEnabled,
+      mobileControlsVisible: readMobileVisibilityFlag(),
       expanded: {
         movement: true,
         actions: true,
@@ -311,16 +328,18 @@
 
     const syncDesktopMode = () => {
       const desktopMode = !isTouchDevice();
-      const showDesktopToggle = desktopMode && !debugEnabled && state.visible;
+      const showVisibilityToggle = state.visible && (isTouchDevice() || (desktopMode && !debugEnabled));
       const showControls =
-        state.visible && (!desktopMode || debugEnabled || state.desktopEnabled);
+        state.visible &&
+        (desktopMode ? debugEnabled || state.desktopEnabled : state.mobileControlsVisible);
 
       root.classList.toggle("touch-controls--desktop-mode", desktopMode);
       root.classList.toggle("touch-controls--desktop-active", desktopMode && showControls);
+      root.classList.toggle("touch-controls--mobile-hidden", !desktopMode && !showControls);
       controlsShell?.classList.toggle("hidden", !showControls);
 
       if (desktopToggle) {
-        desktopToggle.textContent = showControls ? "Ocultar touch" : "Mostrar touch";
+        desktopToggle.textContent = desktopMode ? (showControls ? "Ocultar touch" : "Mostrar touch") : "";
         desktopToggle.setAttribute(
           "aria-label",
           showControls ? "Ocultar controles touch" : "Mostrar controles touch"
@@ -330,7 +349,7 @@
 
       root.setAttribute(
         "aria-hidden",
-        state.visible && (showControls || showDesktopToggle) ? "false" : "true"
+        state.visible && (showControls || showVisibilityToggle) ? "false" : "true"
       );
     };
 
@@ -343,6 +362,14 @@
       if (state.visible && (debugEnabled || state.desktopEnabled || isTouchDevice())) {
         applyProfile();
       }
+    };
+
+    const setMobileControlsVisible = (visible, options = {}) => {
+      state.mobileControlsVisible = !!visible;
+      if (options.persist !== false) persistMobileVisibilityFlag(state.mobileControlsVisible);
+      if (!state.mobileControlsVisible) releaseAllDirections();
+      syncDesktopMode();
+      if (state.visible && state.mobileControlsVisible) applyProfile();
     };
 
     const setPanelExpanded = (name, expanded) => {
@@ -387,10 +414,18 @@
 
     const applyProfile = (sceneKey = game.sceneManager?.currentKey) => {
       const profile = getTouchProfile(sceneKey, state.override);
+      const isMinigame =
+        !!sceneKey &&
+        sceneKey !== "title" &&
+        sceneKey !== "novela" &&
+        !String(sceneKey).startsWith("overworld");
+      const isNumpadOnly = !!profile.numpad && !profile.movement && !profile.actions;
       const variants = ["overworld", "escriba", "quick-numpad", "eratostenes", "horizontal-move"];
       variants.forEach((name) => {
         root.classList.toggle(`touch-controls--${name}`, profile.variant === name);
       });
+      root.classList.toggle("touch-controls--minigame", isMinigame);
+      root.classList.toggle("touch-controls--numpad-only", isNumpadOnly);
       setLayout(profile.layout || "default");
       setAllowedDirectionKeys(dirButtons, profile.movementKeys || null);
       setAllowedTapKeys(actionButtons, profile.actionKeys || null);
@@ -477,7 +512,11 @@
     document.addEventListener("visibilitychange", visibilityHandler);
     desktopToggle?.addEventListener("click", (event) => {
       event.preventDefault();
-      setDesktopEnabled(!state.desktopEnabled);
+      if (isTouchDevice()) {
+        setMobileControlsVisible(!state.mobileControlsVisible);
+      } else {
+        setDesktopEnabled(!state.desktopEnabled);
+      }
     });
     window.addEventListener("resize", syncDesktopMode);
 
