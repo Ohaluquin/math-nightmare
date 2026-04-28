@@ -189,8 +189,8 @@
 
 .touch-panel--numpad {
   display: grid;
-  grid-template-columns: repeat(3, 3.625em);
-  grid-template-rows: repeat(5, 3.625em);
+  grid-template-columns: repeat(3, 3em);
+  grid-template-rows: repeat(5, 3em);
   gap: 0.5em;
   justify-items: stretch;
 }
@@ -250,8 +250,8 @@
 }
 
 .touch-panel--numpad .touch-btn {
-  width: 3.625em;
-  height: 3.625em;
+  width: 3em;
+  height: 3em;
   padding: 0;
 }
 
@@ -315,7 +315,7 @@
   position: relative;
   z-index: 2;
   margin-right: -11rem;
-  margin-bottom: 5rem;
+  margin-bottom: 4rem;
 }
 
 .touch-controls.touch-controls--overworld .touch-panel--actions {
@@ -790,6 +790,28 @@
     margin-top: -1.85rem;
     padding: 0.3rem 0.78rem 0.36rem;
     font-size: 0.72rem;
+  }
+
+  .touch-controls.touch-controls--quick-numpad .touch-controls__shell {
+    align-items: flex-end;
+  }
+
+  .touch-controls.touch-controls--quick-numpad .touch-controls__rail,
+  .touch-controls.touch-controls--quick-numpad .touch-controls__rail--right {
+    width: auto;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+
+  .touch-controls.touch-controls--quick-numpad .touch-controls__rail--right {
+    flex-direction: column;
+  }
+
+  .touch-controls.touch-controls--quick-numpad
+    .touch-controls__cluster[data-touch-group-wrap="actions"],
+  .touch-controls.touch-controls--quick-numpad
+    .touch-controls__cluster[data-touch-group-wrap="numpad"] {
+    align-items: flex-end;
   }
 
   .touch-controls.touch-controls--overworld .touch-controls__shell {
