@@ -124,6 +124,7 @@
 
 @media (pointer: coarse) {
   .touch-controls__desktop-launch {
+    position: fixed;
     display: block;
     top: calc(var(--mn-safe-top) + 0.55rem);
     left: calc(var(--mn-safe-left) + 0.55rem);

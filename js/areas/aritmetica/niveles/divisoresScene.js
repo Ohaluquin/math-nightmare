@@ -369,11 +369,10 @@ class NumberEnemy extends Sprite {
     }
 
     // número encima
-    ctx.fillStyle = "#000000ff";
     ctx.font = "26px Arial"; // +4 px
-    ctx.lineWidth = 4; // contorno más fuerte
-    ctx.strokeStyle = "rgba(0,0,0,0.7)";
-    ctx.fillStyle = "#ffffff";
+    ctx.lineWidth = 5; // contorno más fuerte
+    ctx.strokeStyle = "rgba(255,255,255,0.9)";
+    ctx.fillStyle = "#151923";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.strokeText(this.value, cx + this.width / 2, cy + this.height / 2);
