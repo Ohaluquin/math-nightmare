@@ -566,7 +566,7 @@ window.ESCRIBA_MUESCAS_STORY = {
         {
           image: "ch_nico",
           x: 300,
-          y: 540,
+          y: 580,
           scale: 0.8,
           flipX: false,
           name: "Nico",
@@ -574,7 +574,7 @@ window.ESCRIBA_MUESCAS_STORY = {
         {
           image: "ch_escriba",
           x: 600,
-          y: 500,
+          y: 580,
           scale: 0.9,
           flipX: false,
           name: "Escriba",
@@ -626,7 +626,7 @@ window.CAJA_RAPIDA_STORY = {
         {
           image: "ch_nico",
           x: 260,
-          y: 560,
+          y: 580,
           scale: 0.7,
           flipX: false,
           name: "Nico",
@@ -634,7 +634,7 @@ window.CAJA_RAPIDA_STORY = {
         {
           image: "ch_mercader",
           x: 560,
-          y: 550,
+          y: 580,
           scale: 0.8,
           flipX: true,
           name: "Mercader",
@@ -717,7 +717,7 @@ window.ESCALERA_SUMAS_STORY = {
         {
           image: "ch_nico",
           x: 220,
-          y: 540,
+          y: 580,
           scale: 0.7,
           flipX: false,
           name: "Nico",
@@ -725,7 +725,7 @@ window.ESCALERA_SUMAS_STORY = {
         {
           image: "ch_escaleraSumas",
           x: 600,
-          y: 420,
+          y: 500,
           scale: 0.6,
           flipX: false,
           name: "Don Marino",
@@ -791,7 +791,7 @@ window.GUARDIAN_LUCIERNAGAS_STORY = {
         {
           image: "ch_nico",
           x: 260,
-          y: 560,
+          y: 580,
           scale: 0.7,
           flipX: false,
           name: "Nico",
@@ -799,8 +799,8 @@ window.GUARDIAN_LUCIERNAGAS_STORY = {
         {
           image: "ch_guardian",
           x: 660,
-          y: 520,
-          scale: 0.9,
+          y: 580,
+          scale: 0.8,
           flipX: false,
           name: "Qmar",
         },
@@ -880,7 +880,7 @@ window.MINEROS_STORY = {
         {
           image: "ch_nico",
           x: 260,
-          y: 560,
+          y: 550,
           scale: 0.7,
           flipX: false,
           name: "Nico",
@@ -888,7 +888,7 @@ window.MINEROS_STORY = {
         {
           image: "ch_minero",
           x: 600,
-          y: 540,
+          y: 560,
           scale: 0.9,
           flipX: false,
           name: "Bruno",
@@ -999,8 +999,8 @@ window.GALILEO_TABLAS_STORY = {
         {
           image: "ch_galileo",
           x: 600,
-          y: 520,
-          scale: 0.8,
+          y: 560,
+          scale: 0.7,
           flipX: false,
           name: "Galileo",
         },
@@ -1078,7 +1078,7 @@ window.ARMONIA_DIVISION_STORY = {
           image: "ch_armonia",
           x: 620,
           y: 550,
-          scale: 0.7,
+          scale: 0.75,
           flipX: false,
           name: "Armonia",
         },
@@ -1212,7 +1212,7 @@ window.GENERAL_SIGNOS_STORY = {
         {
           image: "ch_nico",
           x: 260,
-          y: 560,
+          y: 580,
           scale: 0.7,
           flipX: false,
           name: "Nico",
@@ -1220,7 +1220,7 @@ window.GENERAL_SIGNOS_STORY = {
         {
           image: "ch_general",
           x: 620,
-          y: 540,
+          y: 580,
           scale: 1,
           flipX: false,
           name: "General",
@@ -1322,16 +1322,16 @@ window.ERATOSTENES_STORY = {
       characters: [
         {
           image: "ch_nico",
-          x: 160,
-          y: 500,
+          x: 250,
+          y: 580,
           scale: 0.5,
           flipX: false,
           name: "Nico",
         },
         {
           image: "ch_eratostenes",
-          x: 500,
-          y: 550,
+          x: 650,
+          y: 580,
           scale: 0.6,
           flipX: false,
           name: "Eratóstenes",
@@ -1441,7 +1441,7 @@ window.LEONARDO_PISA_STORY = {
         {
           image: "ch_nico",
           x: 300,
-          y: 540,
+          y: 580,
           scale: 0.8,
           flipX: false,
           name: "Nico",
@@ -1449,7 +1449,7 @@ window.LEONARDO_PISA_STORY = {
         {
           image: "ch_leonardo",
           x: 620,
-          y: 515,
+          y: 580,
           scale: 1,
           flipX: false,
           name: "Leonardo de Pisa",
@@ -1480,7 +1480,7 @@ window.LEONARDO_PISA_STORY = {
         {
           image: "ch_nico",
           x: 300,
-          y: 540,
+          y: 580,
           scale: 0.8,
           flipX: false,
           name: "Nico",
@@ -1488,7 +1488,7 @@ window.LEONARDO_PISA_STORY = {
         {
           image: "ch_leonardo",
           x: 620,
-          y: 515,
+          y: 580,
           scale: 1,
           flipX: false,
           name: "Leonardo de Pisa",
@@ -1524,7 +1524,7 @@ window.LEONARDO_PISA_STORY = {
         {
           image: "ch_nico",
           x: 300,
-          y: 540,
+          y: 580,
           scale: 0.8,
           flipX: false,
           name: "Nico",
@@ -1532,7 +1532,7 @@ window.LEONARDO_PISA_STORY = {
         {
           image: "ch_leonardo",
           x: 620,
-          y: 515,
+          y: 580,
           scale: 1,
           flipX: false,
           name: "Leonardo de Pisa",
@@ -1577,7 +1577,7 @@ window.LEONARDO_PISA_STORY = {
         {
           image: "ch_nico",
           x: 300,
-          y: 540,
+          y: 580,
           scale: 0.8,
           flipX: false,
           name: "Nico",
@@ -1585,7 +1585,7 @@ window.LEONARDO_PISA_STORY = {
         {
           image: "ch_leonardo",
           x: 620,
-          y: 515,
+          y: 580,
           scale: 1,
           flipX: false,
           name: "Leonardo de Pisa",
@@ -1638,7 +1638,7 @@ window.LEONARDO_CIERRE_STORY = {
         {
           image: "ch_nico",
           x: 300,
-          y: 540,
+          y: 580,
           scale: 0.8,
           flipX: false,
           name: "Nico",
@@ -1646,7 +1646,7 @@ window.LEONARDO_CIERRE_STORY = {
         {
           image: "ch_leonardo",
           x: 620,
-          y: 515,
+          y: 580,
           scale: 1,
           flipX: false,
           name: "Leonardo de Pisa",

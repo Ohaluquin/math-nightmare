@@ -1167,6 +1167,142 @@ window.HOWDIN_CERRAJERO_STORY = {
   },
 };
 
+window.CLARA_MODELACION_STORY = {
+  start: "clara_intro",
+  order: ["clara_intro"],
+  scenes: {
+    clara_intro: {
+      title: "Clara",
+      background: "bg_feria",
+      music: "bgm_quiet",
+      characters: [
+        {
+          image: "ch_nico",
+          x: 280,
+          y: 560,
+          scale: 0.7,
+          flipX: false,
+          name: "Nico",
+        },
+        {
+          image: "ch_clara",
+          x: 620,
+          y: 520,
+          scale: 0.7,
+          flipX: false,
+          name: "Clara",
+        },
+      ],
+      dialogs: [
+        {
+          speaker: "Clara",
+          text: "Espera… antes de avanzar.",
+          stage: { focus: "Clara" },
+        },
+        {
+          speaker: "Clara",
+          text: "Aquí no basta con hacer cuentas.",
+        },
+        {
+          speaker: "Nico",
+          text: "¿Entonces qué hay que hacer?",
+          stage: { focus: "Nico" },
+        },
+        {
+          speaker: "Clara",
+          text: "Entender lo que realmente está pasando.",
+        },
+        {
+          speaker: "Clara",
+          text: "Mira a tu alrededor.",
+        },
+        {
+          speaker: "Clara",
+          text: "Precios. Cantidades. Cambios.",
+        },
+        {
+          speaker: "Clara",
+          text: "Todo está relacionado… pero no siempre es evidente.",
+        },
+        {
+          speaker: "Nico",
+          text: "A veces leo el problema… pero no sé cómo empezar.",
+          stage: { focus: "Nico" },
+        },
+        {
+          speaker: "Clara",
+          text: "Eso es porque intentas resolver… antes de entender.",
+        },
+        {
+          speaker: "Clara",
+          text: "Primero hay que decidir qué representa cada cosa.",
+        },
+        {
+          speaker: "Clara",
+          text: "¿Qué cambia?",
+        },
+        {
+          speaker: "Clara",
+          text: "¿Qué se mantiene?",
+        },
+        {
+          speaker: "Clara",
+          text: "¿Qué depende de qué?",
+        },
+        {
+          speaker: "Clara",
+          text: "Si ves esas relaciones… la ecuación aparece sola.",
+        },
+        {
+          speaker: "Nico",
+          text: "Entonces modelar es como traducir la situación.",
+          stage: { focus: "Nico" },
+        },
+        {
+          speaker: "Clara",
+          text: "Exactamente.",
+        },
+        {
+          speaker: "Clara",
+          text: "Pero cuidado…",
+        },
+        {
+          speaker: "Clara",
+          text: "Si interpretas mal una relación… todo el resultado será incorrecto.",
+        },
+        {
+          speaker: "Clara",
+          text: "Aquí la pesadilla no está en los números…",
+        },
+        {
+          speaker: "Clara",
+          text: "está en las interpretaciones equivocadas.",
+        },
+        {
+          speaker: "Clara",
+          text: "Te mostraré varias situaciones.",
+        },
+        {
+          speaker: "Clara",
+          text: "No empieces calculando.",
+        },
+        {
+          speaker: "Clara",
+          text: "Primero entiende qué está pasando.",
+        },
+        {
+          speaker: "Clara",
+          text: "Después… exprésalo con una ecuación.",
+        },
+        {
+          speaker: "Clara",
+          text: "Si lo haces bien… todo tendrá sentido.",
+        },
+      ],
+    },
+  },
+};
+
 window.ALJUARISMI_BALANCEO_STORY = {
   start: "aljuarismi_bloqueado",
   order: [
