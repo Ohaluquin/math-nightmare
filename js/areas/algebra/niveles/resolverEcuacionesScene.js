@@ -1,4 +1,4 @@
-﻿// ===========================================================
+// ===========================================================
 // resolverEcuacionesScene.js  (v2 con "PrÃ¡ctica guiada")
 // - Ãlgebra: balanceo con distribuciÃ³n por etapas
 // - Modos: menÃº inicial => [PrÃ¡ctica guiada] o [Jugar]
@@ -32,7 +32,7 @@ class ResolverEcuacionesScene extends Scene {
     this.lives = this.maxLives;
     this.roundIndex = 1;
 
-    this.FONT_TERM = 30;
+    this.FONT_TERM = 26;
     this.FONT_HUD = 18;
 
     this.gameFinished = false;
@@ -48,6 +48,8 @@ class ResolverEcuacionesScene extends Scene {
 
     // UI
     this.panelText = "";
+    this.notebookRows = [];
+    this.notebookStages = [];
     this.toast = "";
     this.toastT = 0;
 
@@ -56,7 +58,7 @@ class ResolverEcuacionesScene extends Scene {
     this.eqLeftX = 200;
     this.eqRightX = 560;
     this.eqMaxWidth = 420;
-    this.eqGap = 10; // gap between terms
+    this.eqGap = 6; // gap between terms
 
     // sfx (opcionales)
     this.sfxOk = "sfx_ok";
@@ -76,6 +78,8 @@ class ResolverEcuacionesScene extends Scene {
     this.grayJumpCueIndex = 0;
     this.correctStreak = 0;
     this.correctStreakTarget = 5;
+    this.grayRestoreDelay = 0;
+    this.grayRestoreDelayMax = 1;
     this.shakeT = 0;
     this.shakeDur = 0.24;
     this.shakeMag = 9;
@@ -115,7 +119,7 @@ class ResolverEcuacionesScene extends Scene {
 
   init() {
     if (window.MN_setLeafHUDVisible) window.MN_setLeafHUDVisible(false);
-    if (window.MN_setInputMode) MN_setInputMode("mouse");
+    if (window.MN_setInputMode) MN_setInputMode(null);
     this.camera.x = 0;
     this.camera.y = 0;
     this.camera.setBounds(
@@ -148,6 +152,8 @@ class ResolverEcuacionesScene extends Scene {
     this.tutorial.pendingStartReal = false;
     this.tutorial.pendingT = 0;
     this._resetGrayStepProgress();
+    this.notebookRows = [];
+    this.notebookStages = [];
 
     // prepara ecuaciÃ³n para que se vea bonita desde el menÃº (random suave)
     this._newRound();
@@ -229,6 +235,7 @@ class ResolverEcuacionesScene extends Scene {
 
     this.toast = "";
     this.toastT = 0;
+    this._resetNotebookHistory();
   }
 
   // ---------- tutorial equation ----------
@@ -246,6 +253,7 @@ class ResolverEcuacionesScene extends Scene {
     this.hoverTarget = null;
     this.answerText = "";
     this.answerLocked = false;
+    this._resetNotebookHistory();
 
     // reset de vidas para prÃ¡ctica (mÃ¡s amable)
     this.lives = this.maxLives;
@@ -377,7 +385,7 @@ class ResolverEcuacionesScene extends Scene {
     ctx.font = `${this.FONT_TERM}px Arial`;
     const s = this._termToString(t, { showPlus: !isFirst });
     const w = ctx.measureText(s).width;
-    return { s, w, h: 40 };
+    return { s, w, h: 34 };
   }
 
   _layoutSide(ctx, terms, startX, y) {
@@ -386,7 +394,7 @@ class ResolverEcuacionesScene extends Scene {
       const t = terms[i];
       const { s, w, h } = this._measureTerm(ctx, t, i === 0);
       t._renderStr = s;
-      t.w = w + 14;
+      t.w = w + 10;
       t.h = h;
       t.x = x;
       t.y = y;
@@ -418,6 +426,7 @@ class ResolverEcuacionesScene extends Scene {
     this.grayStepIndex = 0;
     this.grayJumpTimer = 0;
     this.grayJumpCueIndex = 0;
+    this.grayRestoreDelay = 0;
     this.correctStreak = 0;
   }
 
@@ -426,10 +435,115 @@ class ResolverEcuacionesScene extends Scene {
     this.grayJumpCueIndex = 0;
   }
 
+
+  _resetNotebookHistory() {
+    this.notebookRows = [];
+    this.notebookStages = [];
+    this._syncNotebookHistory(true);
+  }
+
+  _syncNotebookHistory(forceNew = false) {
+    if (!this.eq) return;
+    const stage = this._currentNotebookStage();
+    const text = this._equationToString();
+    if (!this.notebookRows.length) {
+      this.notebookRows.push(text);
+      this.notebookStages.push(stage);
+      return;
+    }
+    const lastIndex = this.notebookRows.length - 1;
+    const lastStage = this.notebookStages[lastIndex] ?? 0;
+    if (lastStage >= 4) return;
+    if (this.notebookRows.length === 1 && text !== this.notebookRows[0]) {
+      this.notebookRows.push(text);
+      this.notebookStages.push(stage);
+    } else if (forceNew || stage > lastStage) {
+      if (stage < 4) {
+        this.notebookRows[lastIndex] = text;
+        this.notebookStages[lastIndex] = stage;
+      }
+      this.notebookRows.push(text);
+      this.notebookStages.push(stage);
+    } else {
+      this.notebookRows[lastIndex] = text;
+      this.notebookStages[lastIndex] = stage;
+    }
+    while (this.notebookRows.length > 5) {
+      this.notebookRows.shift();
+      this.notebookStages.shift();
+    }
+  }
+
+  _appendSolutionRow(value) {
+    if (!this.notebookRows.length) this._resetNotebookHistory();
+    const text = `x = ${value}`;
+    if (this.notebookRows.length >= 5) {
+      this.notebookRows[this.notebookRows.length - 1] = text;
+      this.notebookStages[this.notebookStages.length - 1] = 4;
+    } else if (this.notebookRows[this.notebookRows.length - 1] !== text) {
+      this.notebookRows.push(text);
+      this.notebookStages.push(4);
+    }
+    while (this.notebookRows.length > 5) {
+      this.notebookRows.shift();
+      this.notebookStages.shift();
+    }
+  }
+
+  _currentNotebookStage() {
+    if (this._hasAnyRawTerms()) return 0;
+    if (!this._termsAreOrganized()) return 2;
+    if (!this._isReducedEquation()) return 3;
+    return 4;
+  }
+
+  _hasAnyRawTerms() {
+    if (!this.eq) return false;
+    for (const side of [this.eq.left, this.eq.right]) {
+      for (const t of side) {
+        if (t.raw || t.kind === "mainParen" || t.kind === "prodParen") return true;
+      }
+    }
+    return false;
+  }
+
+  _termsAreOrganized() {
+    if (!this.eq) return false;
+    return this.eq.left.length > 0 && this.eq.right.length > 0 &&
+      this.eq.left.every((t) => t.kind === "x") &&
+      this.eq.right.every((t) => t.kind === "const");
+  }
+
+  _isReducedEquation() {
+    return this.eq && this.eq.left.length === 1 && this.eq.right.length === 1 && this._termsAreOrganized();
+  }
+
+  _equationToString() {
+    if (!this.eq) return "";
+    return `${this._sideToString("L")} = ${this._sideToString("R")}`;
+  }
+
+  _sideToString(side) {
+    const arr = side === "L" ? this.eq.left : this.eq.right;
+    if (!arr.length) return "0";
+    return arr.map((t, i) => this._termToString(t, { showPlus: i !== 0 })).join(" ");
+  }
+
+  _nextStepFeedbackText() {
+    const stage = this._currentNotebookStage();
+    if (stage === 0) {
+      if (this._hasMainParen("L") || this._hasMainParen("R")) return "Haz clic en un paréntesis para distribuir.";
+      return "Haz clic en cada multiplicación pendiente para calcularla.";
+    }
+    if (stage === 2) return "Mueve términos: deja las x de un lado y los números del otro.";
+    if (stage === 3) return "Combina términos semejantes hasta dejar una sola x y un solo número.";
+    return "Escribe el valor de x y presiona Enter.";
+  }
   _registerCorrectAction() {
     this.grayJumpTimer = 0; // cada accion correcta reinicia la cuenta de presion
     this.grayJumpCueIndex = 0;
     this.correctStreak += 1;
+    this._syncNotebookHistory(false);
     if (this.correctStreak >= this.correctStreakTarget) {
       this.correctStreak = 0;
       if (this.grayStepIndex > 0) {
@@ -446,7 +560,7 @@ class ResolverEcuacionesScene extends Scene {
     this.shakeT = this.shakeDur;
 
     if (this.grayStepIndex >= this.graySteps) {
-      this._consumeLife("La pesadilla te dejo sin color.");
+      this._consumeLife("La pesadilla te dejó sin color.", true);
     }
   }
 
@@ -536,57 +650,53 @@ class ResolverEcuacionesScene extends Scene {
   _drawHUD(ctx) {
     const W = this.game.canvas.width;
 
-    // vidas
+    // HUD integrado al marco que ya trae el fondo.
+    // Evitamos dibujar datos en el centro porque ahí ya está el título del minijuego.
     ctx.save();
+
+    // Vidas: dentro del marco superior izquierdo.
     for (let i = 0; i < this.maxLives; i++) {
-      const x = 20 + i * 22;
-      const y = 18;
+      const x = 22 + i * 22;
+      const y = 27;
       this._drawHeart(ctx, x, y, 18, i < this.lives ? "#ff4b5c" : "#4a1f26");
     }
-    ctx.restore();
 
-    // presion y ronda
-    ctx.save();
+    // Ronda: dentro del marco superior izquierdo.
     ctx.font = "18px Arial";
     ctx.fillStyle = "#fff";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    const nextJump = Math.max(0, this.grayJumpInterval - this.grayJumpTimer);
-    ctx.fillText(`Próx. salto: ${nextJump.toFixed(1)}s`, W / 2, 18);
     ctx.textAlign = "left";
-    ctx.fillText(`Ecuación: ${this.roundIndex}/${this.totalRounds}`, 20, 44);
-    ctx.fillStyle =
-      this.correctStreak >= this.correctStreakTarget - 1 ? "#9cff9c" : "#ffe082";
-    ctx.fillText(`Racha: ${this.correctStreak}/${this.correctStreakTarget}`, 20, 66);
-    ctx.restore();
+    ctx.textBaseline = "top";
+    ctx.fillText(`Ecuación: ${this.roundIndex}/${this.totalRounds}`, 22, 55);
 
-    // barra de prÃ³ximo salto
+    // Barra de salto: a la izquierda, dentro del marco del HUD.
     const barW = 220;
-    const barH = 10;
-    const bx = Math.round((W - barW) / 2);
-    const by = 48;
+    const barH = 9;
+    const bx = 28;
+    const by = 84;
     const frac = Math.max(
       0,
       Math.min(1, this.grayJumpTimer / this.grayJumpInterval),
     );
-    ctx.save();
-    ctx.fillStyle = "rgba(255,255,255,0.20)";
+
+    ctx.fillStyle = "rgba(255,255,255,0.18)";
     ctx.fillRect(bx, by, barW, barH);
     ctx.fillStyle = frac > 0.8 ? "#ff6b6b" : "#ffe082";
     ctx.fillRect(bx, by, Math.round(barW * frac), barH);
-    ctx.strokeStyle = "rgba(255,255,255,0.55)";
+    ctx.strokeStyle = "rgba(255,255,255,0.45)";
     ctx.lineWidth = 1;
     ctx.strokeRect(bx, by, barW, barH);
-    // ticks de 3 fases (saltos que faltan para perder corazon)
+
+    // Marcas de los saltos de gris.
     for (let i = 1; i < this.graySteps; i++) {
       const tx = bx + Math.round((i / this.graySteps) * barW);
-      ctx.strokeStyle = "rgba(255,255,255,0.65)";
+      ctx.strokeStyle = "rgba(255,255,255,0.55)";
       ctx.beginPath();
       ctx.moveTo(tx, by - 2);
       ctx.lineTo(tx, by + barH + 2);
       ctx.stroke();
     }
 
+    // Indicadores de saltos ya acumulados.
     const tickY = by + barH + 6;
     const tickW = Math.floor((barW - 10) / this.graySteps);
     for (let i = 0; i < this.graySteps; i++) {
@@ -595,16 +705,19 @@ class ResolverEcuacionesScene extends Scene {
       ctx.fillStyle = active ? "#ff8a65" : "rgba(255,255,255,0.22)";
       ctx.fillRect(tx, tickY, tickW, 5);
     }
+
     ctx.restore();
 
-    // toast (feedback corto)
+    this._drawNextStepFeedback(ctx);
+
+    // Toast: lo dejamos cerca del cuaderno, no sobre el título del fondo.
     if (this.toastT > 0 && this.toast) {
       ctx.save();
       ctx.font = "16px Arial";
       ctx.fillStyle = "#ffe082";
       ctx.textAlign = "center";
       ctx.textBaseline = "top";
-      ctx.fillText(this.toast, W / 2, 70);
+      ctx.fillText(this.toast, W / 2, 125);
       ctx.restore();
     }
   }
@@ -844,6 +957,70 @@ class ResolverEcuacionesScene extends Scene {
     ctx.restore();
   }
 
+
+  _notebookRect() {
+    const W = this.game.canvas.width;
+    const H = this.game.canvas.height;
+    const w = Math.min(W * 0.7, 920);
+    const h = Math.min(H * 0.54, 430);
+    const x = Math.max(36, W * 0.055);
+    return { x, y: H * 0.19, w, h };
+  }
+
+  _notebookRowHeight(book) {
+    return (book.h - 88) / 5;
+  }
+
+  _notebookRowY(book, rowH, index) {
+    return book.y + 52 + rowH * index + rowH * 0.5;
+  }
+
+  _drawNotebookPage(ctx, book, rowH, activeIndex) {
+    ctx.save();
+    ctx.textBaseline = "middle";
+
+    for (let i = 0; i < 5; i++) {
+      const y = this._notebookRowY(book, rowH, i);
+      const row = { x: book.x + 76, y: y - rowH * 0.38, w: book.w - 106, h: rowH * 0.76 };
+      if (i === activeIndex) {
+        ctx.strokeStyle = "rgba(91,50,24,0.35)";
+        ctx.strokeRect(row.x - 5, row.y - 5, row.w + 10, row.h + 10);
+      }
+      ctx.fillStyle = i < this.notebookRows.length ? "#b9965f" : "rgba(185,150,95,0.28)";
+      ctx.fillRect(book.x + 30, y - 20, 34, 40);
+      ctx.strokeStyle = "rgba(91,50,24,0.35)";
+      ctx.strokeRect(book.x + 30, y - 20, 34, 40);
+      ctx.font = "18px Arial";
+      ctx.fillStyle = i < this.notebookRows.length ? "rgba(43,22,9,0.95)" : "rgba(43,22,9,0.35)";
+      ctx.textAlign = "center";
+      ctx.fillText(String(i + 1), book.x + 47, y + 1);
+      if (i < this.notebookRows.length && (i !== activeIndex || (this.notebookStages[i] ?? 0) >= 4)) {
+        ctx.font = "26px Arial";
+        ctx.textAlign = "left";
+        ctx.fillStyle = "rgba(58,36,18,0.66)";
+        ctx.fillText(this.notebookRows[i], row.x + 18, y + 10);
+      }
+    }
+    ctx.restore();
+  }
+
+  _drawNextStepFeedback(ctx) {
+    if (!(this.state === "playing" || this.state === "tutorial")) return;
+    const W = this.game.canvas.width;
+    const H = this.game.canvas.height;
+    const x = W * 0.035;
+    const y = H * 0.86;
+    ctx.save();
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.font = "bold 17px Arial";
+    ctx.fillStyle = "#ffe082";
+    ctx.fillText("Siguiente paso", x, y);
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#fff4cf";
+    ctx.fillText(this._nextStepFeedbackText(), x, y + 28);
+    ctx.restore();
+  }
   _drawEquationBackplate(ctx) {
     const W = this.game.canvas.width;
 
@@ -900,30 +1077,43 @@ class ResolverEcuacionesScene extends Scene {
   }
 
   _drawEquation(ctx) {
+    if (!this.eq) return;
+    this._syncNotebookHistory(false);
+
+    const book = this._notebookRect();
+    const rowH = this._notebookRowHeight(book);
+    const activeIndex = Math.max(0, this.notebookRows.length - 1);
+    this._drawNotebookPage(ctx, book, rowH, activeIndex);
+
+    if ((this.notebookStages[activeIndex] ?? 0) >= 4) return;
+
+    const eqY = this._notebookRowY(book, rowH, activeIndex);
+    const leftX = book.x + book.w * 0.17;
+    const rightX = book.x + book.w * 0.58;
+    const equalX = book.x + book.w * 0.5;
+
     ctx.save();
     ctx.font = "20px Arial";
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#2a1b10";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
 
-    this._drawEquationBackplate(ctx);
-
-    // preserve drag position (layout overwrites x/y)
     let dragPos = null;
     if (this.drag && this.drag.term) {
       dragPos = { t: this.drag.term, x: this.drag.term.x, y: this.drag.term.y };
     }
 
-    this._layoutSide(ctx, this.eq.left, this.eqLeftX, this.eqY);
-    this._layoutSide(ctx, this.eq.right, this.eqRightX, this.eqY);
+    this._layoutSide(ctx, this.eq.left, leftX, eqY);
+    this._layoutSide(ctx, this.eq.right, rightX, eqY);
 
     if (dragPos) {
       dragPos.t.x = dragPos.x;
       dragPos.t.y = dragPos.y;
     }
 
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("=", 505, this.eqY);
+    ctx.font = "28px Arial";
+    ctx.fillStyle = "#2a1b10";
+    ctx.fillText("=", equalX, eqY - 4);
 
     const drawSide = (arr) => {
       for (const t of arr) {
@@ -939,10 +1129,9 @@ class ResolverEcuacionesScene extends Scene {
     drawSide(this.eq.right);
 
     if (this.drag && this.drag.term) {
-      const t = this.drag.term;
       ctx.save();
       ctx.globalAlpha = 0.92;
-      this._drawTermBox(ctx, t, true);
+      this._drawTermBox(ctx, this.drag.term, true);
       ctx.restore();
     }
 
@@ -981,7 +1170,7 @@ class ResolverEcuacionesScene extends Scene {
     ctx.fillRect(x - 6, y - h / 2, w, h);
     ctx.strokeRect(x - 6, y - h / 2, w, h);
 
-    ctx.fillStyle = t.raw ? "#bbbbbb" : "#ffffff";
+    ctx.fillStyle = t.raw ? "#7b6a58" : "#22150d";
     ctx.fillText(t._renderStr || "?", x, y);
   }
 
@@ -1015,26 +1204,25 @@ class ResolverEcuacionesScene extends Scene {
     const y = H - boxH - 18;
 
     ctx.save();
-    ctx.fillStyle = "rgba(0,0,0,0.55)";
-    ctx.fillRect(x, y, boxW, boxH);
-
-    ctx.strokeStyle = "rgba(255,255,255,0.25)";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(x, y, boxW, boxH);
-
-    ctx.font = "24px Arial";
-    ctx.fillStyle = "#fff";
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "#1f130c";
     ctx.textBaseline = "middle";
     ctx.textAlign = "left";
-    ctx.fillText("x = ", x + 14, y + boxH / 2);
+    const textX = x + 122;
+    const textY = y + boxH / 2;
+    const answer = this.answerText || "";
+    ctx.fillText(answer, textX, textY);
 
-    ctx.fillStyle = "#ffeb3b";
-    ctx.fillText(this.answerText || "...", x + 64, y + boxH / 2);
-
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "rgba(255,255,255,0.75)";
-    ctx.textAlign = "center";
-    ctx.fillText("Enter para comprobar", x + boxW - 132, y + boxH / 2);
+    const metrics = ctx.measureText(answer);
+    const cursorX = textX + metrics.width + 4;
+    if (Math.floor(Date.now() / 420) % 2 === 0) {
+      ctx.strokeStyle = "#1f130c";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cursorX, textY - 22);
+      ctx.lineTo(cursorX, textY + 22);
+      ctx.stroke();
+    }
 
     ctx.restore();
   }
@@ -1056,6 +1244,7 @@ class ResolverEcuacionesScene extends Scene {
     const X = this.eq?.solution;
 
     if (v === X) {
+      this._appendSolutionRow(v);
       // Si es tutorial, NO terminamos el minijuego: pasamos al juego real.
       if (this.tutorial.active) {
         this._onCorrectResolution();
@@ -1090,9 +1279,18 @@ class ResolverEcuacionesScene extends Scene {
   }
 
   // ---------- rules ----------
-  _consumeLife(reason) {
+  _consumeLife(reason, delayRestore = false) {
     this.lives -= 1;
-    this._resetGrayStepProgress(); // al perder vida, reinicia la presion de gris
+    if (delayRestore && this.lives > 0) {
+      this.grayRestoreDelay = this.grayRestoreDelayMax;
+      this.grayJumpTimer = 0;
+      this.grayJumpCueIndex = 0;
+      this.correctStreak = 0;
+      this.drag = null;
+      this.hoverTarget = null;
+    } else {
+      this._resetGrayStepProgress(); // al perder vida, reinicia la presion de gris
+    }
     this.playSfx(this.sfxWrong);
     this.toast = reason || "Acción inválida.";
     this.toastT = 1.1;
@@ -1433,6 +1631,10 @@ class ResolverEcuacionesScene extends Scene {
 
     // toast timer
     if (this.toastT > 0) this.toastT = Math.max(0, this.toastT - dt);
+    if (this.grayRestoreDelay > 0) {
+      this.grayRestoreDelay = Math.max(0, this.grayRestoreDelay - dt);
+      if (this.grayRestoreDelay <= 0 && !this.gameFinished) this._resetGrayStepProgress();
+    }
 
     // finished flow
     if (this.gameFinished) {
@@ -1492,8 +1694,13 @@ class ResolverEcuacionesScene extends Scene {
     }
 
     // ----- presiÃ³n por saltos -----
-    if (this.state === "playing" || this.state === "tutorial") {
+    if ((this.state === "playing" || this.state === "tutorial") && this.grayRestoreDelay <= 0) {
       this._updateGrayStepProgress(dt);
+    }
+
+    if (this.grayRestoreDelay > 0) {
+      super.update(dt);
+      return;
     }
 
     // ----- capturar teclado para respuesta -----
@@ -1799,6 +2006,8 @@ class ResolverEcuacionesScene extends Scene {
   }
 
   destroy() {
+    window.MN_setInputMode?.(null);
+    window.MN_setLeafHUDVisible?.(true);
     this.clearAll();
   }
 }

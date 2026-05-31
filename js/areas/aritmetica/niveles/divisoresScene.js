@@ -8,7 +8,6 @@
 /*  CONFIGURACIÓN GLOBAL                                                       */
 /* --------------------------------------------------------------------------- */
 const MAX_LIVES = 5;
-const KEY_SHOOT = " ";
 const GHOST_SPEED = 30;
 let MAX_NUMBER = 2; //icrementará segun la ronda
 
@@ -130,9 +129,6 @@ class NewPlayer extends Sprite {
       moving = true;
     }
 
-    /* Disparo */
-    if (input.isDown(KEY_SHOOT)) this._shoot();
-
     // cooldown de golpe (invulnerabilidad breve)
     if (this._hitCooldown && this._hitCooldown > 0) this._hitCooldown -= dt;
 
@@ -245,22 +241,26 @@ class FactorPlayer extends NewPlayer {
     const keys = input.keys || {};
     const isJustPressed = (k) => keys[k] && !this.scene._prevKeys[k];
 
-    // Cambiar arco con 2,3,5,7 (solo flanco)
-    if (isJustPressed("1")) this._setFactor(1);
-    if (isJustPressed("2")) this._setFactor(2);
-    if (isJustPressed("3")) this._setFactor(3);
-    if (isJustPressed("5")) this._setFactor(5);
-    if (isJustPressed("7")) this._setFactor(7);
+    // Disparo directo: el número elegido también es la acción.
+    if (isJustPressed("2")) this._shootFactor(2);
+    if (isJustPressed("3")) this._shootFactor(3);
+    if (isJustPressed("5")) this._shootFactor(5);
+    if (isJustPressed("7")) this._shootFactor(7);
+    if (isJustPressed("1") || isJustPressed("p") || isJustPressed("P")) {
+      this._shootFactor(1);
+    }
 
     super.update(dt);
   }
 
   _setFactor(f) {
-    if (this.currentFactor === f) return;
     if (!this.allowedFactors.includes(f)) return;
     this.currentFactor = f;
-    // Sonidito opcional al cambiar, si quieres:
-    // this.scene.playSfx("sfx_match", { volume: 0.25 });
+  }
+
+  _shootFactor(f) {
+    this._setFactor(f);
+    this._shoot();
   }
 
   _shoot() {
@@ -399,18 +399,23 @@ class DivisoresScene extends Scene {
     this.minSpawnGap = 500;
     this.maxLives = MAX_LIVES;
     this.scorePerKill = 10;
+    this.minSpawnInterval = 0.7;
 
     // Métricas / reglas
     this.score = 0;
     this.correct = 0;
     this.escaped = 0;
+    this.streak = 0;
+    this.bestStreak = 0;
+    this.feedbackText = "";
+    this.feedbackTimer = 0;
 
     // Condiciones de victoria/derrota (ajustables)
     this.maxEscapes = 5;
     this.goalCorrect = 30; // ahora se “completa” con 30
     this.tutorialSpawns = 10; // primeros 10 fantasmas fáciles
     this.spawnedCount = 0;
-    this.easyValues = [2, 3, 4, 5, 7, 8, 9, 11, 13, 16];
+    this.easyValues = [2, 3, 4, 5, 7, 11, 13, 4, 6, 9, 10, 14, 15, 21, 25, 35, 49, 12, 16, 18];
 
     // Spawning
     this.spawnTimer = 0;
@@ -452,7 +457,7 @@ class DivisoresScene extends Scene {
   init() {
     if (window.MN_setLeafHUDVisible) window.MN_setLeafHUDVisible(false);
     // Icono de teclado
-    if (window.MN_setInputMode) MN_setInputMode("keyboard");
+    if (window.MN_setInputMode) MN_setInputMode(null);    
 
     // Reset estándar
     this.state = "intro";
@@ -465,6 +470,10 @@ class DivisoresScene extends Scene {
     this.score = 0;
     this.correct = 0;
     this.escaped = 0;
+    this.streak = 0;
+    this.bestStreak = 0;
+    this.feedbackText = "";
+    this.feedbackTimer = 0;
 
     this.spawnTimer = 0;
     this.spawnedCount = 0;
@@ -508,6 +517,7 @@ class DivisoresScene extends Scene {
   /* ============================= UPDATE ============================ */
   update(dt) {
     super.update(dt);
+    this.feedbackTimer = Math.max(0, (this.feedbackTimer || 0) - dt);
 
     const input = this.game.input;
     const keys = input.keys || {};
@@ -633,36 +643,6 @@ class DivisoresScene extends Scene {
 
     ctx.restore();
 
-    // Tipo de bala (arriba-derecha)
-    if (this.player && this.player.currentFactor != null) {
-      const f = this.player.currentFactor;
-      const label = f === 1 ? "1★" : String(f);
-
-      const x = this.game.canvas.width - 60;
-      const y = 235;
-
-      ctx.save();
-      ctx.globalAlpha = 0.95;
-
-      // fondo
-      ctx.fillStyle = "rgba(0,0,0,0.45)";
-      ctx.beginPath();
-      ctx.roundRect(x - 45, y - 22, 90, 44, 10);
-      ctx.fill();
-
-      // texto
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "14px Arial";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("Bala", x, y - 8);
-
-      ctx.font = "18px Arial";
-      ctx.fillText(label, x, y + 10);
-
-      ctx.restore();
-    }
-
     // Eliminados / meta
     ctx.save();
     ctx.fillStyle = "#ffffff";
@@ -670,7 +650,24 @@ class DivisoresScene extends Scene {
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     ctx.fillText(`Eliminados: ${this.correct}/${this.goalCorrect}`, 80, 55);
+    ctx.fillText(`Racha: ${this.streak || 0}`, 80, 77);
+    ctx.textAlign = "right";
+    ctx.fillText(`Puntos: ${this.score || 0}`, W - 40, 42);
+    ctx.fillText(`Mejor racha: ${this.bestStreak || 0}`, W - 40, 64);
     ctx.restore();
+
+    if (this.feedbackTimer > 0 && this.feedbackText) {
+      const alpha = Math.min(1, this.feedbackTimer / 0.35);
+      ctx.save();
+      ctx.font = "21px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = `rgba(0,0,0,${0.72 * alpha})`;
+      ctx.fillRect(W * 0.5 - 230, 88, 460, 40);
+      ctx.fillStyle = `rgba(255,220,97,${alpha})`;
+      ctx.fillText(this.feedbackText, W * 0.5, 108);
+      ctx.restore();
+    }
   }
 
   _drawIntro(ctx) {
@@ -688,16 +685,16 @@ class DivisoresScene extends Scene {
     ctx.font = "18px Arial";
     ctx.fillText("Los fantasmas traen un número.", W / 2, H * 0.38);
     ctx.fillText(
-      "Selecciona el tipo de bala con 2, 3, 5 ó 7.",
+      "Dispara directamente con 2, 3, 5 o 7 según el divisor.",
       W / 2,
       H * 0.44,
     );
     ctx.fillText(
-      "Tecla 1: bala especial para rematar cuando el número ya no tiene divisor 2,3,5,7.",
+      "Usa P o 1 para rematar números primos de dos dígitos.",
       W / 2,
       H * 0.5,
     );
-    ctx.fillText("Dispara SOLO si tu bala divide al número.", W / 2, H * 0.56);
+    ctx.fillText("Cada error te dirá por qué ese divisor no servía.", W / 2, H * 0.56);
 
     ctx.fillText(
       `Ganas al llegar a ${this.goalCorrect} aciertos.`,
@@ -738,36 +735,94 @@ class DivisoresScene extends Scene {
 
   /* ========================== LÓGICA ========================== */
   _getSpawnInterval() {
-    // baja lentamente con dificultad (cap)
-    const minInterval = 0.7;
-    const interval = this.spawnInterval;
-    return Math.max(minInterval, interval);
+    const pressure = Math.max(0, this.spawnedCount - this.tutorialSpawns);
+    const interval = this.spawnInterval - pressure * 0.0175 - this.correct * 0.0067;
+    return Math.max(this.minSpawnInterval, interval);
   }
 
   _getEnemySpeed() {
     if (this.spawnedCount < this.tutorialSpawns) {
-      return this.tutorialEnemySpeed; // primeros 10
+      return this.tutorialEnemySpeed;
     }
-    return this.enemySpeedBase; // resto del juego
+    const pressure = Math.max(0, this.spawnedCount - this.tutorialSpawns);
+    return this.enemySpeedBase + pressure * 0.575 + this.correct * 0.3;
   }
 
   _randomEnemyValue() {
-    // Prefacio: 10 fantasmas fáciles para entrar en ritmo
     if (this.spawnedCount < this.tutorialSpawns) {
-      const a = this.easyValues;
-      return a[Math.floor(Math.random() * a.length)];
+      return this._pick(this.easyValues);
     }
 
-    // Luego: tu lógica normal
-    const candidates = [];
-    for (let n = 4; n <= MAX_NUMBER; n++) {
-      if (n % 2 === 0 || n % 3 === 0 || n % 5 === 0 || n % 7 === 0) {
-        candidates.push(n);
-      }
+    const targetSteps = this._targetEnemySteps();
+    for (let attempt = 0; attempt < 90; attempt++) {
+      const value = this._buildEnemyValue(targetSteps);
+      if (value > 1 && value <= 299) return value;
     }
-    return candidates[Math.floor(Math.random() * candidates.length)] || 6;
+    return this._pick([30, 32, 36, 40, 42, 48, 56, 60, 66, 70, 72, 80, 81, 84, 90, 105, 126, 128, 154, 165, 210]);
   }
 
+  _targetEnemySteps() {
+    const pressure = Math.max(0, this.spawnedCount - this.tutorialSpawns);
+    const target = 2 + Math.floor(pressure / 10) + Math.floor(this.correct / 15);
+    return Math.max(2, Math.min(7, target));
+  }
+
+  _buildEnemyValue(targetSteps) {
+    const includePrimeEnd = targetSteps >= 2 && Math.random() < (targetSteps <= 3 ? 0.45 : 0.35);
+    const divisorSteps = Math.max(1, targetSteps - (includePrimeEnd ? 1 : 0));
+    const factors = this._mixedFactorSequence(divisorSteps);
+    let value = 1;
+    for (const factor of factors) value *= factor;
+    if (includePrimeEnd) value *= this._pick([11, 13, 17, 19, 23]);
+    return value;
+  }
+
+  _mixedFactorSequence(length) {
+    const sequence = [];
+    const factorPool = [2, 3, 5, 7];
+    for (let i = 0; i < length; i++) {
+      let options = factorPool.slice();
+      if (sequence.length >= 2) {
+        const last = sequence[sequence.length - 1];
+        const beforeLast = sequence[sequence.length - 2];
+        if (last === beforeLast) options = options.filter((f) => f !== last);
+      }
+      if (length >= 3 && sequence.length === length - 1 && this._uniqueCount(sequence) < 2) {
+        options = options.filter((f) => f !== sequence[0]);
+      }
+      if (length >= 5 && sequence.length === length - 1 && this._uniqueCount(sequence) < 3) {
+        options = options.filter((f) => !sequence.includes(f));
+      }
+      if (!options.length) options = factorPool.slice();
+      sequence.push(this._pick(options));
+    }
+    return sequence;
+  }
+
+  _uniqueCount(values) {
+    return new Set(values).size;
+  }
+
+  _pick(values) {
+    return values[Math.floor(Math.random() * values.length)];
+  }
+
+  _hasAllowedDivisor(value) {
+    return [2, 3, 5, 7].some((factor) => value % factor === 0);
+  }
+
+  _isPrime(value) {
+    if (value < 2) return false;
+    for (let d = 2; d <= Math.floor(Math.sqrt(value)); d++) {
+      if (value % d === 0) return false;
+    }
+    return true;
+  }
+
+  _setFeedback(text) {
+    this.feedbackText = text;
+    this.feedbackTimer = 1.45;
+  }
   _spawnEnemy() {
     const W = this.game.canvas.width;
 
@@ -791,6 +846,8 @@ class DivisoresScene extends Scene {
     if (this.gameFinished) return;
     this.escaped++;
     this.player.lives--;
+    this.streak = 0;
+    this._setFeedback("Un fantasma escapó");
 
     this.playSfx(this.sfxWrong, { volume: 0.5 });
     this._checkEndConditions();
@@ -871,45 +928,48 @@ class DivisoresScene extends Scene {
   }
 
   _applyHitToEnemy(enemy, factor) {
-    // factor normal 2/3/5/7
-    if (factor === 1) {
-      // bala especial: si no es divisible por 2/3/5/7, “remata”
-      const allowed = [2, 3, 5, 7];
-      const hasAllowedDivisor = allowed.some((f) => enemy.value % f === 0);
+    const value = enemy.value | 0;
 
-      if (!hasAllowedDivisor) {
-        // remate: lo llevas a 1 en un disparo (equivale a dividir por sí mismo si es primo)
-        enemy.value = 1;
-      } else {
-        // si todavía tiene divisor permitido, puedes decidir:
-        // A) no hacer nada (para “no desperdiciar”)
-        // B) tratarlo como “factor 2” por defecto
-        // Yo recomiendo A:
-        this.playSfx(this.sfxWrong, { volume: 0.25 });
+    if (factor === 1) {
+      if (this._hasAllowedDivisor(value)) {
+        this._onWrongHit(`${value} todavía puede dividirse`);
         return true;
       }
-    } else if (!factor || factor < 2) {
-      factor = 2;
-    }
-
-    if (enemy.value % factor === 0) {
-      enemy.value = Math.floor(enemy.value / factor);
-      this.playSfx(this.sfxCorrect, { volume: 0.55 });
-
-      if (enemy.value <= 1) {
-        this.correct++;
-        this.score += this.scorePerKill;
-        this.remove(enemy);
-        return false;
+      if (value < 10 || !this._isPrime(value)) {
+        this._onWrongHit(`${value} no es primo`);
+        return true;
       }
-      return true;
+      enemy.value = 1;
+    } else if (value % factor === 0) {
+      enemy.value = Math.floor(value / factor);
     } else {
-      enemy.value = enemy.value * factor;
-      this.playSfx(this.sfxWrong, { volume: 0.35 });
+      enemy.value = Math.min(value * factor, 999);
+      this._onWrongHit(this._isPrime(value) ? `${value} es primo` : `${value} no es divisible entre ${factor}`);
       return true;
     }
+
+    if (enemy.value <= 1) {
+      this.streak += 1;
+      this.bestStreak = Math.max(this.bestStreak, this.streak);
+      const points = 90 + this.streak * 8;
+      this.correct++;
+      this.score += points;
+      this.playSfx(this.sfxCorrect, { volume: 0.6 });
+      this.remove(enemy);
+      return false;
+    }
+
+    this.playSfx(this.sfxCorrect, { volume: 0.45 });
+    return true;
   }
 
+  _onWrongHit(text = "") {
+    this.streak = 0;
+    this.score = Math.max(0, this.score - 20);
+    if (this.player) this.player._hitCooldown = 0.32;
+    if (text) this._setFeedback(text);
+    this.playSfx(this.sfxWrong, { volume: 0.4 });
+  }
   _handlePlayerEnemyCollisions() {
     if (!this.player) return;
 
@@ -935,6 +995,8 @@ class DivisoresScene extends Scene {
 
       // castigo: pierde vida y el fantasma se va
       this.player.lives--;
+      this.streak = 0;
+      this._setFeedback("Un fantasma te alcanzó");
       this.playSfx(this.sfxWrong, { volume: 0.5 });
 
       this.remove(e);
@@ -972,13 +1034,13 @@ class DivisoresScene extends Scene {
     if (failed) {
       this.message =
         "Los monstruos te superaron...\n" +
-        `Aciertos: ${this.correct} |  Escapados: ${this.escaped}\n` +
+        `Aciertos: ${this.correct} | Mejor racha: ${this.bestStreak}\n` +
         `Hojas ganadas: ${gained}.`;
       this.playSfx(this.sfxWrong, { volume: 0.7 });
     } else {
       this.message =
         "¡Dominaste los arcos divisores!\n" +
-        `Aciertos: ${this.correct} |  Escapados: ${this.escaped}\n` +
+        `Aciertos: ${this.correct} | Mejor racha: ${this.bestStreak}\n` +
         `Hojas ganadas: ${gained}.`;
       this.playSfx(this.sfxWin, { volume: 0.7 });
     }

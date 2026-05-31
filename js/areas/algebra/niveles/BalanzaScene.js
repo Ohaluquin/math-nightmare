@@ -1,16 +1,16 @@
-﻿// ===========================================================
-// BalanzaScene.js ” "Balanzas: Cajas y Costales" (2 balanzas simultaneas)
+// ===========================================================
+// BalanzaScene.js — "El peso oculto" (versión simplificada)
 // ===========================================================
 // Minijuego VISUAL (sin negativos):
 // - 3 rondas
-// - 60s por ronda
-// - 1 error permitido por ronda
-// - Cada ronda muestra 2 balanzas al mismo tiempo (una arriba y otra abajo):
-//   (A) Cajas + Kilos: deduces mentalmente el valor de la caja
-//   (B) Cajas + Costales + Kilos: respondes tecleando el valor del costal
+// - 120s por paso
+// - 3 vidas
+// - Cada ronda se resuelve en 2 pasos:
+//   (A) Cajas + Kilos: deduces y escribes el valor de la caja
+//   (B) Cajas + Costales + Kilos: usas la caja para deducir el costal
 // - Arrastre: si sacas un objeto fuera, se cancela 1 igual en ambos lados
 //   (solo si ese objeto existe en ambos lados).
-// - La balanza solo te ayuda a simplificar; SIEMPRE debes teclear el peso del costal.
+// - La balanza solo te ayuda a simplificar; debes teclear cada valor.
 // ===========================================================
 
 (function () {
@@ -38,13 +38,13 @@
       super(game);
 
       // Estado general
-      this.state = "intro"; // intro | tutorial | playing | finished
+      this.state = "intro"; // intro | playing | finished
 
       // Tutorial guiado (antes del juego real)
       this.tutorial = {
         active: false,
         step: 0,
-        phase: "cancelA", // cancelA -> cancelB -> askSack -> done
+        phase: "cancelA", // cancelA -> askBox -> cancelB -> askSack -> done
         cancelsNeeded: 0,
         cancelsDone: 0,
         lockBalance: 0,
@@ -62,6 +62,9 @@
       this.totalRounds = 3;
       this.timeLimit = 120;
       this.timeLeft = this.timeLimit;
+      this.step = "box"; // box | sack
+      this.maxLives = 3;
+      this.lives = this.maxLives;
       this.errorsThisRound = 0;
       this.maxErrorsPerRound = 1;
 
@@ -111,11 +114,11 @@
         plateW: 260,
         plateH: 16,
         itemSize: 46,
-        // Balanzas (Y)
-        balanceYTop: 120,
-        plateYTop: 260,
-        balanceYBottom: 400,
-        plateYBottom: 540,
+        // Una sola posición visual para la balanza activa
+        balanceYTop: 220,
+        plateYTop: 415,
+        balanceYBottom: 220,
+        plateYBottom: 415,
       };
 
       // Assets/sfx
@@ -170,6 +173,8 @@
 
       this.roundIndex = 0;
       this.roundsCleared = 0;
+      this.step = "box";
+      this.lives = this.maxLives;
       this._roundRestarts = 0;
       this._totalMistakes = 0;
 
@@ -200,7 +205,7 @@
     // =======================================================
 
     _generateRound() {
-      // Buscamos una ronda válida (sin fracciones, sin negativos, con níºmeros razonables)
+      // Buscamos una ronda válida (sin fracciones, sin negativos, con números razonables)
       for (let tries = 0; tries < 400; tries++) {
         const boxValue = rndInt(2, 9);
         const sackValue = rndInt(4, 15);
@@ -263,6 +268,7 @@
 
     _startRound(index, fresh = false) {
       this.roundIndex = index;
+      this.step = "box";
       this.timeLeft = this.timeLimit;
       this.errorsThisRound = 0;
       this.answerStr = "";
@@ -323,6 +329,8 @@
       this.tutorial.active = false;
       this.roundIndex = 0;
       this.roundsCleared = 0;
+      this.step = "box";
+      this.lives = this.maxLives;
       this._roundRestarts = 0;
       this._totalMistakes = 0;
       this._startRound(0, true);
@@ -367,7 +375,7 @@
         this.countsA.L = { box: 2, sack: 0, kg: 0 };
         this.countsA.R = { box: 0, sack: 0, kg: 6 };
 
-        // Mostramos la segunda balanza como adelanto (aíºn no interactiva)
+        // Mostramos la segunda balanza como adelanto (aún no interactiva)
         this.countsB.L = { box: 0, sack: 1, kg: 7 };
         this.countsB.R = { box: 2, sack: 0, kg: 5 };
 
@@ -377,7 +385,7 @@
         t.lockType = null;
         t.askTarget = "box";
         t.message =
-          "Ahora responde: ¿cuántos kilos pesa UNA caja? Escribe el níºmero y presiona Enter.";
+          "Ahora responde: ¿cuántos kilos pesa UNA caja? Escribe el número y presiona Enter.";
         return;
       }
 
@@ -432,7 +440,7 @@
       t.cancelsDone += 1;
 
       if (t.phase === "cancelA" && t.cancelsDone >= t.cancelsNeeded) {
-        t.phase = "cancelB";
+        t.phase = "askBox";
         this._setupTutorialPhase();
         return;
       }
@@ -458,7 +466,7 @@
       const t = this.tutorial;
       const v = parseInt(this.answerStr, 10);
       if (!Number.isFinite(v)) {
-        this.answerFeedback = "Escribe un níºmero.";
+        this.answerFeedback = "Escribe un número.";
         this.answerFeedbackTimer = 1.0;
         this.answerShakeT = 0.2;
         this.playSfx(this.sfxWrong, { volume: 0.5 });
@@ -576,6 +584,22 @@
       this.hoverItem = { ...hit, balanceIdx: bIdx, side };
     }
 
+    _activeBalanceIdx() {
+      return this.step === "box" ? 0 : 1;
+    }
+
+    _currentStepLabel() {
+      if (this.state !== "playing") return "";
+      if (this.step === "box") {
+        return "Paso 1/2: deduce primero el peso de una caja.";
+      }
+      return `Paso 2/2: la caja pesa ${this.boxValue} kg; usa ese dato para deducir el costal.`;
+    }
+
+    _progressFraction() {
+      const clearedSteps = this.roundsCleared * 2 + (this.step === "sack" ? 1 : 0);
+      return Math.max(0, Math.min(1, clearedSteps / (this.totalRounds * 2)));
+    }
     _startRoundTransition(nextIndex) {
       this.roundTransitionT = 0.55;
       this.roundTransitionNextIndex = nextIndex;
@@ -594,25 +618,19 @@
 
     _layoutIntroButtons() {
       const w = 900;
-      const h = 340;
-      const y = 120;
-      const btnW = 260;
-      const btnH = 56;
-      const btnY = y + h - 86;
+      const h = 320;
+      const y = 130;
+      const btnW = 280;
+      const btnH = 58;
+      const btnY = y + h - 82;
 
-      this._btnIntroPractice = {
-        x: this.game.canvas.width / 2 - btnW - 16,
-        y: btnY,
-        w: btnW,
-        h: btnH,
-        label: "Práctica (guiada)",
-      };
+      this._btnIntroPractice = null;
       this._btnIntroPlay = {
-        x: this.game.canvas.width / 2 + 16,
+        x: this.game.canvas.width / 2 - btnW / 2,
         y: btnY,
         w: btnW,
         h: btnH,
-        label: "Jugar (normal)",
+        label: "Comenzar",
       };
     }
 
@@ -720,7 +738,8 @@
 
     _whichBalance(pos) {
       // Decide si el click cae en la zona de items de la balanza superior o inferior
-      for (const idx of [0, 1]) {
+      const balanceIndexes = this.state === "playing" ? [this._activeBalanceIdx()] : [0, 1];
+      for (const idx of balanceIndexes) {
         const L = this._computePlateRect(idx, "L");
         const R = this._computePlateRect(idx, "R");
         const areaL = { x: L.x, y: L.y - 160, w: L.w, h: 220 };
@@ -834,17 +853,10 @@
 
       if (this.state === "intro") {
         this._layoutIntroButtons();
-        if (mousePressed) {
-          if (this._hitButton(this._btnIntroPractice, pos.x, pos.y)) {
-            this._startTutorial();
-            this._syncPrevInput();
-            return;
-          }
-          if (this._hitButton(this._btnIntroPlay, pos.x, pos.y)) {
-            this._startRealGameFresh();
-            this._syncPrevInput();
-            return;
-          }
+        if (mousePressed && this._hitButton(this._btnIntroPlay, pos.x, pos.y)) {
+          this._startRealGameFresh();
+          this._syncPrevInput();
+          return;
         }
         if (this._isKeyPressed("Enter") || this._isKeyPressed(" ")) {
           this._startRealGameFresh();
@@ -934,9 +946,10 @@
 
       this.timeLeft -= dt;
       if (this.timeLeft <= 0) {
-        // perder ronda por tiempo
+        this._totalMistakes += 1;
         this.playSfx(this.sfxWrong, { volume: 0.7 });
-        this._startRound(this.roundIndex, false);
+        this._loseLife("Se acabó el tiempo. Pierdes una vida.");
+        if (!this.gameFinished) this._startRound(this.roundIndex, false);
         this._syncPrevInput();
         return;
       }
@@ -982,6 +995,17 @@
       this._syncPrevInput();
     }
 
+    _loseLife(message = "Pierdes una vida.") {
+      this.lives = Math.max(0, this.lives - 1);
+      this.answerFeedback = message;
+      this.answerFeedbackTimer = 1.35;
+      this.answerShakeT = 0.2;
+      this.answerStr = "";
+      if (this.lives <= 0) {
+        this._finishGame(true);
+      }
+    }
+
     _checkAnswer() {
       if (this.state === "tutorial") {
         this._tutorialCheckAnswer();
@@ -997,12 +1021,26 @@
         return;
       }
 
-      if (v === this.sackValue) {
+      const expected = this.step === "box" ? this.boxValue : this.sackValue;
+      if (v === expected) {
         this.playSfx(this.sfxCancel, { volume: 0.9 });
+        this.answerStr = "";
+        this.answerFeedback = "";
+        this.answerFeedbackTimer = 0;
+        this.answerShakeT = 0;
+        this.drag = null;
+        this.hoverItem = null;
+
+        if (this.step === "box") {
+          this.step = "sack";
+          this.timeLeft = this.timeLimit;
+          return;
+        }
+
         this.roundsCleared += 1;
         const nextIndex = this.roundsCleared;
         if (this.roundsCleared >= this.totalRounds) {
-          this._finishGame();
+          this._finishGame(false);
         } else {
           this._startRoundTransition(nextIndex);
         }
@@ -1010,29 +1048,22 @@
         this.errorsThisRound += 1;
         this._totalMistakes += 1;
         this.playSfx(this.sfxWrong, { volume: 0.8 });
-        this.answerShakeT = 0.2;
-
-        if (this.errorsThisRound > this.maxErrorsPerRound) {
-          this.answerFeedback = "Demasiados errores. Ronda reiniciada.";
-          this.answerFeedbackTimer = 1.2;
-          this._startRound(this.roundIndex, false);
-        } else {
-          this.answerFeedback = "No. Intenta otra vez.";
-          this.answerFeedbackTimer = 1.1;
-        }
+        this._loseLife("No. Intenta otra vez.");
       }
     }
 
-    _finishGame() {
+    _finishGame(failed = false) {
       this.state = "finished";
-      this.win = true;
+      this.win = !failed;
       this.gameFinished = true;
       this.sheetsReward = 0;
 
-      let tier = 1;
-      if (this._roundRestarts === 0 && this._totalMistakes === 0) tier = 3;
-      else if (this._roundRestarts <= 1 && this._totalMistakes <= 2) tier = 2;
-      else tier = 1;
+      let tier = 0;
+      if (!failed) {
+        if (this._roundRestarts === 0 && this._totalMistakes === 0) tier = 3;
+        else if (this._roundRestarts <= 1 && this._totalMistakes <= 2) tier = 2;
+        else tier = 1;
+      }
 
       try {
         if (typeof window.MN_reportMinigameTier === "function") {
@@ -1040,7 +1071,7 @@
         }
       } catch (_) {}
 
-      this.playSfx(this.sfxWin, { volume: 0.9 });
+      this.playSfx(failed ? this.sfxWrong : this.sfxWin, { volume: 0.9 });
     }
 
     // =======================================================
@@ -1073,16 +1104,15 @@
       );
 
       if (this.state !== "tutorial") {
-        const remaining = this.maxErrorsPerRound - this.errorsThisRound;
         ctx.font = "15px Arial";
-        ctx.fillText(`Errores: ${remaining}`, 18, 50);
+        ctx.fillText(`Vidas: ${this.lives}/${this.maxLives}`, 18, 50);
       }
 
       ctx.font = "19px Arial";
       ctx.textAlign = "center";
       ctx.fillText(
         this.state === "tutorial"
-          ? "Practica guiada"
+          ? "Práctica guiada"
           : `Balanzas ${this.roundIndex + 1}/${this.totalRounds}`,
         this.game.canvas.width / 2,
         30,
@@ -1094,10 +1124,7 @@
         const barH = 8;
         const bx = (W - barW) / 2;
         const by = 44;
-        const frac = Math.max(
-          0,
-          Math.min(1, this.roundsCleared / this.totalRounds),
-        );
+        const frac = this._progressFraction();
         ctx.fillStyle = "rgba(255,255,255,0.20)";
         ctx.fillRect(bx, by, barW, barH);
         ctx.fillStyle = "#ffcc4d";
@@ -1107,6 +1134,28 @@
         ctx.strokeRect(bx, by, barW, barH);
       }
 
+      ctx.restore();
+      if (this.state === "playing") this._drawStepInstruction(ctx);
+    }
+
+    _drawStepInstruction(ctx) {
+      const text = this._currentStepLabel();
+      if (!text) return;
+      const w = Math.min(700, this.game.canvas.width - 160);
+      const h = 44;
+      const x = (this.game.canvas.width - w) / 2;
+      const y = 72;
+      ctx.save();
+      ctx.fillStyle = "rgba(0,0,0,0.58)";
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = "rgba(255,231,163,0.35)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle = "#ffe7a3";
+      ctx.font = "17px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(text, x + w / 2, y + h / 2);
       ctx.restore();
     }
     _drawBalance(ctx, balanceIdx, label, counts) {
@@ -1153,13 +1202,17 @@
       ctx.fillRect(plateL.x, plateL.y, plateL.w, plateL.h);
       ctx.fillRect(plateR.x, plateR.y, plateR.w, plateR.h);
 
-      // Etiqueta
+      // Etiqueta de la balanza activa
+      const labelW = 260;
+      const labelX = centerX - labelW / 2;
+      const labelY = 128;
       ctx.fillStyle = "rgba(0,0,0,0.55)";
-      ctx.fillRect(18, balanceIdx === 0 ? 66 : 290, 200, 32);
+      ctx.fillRect(labelX, labelY, labelW, 34);
       ctx.fillStyle = "#fff";
       ctx.font = "18px Arial";
-      ctx.textAlign = "left";
-      ctx.fillText(label, 28, balanceIdx === 0 ? 88 : 312);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, centerX, labelY + 17);
 
       const itemsL = this._layoutItemsForSide(counts.L, plateL);
       const itemsR = this._layoutItemsForSide(counts.R, plateR);
@@ -1342,7 +1395,8 @@
       // Etiqueta
       const t = this.tutorial;
       const label =
-        this.state === "tutorial" && t?.askTarget === "box"
+        (this.state === "tutorial" && t?.askTarget === "box") ||
+        (this.state === "playing" && this.step === "box")
           ? "Peso de UNA caja (kg):"
           : "Peso del costal (kg):";
       ctx.fillStyle = "#fff";
@@ -1424,9 +1478,9 @@
 
     _drawIntro(ctx) {
       const w = 900;
-      const h = 340;
+      const h = 320;
       const x = (this.game.canvas.width - w) / 2;
-      const y = 120;
+      const y = 130;
       this._layoutIntroButtons();
 
       ctx.save();
@@ -1437,17 +1491,18 @@
       ctx.strokeRect(x, y, w, h);
 
       ctx.fillStyle = "#fff";
-      ctx.font = "26px Arial";
+      ctx.font = "28px Arial";
       ctx.textAlign = "center";
-      ctx.fillText("Balanzas: simplifica para pensar", x + w / 2, y + 52);
+      ctx.textBaseline = "alphabetic";
+      ctx.fillText("El peso oculto", x + w / 2, y + 52);
 
       ctx.font = "18px Arial";
       const lines = [
-        "Deduce el peso de un costal, escrí­belo y presiona Enter.",
-        "Puedes simplificar las balanzas arrastrando un objeto fuera de ella para cancelarlo.",
-        "Solo puedes cancelar si ese objeto existe en ambos lados.",                
-        "Tienes 120 segundos y sólo un error por ronda.",
-        "Elige práctica guiada para aprender a jugar.",
+        "Primero deduce el peso de una caja.",
+        "Después usa ese dato para encontrar el peso del costal.",
+        "Para simplificar, arrastra fuera de la balanza un objeto que esté en ambos lados.",
+        "Luego escribe el peso pedido y presiona Enter.",
+        "Tienes 120 segundos por paso y 3 vidas.",
       ];
       let yy = y + 92;
       for (const ln of lines) {
@@ -1455,33 +1510,9 @@
         yy += 26;
       }
 
-      ctx.fillStyle = "rgba(255,235,59,0.12)";
-      ctx.strokeStyle = "rgba(255,235,59,0.70)";
-      ctx.lineWidth = 2;
-      ctx.fillRect(
-        this._btnIntroPractice.x,
-        this._btnIntroPractice.y,
-        this._btnIntroPractice.w,
-        this._btnIntroPractice.h,
-      );
-      ctx.strokeRect(
-        this._btnIntroPractice.x,
-        this._btnIntroPractice.y,
-        this._btnIntroPractice.w,
-        this._btnIntroPractice.h,
-      );
-      ctx.font = "18px Arial";
-      ctx.fillStyle = "#ffeb3b";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(
-        this._btnIntroPractice.label,
-        this._btnIntroPractice.x + this._btnIntroPractice.w / 2,
-        this._btnIntroPractice.y + this._btnIntroPractice.h / 2,
-      );
-
       ctx.fillStyle = "rgba(255,255,255,0.10)";
-      ctx.strokeStyle = "rgba(255,255,255,0.35)";
+      ctx.strokeStyle = "rgba(255,255,255,0.45)";
+      ctx.lineWidth = 2;
       ctx.fillRect(
         this._btnIntroPlay.x,
         this._btnIntroPlay.y,
@@ -1495,12 +1526,18 @@
         this._btnIntroPlay.h,
       );
       ctx.fillStyle = "#fff";
+      ctx.font = "20px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
       ctx.fillText(
         this._btnIntroPlay.label,
         this._btnIntroPlay.x + this._btnIntroPlay.w / 2,
         this._btnIntroPlay.y + this._btnIntroPlay.h / 2,
       );
 
+      ctx.font = "14px Arial";
+      ctx.fillStyle = "rgba(255,255,255,0.78)";
+      ctx.fillText("También puedes empezar con Enter o espacio.", x + w / 2, y + h - 18);
       ctx.restore();
     }
 
@@ -1520,10 +1557,10 @@
       ctx.fillStyle = "#fff";
       ctx.font = "30px Arial";
       ctx.textAlign = "center";
-      ctx.fillText("¡Bien hecho!", x + w / 2, y + 70);
+      ctx.fillText(this.win ? "¡Bien hecho!" : "Te quedaste sin vidas.", x + w / 2, y + 70);
       ctx.font = "18px Arial";
       ctx.fillText("Presiona Enter, espacio o haz clic para volver", x + w / 2, y + 120);
-      ctx.fillText(`Hojas ganadas: ${this.sheetsReward}.`, x + w / 2, y + 152);
+      ctx.fillText(this.win ? `Hojas ganadas: ${this.sheetsReward}.` : "Vuelve a intentarlo desde el laboratorio.", x + w / 2, y + 152);
       ctx.restore();
     }
 
@@ -1568,9 +1605,13 @@
         return;
       }
 
-      // playing: ambas balanzas siempre
-      this._drawBalance(ctx, 0, "Balanza 1", this.countsA);
-      this._drawBalance(ctx, 1, "Balanza 2", this.countsB);
+      if (this.state === "playing") {
+        const active = this._activeBalanceIdx();
+        this._drawBalance(ctx, active, active === 0 ? "Deducir la caja" : "Deducir el costal", active === 0 ? this.countsA : this.countsB);
+      } else {
+        this._drawBalance(ctx, 0, "Balanza 1", this.countsA);
+        this._drawBalance(ctx, 1, "Balanza 2", this.countsB);
+      }
       this._drawAnswerBox(ctx);
       this._drawRoundTransition(ctx);
     }

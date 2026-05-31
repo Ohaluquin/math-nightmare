@@ -49,9 +49,9 @@
       this._mistakesCount = 0;
       this._roundPlanDefault = [
         { difficulty: 1 },
-        { difficulty: 1 },
         { difficulty: 2 },
         { difficulty: 2 },
+        { difficulty: 3 },
         { difficulty: 3 },
       ];
       this._roundPlanPractice = [{ difficulty: 1 }];
@@ -94,6 +94,8 @@
       // Hitboxes UI
       this._termButtons = [];
       this._opButtons = [];
+      this._numberTermsCache = [];
+      this._numberTermsCacheStep = -1;
 
       // Ajustes por dificultad
       this._hideGuidance = false; // se activa en diff 3 (menos ayuda)
@@ -190,13 +192,239 @@
     //  - invalidMsg: string base para invalid (quita vida)
     //  - allowNoTermFor: ["simplify"] etc.
     // =========================================================
-    _casesCatalog() {
-      const external = window.ALGEBRA_DESPEJES_CATALOG;
-      if (Array.isArray(external) && external.length) return external;
-      console.warn(
-        "[Despejes] Catalogo externo no cargado (ALGEBRA_DESPEJES_CATALOG).",
+    _pick(values) {
+      return values[Math.floor(Math.random() * values.length)];
+    }
+    _buildGeneratedCasesCatalog() {
+      return this._caseTemplateIds().map((template) =>
+        this._buildCaseFromTemplate(template.id, template.difficulty),
       );
-      return [];
+    }
+
+    _caseTemplateIds() {
+      return [
+        { id: "add_sub_positive", difficulty: 1 },
+        { id: "add_sub_negative", difficulty: 1 },
+        { id: "product", difficulty: 1 },
+        { id: "two_step_positive", difficulty: 2 },
+        { id: "two_step_negative", difficulty: 2 },
+        { id: "fraction", difficulty: 2 },
+        { id: "two_step_mixed", difficulty: 3 },
+        { id: "fraction_shift", difficulty: 3 },
+        { id: "distributed", difficulty: 3 },
+        { id: "fraction_group", difficulty: 3 },
+        { id: "nested_linear", difficulty: 3 },
+      ];
+    }
+
+    _buildCaseFromTemplate(templateId, difficulty) {
+      switch (templateId) {
+        case "add_sub_positive":
+          return this._makeAddSubCase(templateId, difficulty, this._pick([3, 4, 5, 6, 7, 8]), this._pick([4, 5, 6, 7, 8, 9]));
+        case "add_sub_negative":
+          return this._makeAddSubCase(templateId, difficulty, -this._pick([2, 3, 4, 5, 6, 7]), this._pick([8, 9, 10, 11, 12]));
+        case "product":
+          return this._makeProductCase(templateId, difficulty, this._pick([2, 3, 4, 5, 6]), this._pick([3, 4, 5, 6, 7]));
+        case "two_step_positive":
+          return this._makeTwoStepCase(templateId, difficulty, this._pick([2, 3, 4, 5, 6]), this._pick([3, 4, 5, 6, 7]), this._pick([4, 6, 8, 10, 12]));
+        case "two_step_negative":
+          return this._makeTwoStepCase(templateId, difficulty, this._pick([2, 3, 4, 5]), this._pick([4, 5, 6, 7, 8]), -this._pick([3, 5, 7, 9, 11]));
+        case "fraction":
+          return this._makeFractionCase(templateId, difficulty, this._pick([2, 3, 4, 5, 6]), this._pick([4, 5, 6, 7, 8]));
+        case "two_step_mixed":
+          return this._makeTwoStepCase(templateId, difficulty, this._pick([3, 4, 5, 6, 7, 8]), this._pick([4, 5, 6, 7, 8, 9]), this._pick([-12, -9, -6, 6, 9, 12]));
+        case "fraction_shift":
+          return this._makeFractionShiftCase(templateId, difficulty, this._pick([2, 3, 4, 5]), this._pick([5, 6, 7, 8, 9]), this._pick([-5, -3, 2, 3, 4, 5]));
+        case "distributed":
+          return this._makeDistributedCase(templateId, difficulty, this._pick([2, 3, 4, 5]), this._pick([2, 3, 4, 5, 6]), this._pick([-5, -3, 2, 4, 6]), this._pick([-8, -4, 3, 5, 7]));
+        case "fraction_group":
+          return this._makeFractionGroupCase(templateId, difficulty, this._pick([2, 3, 4]), this._pick([3, 4, 5, 6, 7]), this._pick([-4, -2, 3, 5]), this._pick([-5, -3, 2, 4]));
+        case "nested_linear":
+          return this._makeNestedLinearCase(templateId, difficulty, this._pick([2, 3, 4]), this._pick([2, 3, 5]), this._pick([3, 4, 5, 6]), this._pick([-4, -2, 3, 5]), this._pick([-6, -3, 4, 7]));
+        default:
+          return this._makeAddSubCase("fallback_add_sub", difficulty, 5, 7);
+      }
+    }
+
+    _makeAddSubCase(id, difficulty, c, xValue) {
+      const term = Math.abs(c);
+      const rhs = xValue + c;
+      const op = c > 0 ? "remove" : "add";
+      const signText = c > 0 ? `+ ${term}` : `- ${term}`;
+      const inverseSign = c > 0 ? "-" : "+";
+      return {
+        id,
+        difficulty,
+        objectiveText: `Despejaste x en x ${signText} = n`,
+        steps: [
+          { eqL: `x ${signText}`, eqR: String(rhs), prompt: c > 0 ? `Quita el +${term} aplicando el inverso aditivo.` : `Agrega ${term} para cancelar -${term}.`, terms: [String(term)], goal: { op, term: String(term) }, invalidMsg: "Primero cancela el término que acompaña a x." },
+          { eqL: `x ${signText} ${inverseSign} ${term}`, eqR: `${rhs} ${inverseSign} ${term}`, prompt: "Simplifica los términos opuestos.", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: "x", eqR: String(xValue), isTerminal: true },
+        ],
+      };
+    }
+
+    _makeProductCase(id, difficulty, a, xValue) {
+      const rhs = a * xValue;
+      return {
+        id,
+        difficulty,
+        objectiveText: "Usaste inverso multiplicativo",
+        steps: [
+          { eqL: `${a}x`, eqR: String(rhs), prompt: `Divide entre ${a} para aislar x.`, terms: [String(a)], goal: { op: "div", term: String(a) }, invalidMsg: "Si x está multiplicada, debes dividir entre su coeficiente." },
+          { eqL: `${a}x / ${a}`, eqR: `${rhs} / ${a}`, prompt: `Simplifica ${a}/${a}.`, terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: "x", eqR: String(xValue), isTerminal: true },
+        ],
+      };
+    }
+
+    _makeTwoStepCase(id, difficulty, a, xValue, c) {
+      const term = Math.abs(c);
+      const rhs = a * xValue + c;
+      const reducedRhs = a * xValue;
+      const signText = c > 0 ? `+ ${term}` : `- ${term}`;
+      const op = c > 0 ? "remove" : "add";
+      const inverseSign = c > 0 ? "-" : "+";
+      return {
+        id,
+        difficulty,
+        objectiveText: "Despejaste una ecuación de dos pasos",
+        steps: [
+          { eqL: `${a}x ${signText}`, eqR: String(rhs), prompt: "Primero cancela el término constante.", terms: [String(term), String(a)], goal: { op, term: String(term) }, warn: [{ op: "div", term: String(a), msg: "Aún no conviene dividir: primero quita el término que se suma o resta." }], invalidMsg: "El primer paso es cancelar el término constante." },
+          { eqL: `${a}x ${signText} ${inverseSign} ${term}`, eqR: `${rhs} ${inverseSign} ${term}`, prompt: "Simplifica.", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: `${a}x`, eqR: String(reducedRhs), prompt: `Ahora divide entre ${a}.`, terms: [String(a)], goal: { op: "div", term: String(a) }, invalidMsg: "El coeficiente de x se elimina dividiendo." },
+          { eqL: `${a}x / ${a}`, eqR: `${reducedRhs} / ${a}`, prompt: "Simplifica.", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: "x", eqR: String(xValue), isTerminal: true },
+        ],
+      };
+    }
+
+    _makeFractionCase(id, difficulty, divisor, xValue) {
+      return {
+        id,
+        difficulty,
+        objectiveText: "Eliminaste un denominador",
+        steps: [
+          { eqL: `x / ${divisor}`, eqR: String(xValue), prompt: `Multiplica por ${divisor} para eliminar el denominador.`, terms: [String(divisor)], goal: { op: "mul", term: String(divisor) }, invalidMsg: "Si x está dividida, multiplica por el denominador." },
+          { eqL: `${divisor}(x / ${divisor})`, eqR: `${divisor}(${xValue})`, prompt: `Simplifica ${divisor}/${divisor}.`, terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: "x", eqR: String(xValue * divisor), isTerminal: true },
+        ],
+      };
+    }
+
+    _makeFractionShiftCase(id, difficulty, divisor, xValue, c) {
+      const rhs = xValue + c;
+      const term = Math.abs(c);
+      const signText = c > 0 ? `+ ${term}` : `- ${term}`;
+      const inverseSign = c > 0 ? "-" : "+";
+      const op = c > 0 ? "remove" : "add";
+      return {
+        id,
+        difficulty,
+        objectiveText: "Despejaste x con denominador y suma",
+        steps: [
+          { eqL: `x / ${divisor} ${signText}`, eqR: String(rhs), prompt: "", terms: [String(term), String(divisor)], goal: { op, term: String(term) }, warn: [{ op: "mul", term: String(divisor), msg: "Primero cancela la suma antes de eliminar el denominador." }], invalidMsg: "Primero elimina el término constante." },
+          { eqL: `x / ${divisor} ${signText} ${inverseSign} ${term}`, eqR: `${rhs} ${inverseSign} ${term}`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: `x / ${divisor}`, eqR: String(xValue), prompt: "", terms: [String(divisor)], goal: { op: "mul", term: String(divisor) }, invalidMsg: "Multiplica por el denominador." },
+          { eqL: `${divisor}(x / ${divisor})`, eqR: `${divisor}(${xValue})`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: "x", eqR: String(xValue * divisor), isTerminal: true },
+        ],
+      };
+    }
+
+    _makeDistributedCase(id, difficulty, a, xValue, b, c) {
+      const rhs = a * (xValue + b) + c;
+      const cTerm = Math.abs(c);
+      const bTerm = Math.abs(b);
+      const cSign = this._signedTerm(c);
+      const bSign = this._signedTerm(b);
+      const cInverse = c > 0 ? "-" : "+";
+      const bInverse = b > 0 ? "-" : "+";
+      const cOp = c > 0 ? "remove" : "add";
+      const bOp = b > 0 ? "remove" : "add";
+      const reducedRhs = a * (xValue + b);
+      const afterDiv = xValue + b;
+      return {
+        id,
+        difficulty,
+        objectiveText: "Despejaste una ecuación con paréntesis",
+        steps: [
+          { eqL: `${a}(x ${bSign}) ${cSign}`, eqR: String(rhs), prompt: "", terms: [String(cTerm), String(a), String(bTerm)], goal: { op: cOp, term: String(cTerm) }, invalidMsg: "Primero cancela el término exterior al paréntesis." },
+          { eqL: `${a}(x ${bSign}) ${cSign} ${cInverse} ${cTerm}`, eqR: `${rhs} ${cInverse} ${cTerm}`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: `${a}(x ${bSign})`, eqR: String(reducedRhs), prompt: "", terms: [String(a), String(bTerm)], goal: { op: "div", term: String(a) }, invalidMsg: "El factor del paréntesis se elimina dividiendo." },
+          { eqL: `${a}(x ${bSign}) / ${a}`, eqR: `${reducedRhs} / ${a}`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: `x ${bSign}`, eqR: String(afterDiv), prompt: "", terms: [String(bTerm)], goal: { op: bOp, term: String(bTerm) }, invalidMsg: "Cancela el término que acompaña a x dentro del paréntesis." },
+          { eqL: `x ${bSign} ${bInverse} ${bTerm}`, eqR: `${afterDiv} ${bInverse} ${bTerm}`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: "x", eqR: String(xValue), isTerminal: true },
+        ],
+      };
+    }
+
+    _makeFractionGroupCase(id, difficulty, divisor, xValue, a, c) {
+      const quotient = xValue;
+      const solution = divisor * quotient - a;
+      const rhs = quotient + c;
+      const aTerm = Math.abs(a);
+      const cTerm = Math.abs(c);
+      const aSign = this._signedTerm(a);
+      const cSign = this._signedTerm(c);
+      const aInverse = a > 0 ? "-" : "+";
+      const cInverse = c > 0 ? "-" : "+";
+      const aOp = a > 0 ? "remove" : "add";
+      const cOp = c > 0 ? "remove" : "add";
+      const afterConst = quotient;
+      const afterMul = solution + a;
+      return {
+        id,
+        difficulty,
+        objectiveText: "Despejaste x con fracción y suma",
+        steps: [
+          { eqL: `(x ${aSign}) / ${divisor} ${cSign}`, eqR: String(rhs), prompt: "", terms: [String(aTerm), String(divisor), String(cTerm)], goal: { op: cOp, term: String(cTerm) }, invalidMsg: "Primero cancela el término exterior a la fracción." },
+          { eqL: `(x ${aSign}) / ${divisor} ${cSign} ${cInverse} ${cTerm}`, eqR: `${rhs} ${cInverse} ${cTerm}`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: `(x ${aSign}) / ${divisor}`, eqR: String(afterConst), prompt: "", terms: [String(divisor), String(aTerm)], goal: { op: "mul", term: String(divisor) }, invalidMsg: "Multiplica por el denominador para quitar la fracción." },
+          { eqL: `${divisor}((x ${aSign}) / ${divisor})`, eqR: `${afterConst}(${divisor})`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: `x ${aSign}`, eqR: String(afterMul), prompt: "", terms: [String(aTerm)], goal: { op: aOp, term: String(aTerm) }, invalidMsg: "Cancela el término dentro del numerador." },
+          { eqL: `x ${aSign} ${aInverse} ${aTerm}`, eqR: `${afterMul} ${aInverse} ${aTerm}`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: "x", eqR: String(solution), isTerminal: true },
+        ],
+      };
+    }
+
+    _makeNestedLinearCase(id, difficulty, a, b, xValue, c, d) {
+      const inner = b * xValue + c;
+      const rhs = a * inner + d;
+      const cTerm = Math.abs(c);
+      const dTerm = Math.abs(d);
+      const cSign = this._signedTerm(c);
+      const dSign = this._signedTerm(d);
+      const cInverse = c > 0 ? "-" : "+";
+      const dInverse = d > 0 ? "-" : "+";
+      const cOp = c > 0 ? "remove" : "add";
+      const dOp = d > 0 ? "remove" : "add";
+      const afterD = a * inner;
+      return {
+        id,
+        difficulty,
+        objectiveText: "Despejaste una ecuación anidada",
+        steps: [
+          { eqL: `${a}(${b}x ${cSign}) ${dSign}`, eqR: String(rhs), prompt: "", terms: [String(dTerm), String(a), String(cTerm), String(b)], goal: { op: dOp, term: String(dTerm) }, invalidMsg: "Primero cancela el término exterior." },
+          { eqL: `${a}(${b}x ${cSign}) ${dSign} ${dInverse} ${dTerm}`, eqR: `${rhs} ${dInverse} ${dTerm}`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: `${a}(${b}x ${cSign})`, eqR: String(afterD), prompt: "", terms: [String(a), String(cTerm), String(b)], goal: { op: "div", term: String(a) }, invalidMsg: "Divide entre el factor exterior." },
+          { eqL: `${a}(${b}x ${cSign}) / ${a}`, eqR: `${afterD} / ${a}`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: `${b}x ${cSign}`, eqR: String(inner), prompt: "", terms: [String(cTerm), String(b)], goal: { op: cOp, term: String(cTerm) }, invalidMsg: "Cancela el término constante." },
+          { eqL: `${b}x ${cSign} ${cInverse} ${cTerm}`, eqR: `${inner} ${cInverse} ${cTerm}`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: `${b}x`, eqR: String(b * xValue), prompt: "", terms: [String(b)], goal: { op: "div", term: String(b) }, invalidMsg: "Divide entre el coeficiente de x." },
+          { eqL: `${b}x / ${b}`, eqR: `${b * xValue} / ${b}`, prompt: "", terms: [], goal: { op: "simplify" }, allowNoTermFor: ["simplify"] },
+          { eqL: "x", eqR: String(xValue), isTerminal: true },
+        ],
+      };
+    }
+
+    _signedTerm(value) {
+      return value >= 0 ? `+ ${value}` : `- ${Math.abs(value)}`;
+    }
+    _casesCatalog() {
+      return this._buildGeneratedCasesCatalog();
     }
 
     _pickCaseForRound(difficulty) {
@@ -238,6 +466,8 @@
       this._runForwardT = 0;
       this._runFxPhase = 0;
       this._runQueued = false;
+      this._numberTermsCache = [];
+      this._numberTermsCacheStep = -1;
 
       const diff = this._roundPlan[i]?.difficulty || 1;
       this.case = this._pickCaseForRound(diff);
@@ -969,7 +1199,7 @@
       ctx.fillText("Término", 18, panelY + 24);
 
       this._termButtons = [];
-      const terms = (step.terms || []).slice(0, 12);
+      const terms = this._numbersForStep(step).slice(0, 12);
 
       let x = 18;
       let y = panelY + 40;
@@ -1021,6 +1251,50 @@
       }
     }
 
+
+    _numbersForStep(step) {
+      if (this._numberTermsCacheStep === this.stepIndex) {
+        return this._numberTermsCache;
+      }
+      const numbers = [];
+      for (const raw of step.terms || []) this._addUniqueNumber(numbers, String(raw));
+      this._collectNumbersFromText(String(step.eqL || ""), numbers);
+      this._collectNumbersFromText(String(step.eqR || ""), numbers);
+      this._shuffleNumbersForStep(numbers, step);
+      this._numberTermsCache = numbers;
+      this._numberTermsCacheStep = this.stepIndex;
+      return this._numberTermsCache;
+    }
+
+    _collectNumbersFromText(text, numbers) {
+      let current = "";
+      for (const ch of text) {
+        if (ch >= "0" && ch <= "9") {
+          current += ch;
+        } else if (current) {
+          this._addUniqueNumber(numbers, current);
+          current = "";
+        }
+      }
+      if (current) this._addUniqueNumber(numbers, current);
+    }
+
+    _addUniqueNumber(numbers, value) {
+      if (value && !numbers.includes(value)) numbers.push(value);
+    }
+
+    _shuffleNumbersForStep(numbers, step) {
+      if (numbers.length <= 1) return;
+      for (let i = numbers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+      }
+      const goalTerm = String(step.goal?.term || "");
+      if (goalTerm && numbers[0] === goalTerm && numbers.length > 1) {
+        const swapIndex = 1 + Math.floor(Math.random() * (numbers.length - 1));
+        [numbers[0], numbers[swapIndex]] = [numbers[swapIndex], numbers[0]];
+      }
+    }
     _buildAndDrawOpPanel(ctx, step) {
       const w = this.game.canvas.width;
       const panelY = this.game.canvas.height - this.ui.panelH;

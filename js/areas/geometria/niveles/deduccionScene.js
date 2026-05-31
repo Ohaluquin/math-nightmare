@@ -1,4 +1,4 @@
-﻿// js/areas/geometria/niveles/deduccionScene.js
+// js/areas/geometria/niveles/deduccionScene.js
 // ===========================================================
 // DeduccionScene - "Deduccion tipo Master Mind"
 // Adivina un código de 3 letras (A..G, sin repetir) en un numero
@@ -7,6 +7,22 @@
 // UI y flujo alineados con los niveles del area de geometria.
 // ===========================================================
 
+const DEDUCCION_RIDDLE_LIMITS = [3, 3, 2];
+const DEDUCCION_ROUND_RIDDLE = "riddle";
+const DEDUCCION_ROUND_FREE = "free";
+const DEDUCCION_RIDDLE_TEMPLATES = [
+  { key: "BCA", clues: ["ABC30", "CAB30"], difficulty: 1, shuffle: true },
+  { key: "CAB", clues: ["ADE10", "CGF11", "BCA30"], difficulty: 1, shuffle: false },
+  { key: "BEF", clues: ["ABC10", "DEF22", "BDE21", "BAF22"], difficulty: 1, shuffle: true },
+  { key: "DFA", clues: ["ABC10", "DEF21", "BED10", "FCE10"], difficulty: 2, shuffle: true },
+  { key: "GCF", clues: ["ABC10", "DEF11", "GAF22", "GAD11"], difficulty: 2, shuffle: true },
+  { key: "EDA", clues: ["ABC10", "DEF20", "BDE21", "DCE20"], difficulty: 2, shuffle: true },
+  { key: "FGB", clues: ["ABC10", "GFE20", "EGB22", "CDE00"], difficulty: 2, shuffle: true },
+  { key: "ACD", clues: ["ACB22", "CEB10", "DFA20", "GDC20"], difficulty: 2, shuffle: true },
+  { key: "ACG", clues: ["FBG11", "GFD10", "ECA21", "CDA20"], difficulty: 3, shuffle: true },
+  { key: "ABE", clues: ["CAB20", "FCE11", "BCG10", "ECG10"], difficulty: 3, shuffle: true },
+  { key: "ABD", clues: ["CBE11", "EFC00", "CAB20", "BFA20", "GAF10"], difficulty: 3, shuffle: true },
+];
 class DeduccionScene extends Scene {
   constructor(game, options = {}) {
     super(game);
@@ -30,9 +46,12 @@ class DeduccionScene extends Scene {
     // Juego
     this.secretCode = [];
     this.currentGuess = [];
-    this.attempts = []; // { guess:string[], lettersCorrect:number, positionsCorrect:number }
+    this.attempts = []; // { guess:string[], lettersCorrect:number, positionsCorrect:number, locked?:boolean }
     this.feedback = "";
     this.currentRound = 1;
+    this.currentRoundType = DEDUCCION_ROUND_RIDDLE;
+    this.answerAttempts = 0;
+    this.freeRoundErrors = 0;
     this.roundsSolved = 0;
     this.roundTransitionTimer = 0;
     this.roundTransitionMessage = "";
@@ -84,15 +103,11 @@ class DeduccionScene extends Scene {
     this.message = "";
     this.sheetsReward = 0;
 
-    this.secretCode = this._buildSecretCode();
-    this.currentGuess = [];
-    this.attempts = [];
-    this.feedback = "";
     this.currentRound = 1;
-    this.maxAttempts = this._getMaxAttemptsForRound(this.currentRound);
     this.roundsSolved = 0;
     this.roundTransitionTimer = 0;
     this.roundTransitionMessage = "";
+    this._startRound(1);
 
     this._clickRegions = [];
     this._prevMouseDown = false;
@@ -137,7 +152,6 @@ class DeduccionScene extends Scene {
     if (this.state === "intro") {
       if (isJustPressed("Enter") || isJustPressed(" ") || mouseJustPressed) {
         this.state = "playing";
-        this.maxAttempts = this._getMaxAttemptsForRound(this.currentRound);
         this.playSfx(this.sfxPage, { volume: 0.5 });
       }
       commitKeys();
@@ -187,6 +201,94 @@ class DeduccionScene extends Scene {
     const limits = Array.isArray(this.attemptLimits) ? this.attemptLimits : [];
     const index = Math.max(0, (roundNumber | 0) - 1);
     return limits[index] ?? limits[limits.length - 1] ?? 8;
+  }
+  _startRound(roundNumber) {
+    this.currentRound = roundNumber;
+    this.currentGuess = [];
+    this.attempts = [];
+    this.answerAttempts = 0;
+    this.freeRoundErrors = 0;
+    this.feedback = "";
+
+    if (roundNumber <= 2) {
+      this.currentRoundType = DEDUCCION_ROUND_RIDDLE;
+      this._startRiddleRound(roundNumber);
+    } else {
+      this.currentRoundType = DEDUCCION_ROUND_FREE;
+      this.secretCode = this._buildSecretCode();
+      this.maxAttempts = this._getMaxAttemptsForRound(roundNumber);
+    }
+  }
+
+  _isRiddleMode() {
+    return this.currentRoundType === DEDUCCION_ROUND_RIDDLE;
+  }
+
+  _startRiddleRound(difficulty) {
+    const template = this._pickRiddleTemplate(difficulty);
+    const puzzle = this._buildRiddleVariant(template);
+    this.secretCode = puzzle.secret;
+    this.attempts = puzzle.clues;
+    this.maxAttempts = this.attempts.length + this._riddleAnswerLimit();
+  }
+
+  _pickRiddleTemplate(difficulty) {
+    const candidates = DEDUCCION_RIDDLE_TEMPLATES.filter((t) => t.difficulty === difficulty);
+    const pool = candidates.length ? candidates : DEDUCCION_RIDDLE_TEMPLATES;
+    return { ...pool[Math.floor(Math.random() * pool.length)] };
+  }
+
+  _buildRiddleVariant(template) {
+    const permutation = this._buildLetterPermutation();
+    const clues = [];
+    for (const rawClue of template.clues || []) {
+      const clue = String(rawClue);
+      if (clue.length < this.codeLength + 2) continue;
+      const remappedGuess = this._remapLetters(clue.slice(0, this.codeLength), permutation);
+      clues.push({
+        guess: this._stringToLetters(remappedGuess),
+        lettersCorrect: parseInt(clue[this.codeLength], 10),
+        positionsCorrect: parseInt(clue[this.codeLength + 1], 10),
+        locked: true,
+      });
+    }
+    if (template.shuffle !== false) this._shuffle(clues);
+    return {
+      secret: this._stringToLetters(this._remapLetters(template.key, permutation)),
+      clues,
+    };
+  }
+
+  _buildLetterPermutation() {
+    const shuffled = [...this.alphabet];
+    this._shuffle(shuffled);
+    const mapping = {};
+    for (let i = 0; i < this.alphabet.length; i++) {
+      mapping[this.alphabet[i]] = shuffled[i];
+    }
+    return mapping;
+  }
+
+  _remapLetters(text, mapping) {
+    return String(text)
+      .split("")
+      .map((letter) => mapping[letter] || letter)
+      .join("");
+  }
+
+  _stringToLetters(text) {
+    return String(text).split("");
+  }
+
+  _shuffle(values) {
+    for (let i = values.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [values[i], values[j]] = [values[j], values[i]];
+    }
+  }
+
+  _riddleAnswerLimit() {
+    return DEDUCCION_RIDDLE_LIMITS[Math.min(this.currentRound - 1, DEDUCCION_RIDDLE_LIMITS.length - 1)] || 3;
   }
 
   _handleClick(mx, my) {
@@ -239,6 +341,7 @@ class DeduccionScene extends Scene {
       guess: [...this.currentGuess],
       lettersCorrect,
       positionsCorrect,
+      locked: false,
     });
 
     if (positionsCorrect === this.codeLength) {
@@ -246,13 +349,23 @@ class DeduccionScene extends Scene {
       return;
     }
 
-    if (this.attempts.length >= this.maxAttempts) {
-      this._finishGame(true);
-      return;
+    if (this._isRiddleMode()) {
+      this.answerAttempts += 1;
+      if (this.answerAttempts >= this._riddleAnswerLimit()) {
+        this._finishGame(true);
+        return;
+      }
+      this.feedback = "Clave incorrecta. Revisa las pistas iniciales y prueba otra clave final.";
+    } else {
+      this.freeRoundErrors += 1;
+      if (this.attempts.length >= this.maxAttempts) {
+        this._finishGame(true);
+        return;
+      }
+      this.feedback = `Letras correctas: ${lettersCorrect}. Posiciones correctas: ${positionsCorrect}.`;
     }
 
     this.currentGuess = [];
-    this.feedback = `Letras correctas: ${lettersCorrect}. Posiciones correctas: ${positionsCorrect}.`;
     this.playSfx(this.sfxWrong, { volume: 0.65 });
   }
 
@@ -273,12 +386,7 @@ class DeduccionScene extends Scene {
   }
 
   _startNextRound() {
-    this.currentRound += 1;
-    this.maxAttempts = this._getMaxAttemptsForRound(this.currentRound);
-    this.secretCode = this._buildSecretCode();
-    this.currentGuess = [];
-    this.attempts = [];
-    this.feedback = "";
+    this._startRound(this.currentRound + 1);
     this.roundTransitionMessage = "";
     this.state = "playing";
   }
@@ -301,7 +409,7 @@ class DeduccionScene extends Scene {
     this.sheetsReward = gained;
 
     const codeText = this.secretCode.join(" ");
-    const tries = this.attempts.length;
+    const tries = this._isRiddleMode() ? this.answerAttempts : this.attempts.length;
 
     if (this.win) {
       this.message =
@@ -314,7 +422,7 @@ class DeduccionScene extends Scene {
         "No descifraste los 3 códigos, pero si resolviste lo suficiente.\n" +
         `Rondas superadas: ${this.roundsSolved}/${this.totalRounds}\n` +
         `Ronda actual: ${this.currentRound}/${this.totalRounds}\n` +
-        `Intentos: ${tries}/${this.maxAttempts}\n` +
+        `${this._isRiddleMode() ? "Respuestas" : "Intentos"}: ${tries}/${this._isRiddleMode() ? this._riddleAnswerLimit() : this.maxAttempts}\n` +
         `Código secreto: ${codeText}\n` +
         `Hojas ganadas: ${gained}.`;
       this.playSfx(this.sfxWin, { volume: 0.62 });
@@ -323,7 +431,7 @@ class DeduccionScene extends Scene {
         "Te quedaste sin intentos en esta ronda.\n" +
         `Rondas superadas: ${this.roundsSolved}/${this.totalRounds}\n` +
         `Ronda actual: ${this.currentRound}/${this.totalRounds}\n` +
-        `Intentos: ${tries}/${this.maxAttempts}\n` +
+        `${this._isRiddleMode() ? "Respuestas" : "Intentos"}: ${tries}/${this._isRiddleMode() ? this._riddleAnswerLimit() : this.maxAttempts}\n` +
         `Código secreto: ${codeText}\n` +
         `Hojas ganadas: ${gained}.`;
       this.playSfx(this.sfxLose, { volume: 0.7 });
@@ -399,28 +507,31 @@ class DeduccionScene extends Scene {
   }
 
   _drawHUD(ctx, W) {
-    const attemptsUsed = this.attempts.length;
-    const attemptsLeft = Math.max(0, this.maxAttempts - attemptsUsed);
+    const riddle = this._isRiddleMode();
+    const attemptsUsed = riddle ? this.answerAttempts : this.attempts.length;
+    const attemptsMax = riddle ? this._riddleAnswerLimit() : this.maxAttempts;
+    const attemptsLeft = Math.max(0, attemptsMax - attemptsUsed);
+    const label = riddle ? "Respuestas" : "Intentos";
 
     ctx.save();
     ctx.fillStyle = "rgba(0,0,0,0.3)";
-    ctx.fillRect(16, 12, 448, 52);
+    ctx.fillRect(16, 12, 472, 52);
     ctx.strokeStyle = "#7aa7ff";
     ctx.lineWidth = 2;
-    ctx.strokeRect(16, 12, 448, 52);
+    ctx.strokeRect(16, 12, 472, 52);
 
     ctx.font = "16px Arial";
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
-    ctx.fillText(`Intentos: ${attemptsUsed}/${this.maxAttempts}`, 28, 30);
+    ctx.fillText(`${label}: ${attemptsUsed}/${attemptsMax}`, 28, 30);
     ctx.fillText(`Código: ${this.codeLength} letras`, 28, 48);
-    ctx.fillText(`Ronda: ${this.currentRound}/${this.totalRounds}`, 170, 48);
+    ctx.fillText(riddle ? `Acertijo: ${this.currentRound}/2` : `Ronda libre: ${this.currentRound}/${this.totalRounds}`, 170, 48);
 
-    ctx.fillText("Restantes:", 250, 30);
-    for (let i = 0; i < this.maxAttempts; i++) {
+    ctx.fillText("Restantes:", 262, 30);
+    for (let i = 0; i < attemptsMax; i++) {
       ctx.fillStyle = i < attemptsLeft ? "#ff4d6d" : "rgba(255,255,255,0.25)";
-      this._drawHeart(ctx, 338 + i * 14, 22, 10);
+      this._drawHeart(ctx, 350 + i * 18, 22, 10);
     }
     ctx.restore();
 
@@ -441,9 +552,9 @@ class DeduccionScene extends Scene {
     ctx.fillText("Cada intento te da pistas:", W / 2, H * 0.45);
     ctx.fillText("- Letras: cuántas están en el código", W / 2, H * 0.50);
     ctx.fillText("- Posiciones: cuántas están en el lugar correcto", W / 2, H * 0.55);
-    ctx.fillText("No se trata de adivinar.", W / 2, H * 0.62);
-    ctx.fillText("Usa cada resultado para descartar opciones", W / 2, H * 0.68);
-    ctx.fillText("y acercarte paso a paso a la respuesta.", W / 2, H * 0.73);
+    ctx.fillText("Las primeras 2 rondas traen pistas iniciales.", W / 2, H * 0.62);
+    ctx.fillText("La tercera es libre: crea tus propias pistas.", W / 2, H * 0.68);
+    ctx.fillText("No se trata de adivinar, sino de descartar.", W / 2, H * 0.73);
 
     ctx.fillStyle = "#ffffff";
     ctx.fillText("Pulsa ENTER, ESPACIO o clic para comenzar.", W / 2, H * 0.83);
@@ -461,7 +572,9 @@ class DeduccionScene extends Scene {
     ctx.font = "17px Arial";
     ctx.fillStyle = "#a9b8df";
     ctx.fillText(
-      "Meta: usa las claves de cada intento para deducir los 3 códigos secretos.",
+      this._isRiddleMode()
+        ? "Usa las pistas iniciales para deducir la clave final. No es ensayo y error."
+        : "Ahora construye tus propias pistas para deducir el código libre.",
       W * 0.5,
       124,
     );
@@ -507,7 +620,7 @@ class DeduccionScene extends Scene {
 
     ctx.font = "bold 22px Arial";
     ctx.fillStyle = "#dce7ff";
-    ctx.fillText(`Tablero de ronda ${this.currentRound}`, x + 18, y + 34);
+    ctx.fillText(this._isRiddleMode() ? `Pistas del acertijo ${this.currentRound}` : "Tablero libre", x + 18, y + 34);
 
     ctx.font = "15px Arial";
     ctx.fillStyle = "#a9b8df";
@@ -536,6 +649,10 @@ class DeduccionScene extends Scene {
 
       ctx.fillStyle = active ? "rgba(123,223,242,0.08)" : "rgba(255,255,255,0.018)";
       ctx.fillRect(tableX, ry, tableW, rowH - 2);
+      if (row?.locked) {
+        ctx.fillStyle = "rgba(255,209,102,0.10)";
+        ctx.fillRect(tableX, ry, tableW, rowH - 2);
+      }
 
       ctx.font = "14px Arial";
       ctx.fillStyle = "#d8e6ff";
@@ -690,7 +807,7 @@ class DeduccionScene extends Scene {
 
     ctx.font = "16px Arial";
     ctx.fillStyle = "#d8e6ff";
-    ctx.fillText("Teclado: A-G agrega letras, Backspace borra, Enter envia.", barX + 16, barY + 22);
+    ctx.fillText(this._isRiddleMode() ? "Filas doradas: pistas iniciales. Deduce la clave final." : "Teclado: A-G agrega letras, Backspace borra, Enter envía.", barX + 16, barY + 22);
 
     ctx.font = "bold 18px Arial";
     if (this.feedback) {
@@ -698,7 +815,7 @@ class DeduccionScene extends Scene {
       ctx.fillText(this._ellipsis(this.feedback, 92), barX + 16, barY + 46);
     } else {
       ctx.fillStyle = "#7bdff2";
-      ctx.fillText("Construye tu intento y envialo.", barX + 16, barY + 46);
+      ctx.fillText(this._isRiddleMode() ? "Construye una respuesta final a partir de las pistas." : "Construye tu intento y envíalo.", barX + 16, barY + 46);
     }
 
     ctx.restore();
