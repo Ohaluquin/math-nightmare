@@ -65,6 +65,14 @@ window.MN_normalizeState = function (rawState) {
     ),
   );
 
+  const minerosTier = state.minigames?.mineros_division?.bestTier || 0;
+  if (minerosTier >= 1 && !state.sheetsUnlocked.includes("sheet_estimacion")) {
+    state.sheetsUnlocked.push("sheet_estimacion");
+    if (!state.pendingSheets.includes("sheet_estimacion")) {
+      state.pendingSheets.push("sheet_estimacion");
+    }
+  }
+
   state.seenStories =
     raw.seenStories && typeof raw.seenStories === "object"
       ? Object.fromEntries(

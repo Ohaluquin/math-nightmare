@@ -480,7 +480,7 @@
 
       const pickLeonardoScene = () => {
         const sheets = window.MN_STATE?.sheets || 0;
-        if (sheets >= 16) return "leonardo_perfecto";
+        if (sheets >= 17) return "leonardo_perfecto";
         if (sheets >= 11) return "leonardo_aprobado";
         if (sheets >= 10) return "leonardo_reto";
         return "leonardo_bloqueado";

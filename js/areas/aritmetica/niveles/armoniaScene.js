@@ -18,6 +18,7 @@ class ArmoniaScene extends Scene {
     this.timeLeft = this.totalTime;
     this.score = 0;
     this.scoreGoal = 2000;
+    this.bonusScoreGoal = 4000;
     this.timeToSolveMax = 10;
     this.correctStreak = 0;
     this.bestStreak = 0;
@@ -33,7 +34,7 @@ class ArmoniaScene extends Scene {
     this.betweenTimer = 0;
     this.betweenLabel = "";
     this.betweenLabelColor = "#ffffff";
-    this.milestones = [500, 1000, 1500, 2000, 2500, 3000];
+    this.milestones = [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000];
     this.nextMilestoneIndex = 0;
     this.milestoneToast = "";
     this.milestoneToastTimer = 0;
@@ -377,7 +378,7 @@ class ArmoniaScene extends Scene {
     this.exitDelay = 0.45;
     this._stopBgm();
 
-    const tier = failed ? 0 : 1;
+    const tier = failed ? 0 : this.score >= this.bonusScoreGoal ? 2 : 1;
 
     let gained = 0;
     if (typeof window.MN_reportMinigameTier === "function") {
@@ -385,7 +386,7 @@ class ArmoniaScene extends Scene {
     }
     this.sheetsReward = gained;
 
-    this.message += `\nPuntaje final: ${this.score}. Meta: ${this.scoreGoal}.`;
+    this.message += `\nPuntaje final: ${this.score}. Meta: ${this.scoreGoal}. Extra: ${this.bonusScoreGoal}.`;
     this.message += `\nAciertos: ${this.totalCorrect} | Errores: ${this.totalWrong} | Mejor racha: ${this.bestStreak}.`;
     this.message += `\nHojas ganadas: ${gained}.`;
   }

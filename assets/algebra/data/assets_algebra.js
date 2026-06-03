@@ -59,6 +59,7 @@ window.MN_ASSETS_SHEETS = [
   { type: "image", key: "sheet_sistema_decimal", src: "assets/aritmetica/hojas/3_Sistema_Decimal.webp" },
   { type: "image", key: "sheet_suma", src: "assets/aritmetica/hojas/3_Suma.webp" },
   { type: "image", key: "sheet_resta", src: "assets/aritmetica/hojas/4_Resta.webp" },
+  { type: "image", key: "sheet_estimacion", src: "assets/aritmetica/hojas/4_Estimacion.webp" },
   { type: "image", key: "sheet_cero", src: "assets/aritmetica/hojas/4_El_Cero.webp" },
   { type: "image", key: "sheet_multiplicacion", src: "assets/aritmetica/hojas/5_Multiplicacion.webp" },
   { type: "image", key: "sheet_dos_caras", src: "assets/aritmetica/hojas/5_Dos_caras_de_la_misma_moneda.webp" },

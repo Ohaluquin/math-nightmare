@@ -1,4 +1,4 @@
-// historia_algebra.js - Historia de la zona de Algebra de Math Nightmare
+// historia_algebra.js - Historia de la zona de Álgebra de Math Nightmare
 window.MN_PLAYER_NAME = "Nico";
 
 const MN_ALGEBRA_STORY_SCALE_MULTIPLIERS = {
@@ -49,7 +49,7 @@ const MN_SOFIA_ALGEBRA_CHARACTERS = [
     y: 530,
     scale: 1,
     flipX: false,
-    name: "Sofia",
+    name: "Sofía",
   },
 ];
 
@@ -60,9 +60,8 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_algebra_1",
     mechanic:
-      "Ordena las letras para reconstruir conceptos del álgebra. No se trata de calcular, sino de reconocer el vocabulario correcto antes de que la confusión avance.",
-    tip:
-      "Fíjate en palabras base como variable, constante, coeficiente o expresión. Si reconoces el concepto, después será más fácil interpretar ejercicios algebraicos.",
+      "Ordena las letras para reconstruir conceptos del álgebra. No se trata de calcular, sino de reconocer palabras importantes como variable, constante, coeficiente o expresión.",
+    tip: "No te frustres si algunas palabras todavía no te suenan. Este reto también sirve para familiarizarte con el vocabulario del álgebra. Intenta reconocer partes de la palabra, prueba combinaciones y, cuando descubras el concepto, revisa qué significa. Poco a poco eso te ayudará a interpretar mejor los ejercicios.",
   },
   {
     id: "bodeguero",
@@ -70,9 +69,8 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_algebra_2",
     mechanic:
-      "Observa la balanza y realiza acciones que mantengan el equilibrio. Si quitas o agregas algo en un lado, debes hacer lo mismo en el otro.",
-    tip:
-      "La idea central es la igualdad. Una ecuación sigue siendo verdadera solo si ambos lados se transforman de manera equivalente.",
+      "Observa las balanzas en equilibrio y deduce cuánto pesa una caja. Si un mismo elemento aparece en ambos lados, puedes arrastrarlo fuera de la balanza para simplificar la comparación. Después aplicarás la misma idea para descubrir el peso de un costal.",
+    tip: "La idea central es la igualdad: si dos lados pesan lo mismo, quitar elementos iguales de ambos lados conserva el equilibrio. Eso te ayuda a ver qué queda y a descubrir el valor desconocido.",
   },
   {
     id: "brahmagupta",
@@ -80,9 +78,8 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_algebra_3",
     mechanic:
-      "Lee el enigma con calma, identifica la cantidad desconocida y elige el número que satisface las relaciones descritas.",
-    tip:
-      "No adivines. Primero traduce lo que cambia, lo que permanece y cómo se relacionan las cantidades; después busca el número oculto.",
+      "Lee el enigma con calma, identifica la cantidad desconocida y busca el número que cumple con las relaciones descritas.",
+    tip: "Los primeros enigmas pueden resolverse mentalmente, pero si uno se complica, escribe una ecuación: llama x al número oculto, traduce las relaciones y resuelve paso a paso. Usar papel también es parte del razonamiento.",
   },
   {
     id: "mateo",
@@ -91,8 +88,7 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     helpSheetKey: "sheet_algebra_4",
     mechanic:
       "Clasifica y junta términos semejantes. Solo pueden combinarse los que tienen la misma parte literal o ambos son constantes.",
-    tip:
-      "Mira la letra y su exponente antes del número. Primero decide si los términos son semejantes; después suma o resta coeficientes.",
+    tip: "Primero separa términos con x y constantes. Después suma o resta sus coeficientes respetando los signos. Si hay paréntesis precedidos por un signo menos, recuerda que ese signo cambia todos los términos de adentro.",
   },
   {
     id: "silvano",
@@ -100,9 +96,8 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_algebra_5",
     mechanic:
-      "Debes interpretar correctamente instrucciones y expresiones para tomar el camino adecuado. Leer rápido suele llevar al error.",
-    tip:
-      "Palabras como doble, mitad, suma o diferencia cambian por completo el significado. Traduce cada frase con precisión antes de decidir.",
+      "Debes interpretar correctamente instrucciones y expresiones para tomar el camino adecuado.",
+    tip: "Si una palabra no te queda clara, detente antes de elegir. Palabras como diferencia, producto, doble, triple o mitad indican operaciones distintas. Poco a poco agrégalas a tu vocabulario matemático: entender esas palabras te ayudará a traducir mejor los problemas.",
   },
   {
     id: "ariadna",
@@ -110,9 +105,8 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_algebra_6",
     mechanic:
-      "Sustituye el valor de la variable y resuelve respetando signos, paréntesis y jerarquía de operaciones para avanzar por el laberinto.",
-    tip:
-      "Haz una cosa a la vez: sustituir bien, conservar signos y luego operar en orden. La prisa suele romper el procedimiento.",
+      "Sustituye el valor de la variable, calcula el resultado y busca ese número dentro del laberinto mientras esquivas al minotauro. No basta con calcular: también debes moverte con cuidado y evitar tocar valores incorrectos.",
+    tip: "Primero busca un lugar seguro para pensar. Haz la sustitución con calma, cuida signos y paréntesis, y luego avanza hacia el número correcto observando rutas de escape y la posición del minotauro.",
   },
   {
     id: "howdin",
@@ -120,9 +114,8 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 2,
     helpSheetKey: "sheet_algebra_7",
     mechanic:
-      "Abre puertas haciendo el movimiento correcto para aislar la incógnita. Cada acción debe acercarte a dejarla sola.",
-    tip:
-      "Piensa en capas: quita primero lo que estorba más por fuera y avanza paso a paso sin romper la igualdad.",
+      "Observa la ecuación e identifica qué término conviene cancelar para acercarte a la incógnita. Elige ese término y aplica la operación opuesta para simplificar.",
+    tip: "Despejar es quitar capas: usa operaciones inversas para retirar lo que rodea a la incógnita, un paso a la vez, sin romper la igualdad.",
   },
   {
     id: "aljuarismi",
@@ -130,9 +123,8 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 2,
     helpSheetKey: "sheet_algebra_8",
     mechanic:
-      "Distribuye, simplifica, mueve términos y resuelve sin perder el equilibrio. Si dudas demasiado, la presión de la pesadilla aumenta.",
-    tip:
-      "No intentes hacerlo todo de golpe. Busca siempre el siguiente paso válido: distribuir, combinar, mover o despejar.",
+      "El juego calcula casi todo automáticamente; tu tarea es elegir el paso correcto. Haz clic para distribuir o multiplicar, arrastra términos semejantes para combinarlos y mueve términos al otro lado del igual para simplificar. Al final, calcula mentalmente el valor de x.",
+    tip: "Concéntrate en el orden del procedimiento: distribuir, combinar términos semejantes, mover términos y despejar. Si te pierdes, revisa la ayuda de la esquina inferior izquierda; te indica cuál puede ser el siguiente paso.",
   },
   {
     id: "clara",
@@ -140,24 +132,23 @@ const MN_SOFIA_ALGEBRA_TOPICS = [
     page: 2,
     helpSheetKey: "sheet_algebra_9",
     mechanic:
-      "Primero eliges la ecuación que modela la situación y después resuelves su resultado. Si fallas, repites la misma situación.",
-    tip:
-      "Antes de calcular, decide qué representa la variable, qué cantidades cambian y cuál es la relación entre ellas.",
+      "Primero elige la ecuación que representa la situación. Si aciertas, después resuelve la ecuación mentalmente o en papel y marca la respuesta correcta.",
+    tip: "Antes de calcular, identifica qué representa la variable, qué cantidades cambian y cómo se relacionan. Una ecuación puede parecer correcta, pero solo funciona si realmente traduce la situación.",
   },
 ];
 
 function MN_buildSofiaAlgebraStory() {
   const scenes = {
     sofia_menu: {
-      title: "Sofia",
+      title: "Sofía",
       background: "bg_sofia",
       music: "bgm_quiet",
       characters: MN_SOFIA_ALGEBRA_CHARACTERS,
       dialogs: [
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "Hola. Aquí puedo ayudarte a entender qué se trabaja en Álgebra o darte ayuda puntual para cualquier reto.",
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
           choices: [
             {
               text: "Explícame el área de Álgebra",
@@ -179,20 +170,20 @@ function MN_buildSofiaAlgebraStory() {
       characters: MN_SOFIA_ALGEBRA_CHARACTERS,
       dialogs: [
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "En Álgebra empiezas a usar letras para representar cantidades desconocidas o cambiantes.",
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
         },
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "Aquí practicas conceptos, equilibrio, traducción de frases, sustitución, términos semejantes, despejes, resolución de ecuaciones y modelado.",
         },
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "La idea no es memorizar trucos sueltos, sino entender relaciones entre cantidades y expresarlas con claridad.",
         },
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "Si te atoras en un reto, usa mi ayuda por minijuego. Te diré qué hacer, qué habilidad se trabaja y qué hoja consultar.",
           choices: [
             {
@@ -211,9 +202,9 @@ function MN_buildSofiaAlgebraStory() {
       characters: MN_SOFIA_ALGEBRA_CHARACTERS,
       dialogs: [
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "Dime con cuál reto de Álgebra necesitas apoyo.",
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
           choices: [],
         },
       ],
@@ -225,9 +216,9 @@ function MN_buildSofiaAlgebraStory() {
       characters: MN_SOFIA_ALGEBRA_CHARACTERS,
       dialogs: [
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "Aquí están los retos restantes. Elige uno y te ayudo.",
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
           choices: [],
         },
       ],
@@ -246,7 +237,8 @@ function MN_buildSofiaAlgebraStory() {
     const sceneKey = `sofia_help_${topic.id}`;
     const mechanicKey = `${sceneKey}_mechanic`;
     const tipKey = `${sceneKey}_tip`;
-    const chooseMenu = topic.page === 1 ? "sofia_help_menu_1" : "sofia_help_menu_2";
+    const chooseMenu =
+      topic.page === 1 ? "sofia_help_menu_1" : "sofia_help_menu_2";
 
     scenes[sceneKey] = {
       title: topic.label,
@@ -255,7 +247,7 @@ function MN_buildSofiaAlgebraStory() {
       characters: MN_SOFIA_ALGEBRA_CHARACTERS,
       dialogs: [
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "¿Qué ayuda necesitas en este reto?",
           choices: [
             { text: "Mecánica del juego", next: mechanicKey },
@@ -277,17 +269,17 @@ function MN_buildSofiaAlgebraStory() {
     };
 
     scenes[mechanicKey] = {
-      title: `${topic.label} - Mecanica`,
+      title: `${topic.label} - Mecánica`,
       background: "bg_sofia",
       music: "bgm_quiet",
       characters: MN_SOFIA_ALGEBRA_CHARACTERS,
       dialogs: [
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: topic.mechanic,
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
           choices: [
-            { text: "Volver al submenu", next: sceneKey },
+            { text: "Volver al submenú", next: sceneKey },
             { text: "Elegir otro minijuego", next: chooseMenu },
             { text: "Adiós.", action: { type: "CLOSE_NOVELA" } },
           ],
@@ -302,11 +294,11 @@ function MN_buildSofiaAlgebraStory() {
       characters: MN_SOFIA_ALGEBRA_CHARACTERS,
       dialogs: [
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: topic.tip,
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
           choices: [
-            { text: "Volver al submenu", next: sceneKey },
+            { text: "Volver al submenú", next: sceneKey },
             { text: "Elegir otro minijuego", next: chooseMenu },
             { text: "Adiós.", action: { type: "CLOSE_NOVELA" } },
           ],
@@ -319,7 +311,7 @@ function MN_buildSofiaAlgebraStory() {
     else page2Choices.push(menuChoice);
   });
 
-  page1Choices.push({ text: "Ver mas minijuegos", next: "sofia_help_menu_2" });
+  page1Choices.push({ text: "Ver más minijuegos", next: "sofia_help_menu_2" });
   page1Choices.push({ text: "Adiós.", action: { type: "CLOSE_NOVELA" } });
   page2Choices.push({
     text: "Ver minijuegos anteriores",
@@ -413,8 +405,8 @@ window.FELIPON_CONCEPTOS_STORY = {
         },
         {
           speaker: "Nico",
-          text: "Pero en álgebra esos símbolos no siempre te dicen 'haz esto ahora'. A veces forman parte de lo que estás describiendo.",
-        },        
+          text: "Pero entendí que en álgebra esos símbolos no siempre te dicen 'haz esto ahora'. A veces forman parte de lo que estás describiendo.",
+        },
         {
           speaker: "Felipón",
           text: "¡Eso! ¡Eso es justo lo que me confunde!",
@@ -640,14 +632,9 @@ window.BRAHMAGUPTA_ENIGMAS_STORY = {
         },
         {
           speaker: "Nico",
-          text: "Entonces no basta con calcular... primero hay que entender lo que el enigma realmente está diciendo.",
+          text: "Ahí a veces me confundo... veo los números y quiero empezar a calcular, pero no siempre sé qué me están preguntando.",
           stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Brahmagupta",
-          text: "Así es.",
-          stage: { focus: "Brahmagupta" },
-        },
+        },        
         {
           speaker: "Brahmagupta",
           text: "A veces el número permanece oculto, pero la relación entre las cantidades está a la vista.",
@@ -848,7 +835,7 @@ window.SILVANO_LENGUAJE_NATURAL_STORY = {
         },
         {
           speaker: "Nico",
-          text: "Entonces no basta con caminar. Hay que entender exactamente lo que dicen las indicaciones.",
+          text: "Entonces debo revisar bien las indicaciones.",
           stage: { focus: "Nico" },
         },
         {
@@ -878,7 +865,7 @@ window.SILVANO_LENGUAJE_NATURAL_STORY = {
         },
         {
           speaker: "Nico",
-          text: "Entonces este bosque pone a prueba si de verdad sabemos traducir bien las instrucciones.",
+          text:  "Eso me preocupa un poco... a veces creo que entendí una frase, pero una sola palabra cambia todo.",
           stage: { focus: "Nico" },
         },
         {
@@ -903,8 +890,8 @@ window.SILVANO_LENGUAJE_NATURAL_STORY = {
           text: "Y entonces te entregaré una hoja.",
         },
         {
-          speaker: "Nico",
-          text: "Entiendo... primero debo aprender a seguir bien el lenguaje del camino.",
+          speaker: "Nico",          
+          text: "De acuerdo... voy a leer con más calma antes de elegir.",
           stage: { focus: "Nico" },
         },
         {
@@ -1029,20 +1016,16 @@ window.ARIADNA_SUSTITUIR_EVALUAR_STORY = {
         },
         {
           speaker: "Ariadna",
-          text: "Si lo sigues, cada paso tiene sentido.",
+          text: "Si lo sigues bien, encontrarás la respuesta correcta y podrás abrir la salida.",          
         },
         {
           speaker: "Ariadna",
-          text: "Si lo sueltas, la prisa y la confusión harán el resto.",
-        },
+          text: "Esquiva al minotauro mientras recorres el laberinto y encuentras la salida.",
+        },        
         {
           speaker: "Nico",
-          text: "Entonces esta prueba no es solo de valor...",
+          text: "Entonces tengo que pensar y escapar al mismo tiempo... eso sí me puede hacer fallar.",          
           stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Nico",
-          text: "también es de atención y de orden.",
         },
         {
           speaker: "Ariadna",
@@ -1338,12 +1321,12 @@ window.ALJUARISMI_BALANCEO_STORY = {
       dialogs: [
         {
           speaker: "Al-Juarismi",
-          text: "Te doy la bienvenida. Soy Al-Juarismi, custodio de esta area. Veo que todavia no has reunido las 6 hojas necesarias para abrir el paso a Geometria.",
+          text: "Te doy la bienvenida. Soy Al-Juarismi, custodio de esta área. Veo que todavía no has reunido las 6 hojas necesarias para abrir el paso a Geometría.",
           stage: { focus: "Al-Juarismi" },
         },
         {
           speaker: "Al-Juarismi",
-          text: "Vuelve cuando las tengas y yo mismo abrire el camino. Mientras tanto, demuestrame que tu procedimiento y tus habilidades siguen en orden.",
+          text: "Vuelve cuando las tengas y yo mismo abriré el camino. Mientras tanto, demuéstrame que tu procedimiento y tus habilidades siguen en orden.",
           stage: { focus: "Al-Juarismi" },
           next: "exit",
         },
@@ -1374,17 +1357,17 @@ window.ALJUARISMI_BALANCEO_STORY = {
       dialogs: [
         {
           speaker: "Al-Juarismi",
-          text: "Ya casi completas lo necesario. Has reunido suficientes hojas para llegar hasta mi puerta, pero todavia falta una prueba final.",
+          text: "Ya casi completas lo necesario. Has reunido suficientes hojas para llegar hasta mi puerta, pero todavía falta una prueba final.",
           stage: { focus: "Al-Juarismi" },
         },
         {
           speaker: "Al-Juarismi",
-          text: "Si mantienes el orden y resuelves con claridad, te entregare la hoja que falta para cerrar este libro y abrir el paso hacia Geometria.",
+          text: "Si mantienes el orden y resuelves con claridad, te entregaré la hoja que falta para cerrar este libro y abrir el paso hacia Geometría.",
           stage: { focus: "Al-Juarismi" },
         },
         {
           speaker: "Nico",
-          text: "Entiendo. No se trata solo de llegar hasta aqui, sino de demostrar que puedo sostener el procedimiento completo.",
+          text: "Entiendo. No se trata solo de llegar hasta aquí, sino de demostrar que puedo sostener el procedimiento completo.",
           stage: { focus: "Nico" },
           next: "exit",
         },
@@ -1420,7 +1403,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
         },
         {
           speaker: "Al-Juarismi",
-          text: "Si aún quedan desafios pendientes, puedes seguir enfrentándolos. No por necesidad, sino para afinar tu mirada matemática.",
+          text: "Si aún quedan desafíos pendientes, puedes seguir enfrentándolos. No por necesidad, sino para afinar tu mirada matemática.",
           stage: { focus: "Al-Juarismi" },
         },
         {
@@ -1430,7 +1413,7 @@ window.ALJUARISMI_BALANCEO_STORY = {
         },
         {
           speaker: "Al-Juarismi",
-          text: "Exactamente. Habla con Sofía cuando estes listo para dar el siguiente paso.",
+          text: "Exactamente. Habla con Sofía cuando estés listo para dar el siguiente paso.",
           stage: { focus: "Al-Juarismi" },
           next: "exit",
         },
@@ -1461,17 +1444,17 @@ window.ALJUARISMI_BALANCEO_STORY = {
       dialogs: [
         {
           speaker: "Al-Juarismi",
-          text: "Excelente. Has reunido todas las hojas del Libro del Algebra, incluida la mia. Eso significa que no solo resolviste: comprendiste.",
+          text: "Excelente. Has reunido todas las hojas del Libro del Álgebra, incluida la mía. Eso significa que no solo resolviste: comprendiste.",
           stage: { focus: "Al-Juarismi" },
         },
         {
           speaker: "Al-Juarismi",
-          text: "El orden, el equilibrio y la claridad ya forman parte de tu manera de pensar. Esa sera tu mejor herramienta en Geometria.",
+          text: "El orden, el equilibrio y la claridad ya forman parte de tu manera de pensar. Esa será tu mejor herramienta en Geometría.",
           stage: { focus: "Al-Juarismi" },
         },
         {
           speaker: "Al-Juarismi",
-          text: "Habla con Sofía cuando quieras partir. Y si deseas practicar de nuevo, aqui seguire.",
+          text: "Habla con Sofía cuando quieras partir. Y si deseas practicar de nuevo, aquí seguiré.",
           stage: { focus: "Al-Juarismi" },
           next: "exit",
         },
@@ -1537,7 +1520,7 @@ window.SOFIA_GEOMETRIA_GATE_STORY = {
   order: ["sofia_gate", "exit"],
   scenes: {
     sofia_gate: {
-      title: "Sofia",
+      title: "Sofía",
       background: "bg_sofia",
       music: "bgm_quiet",
       characters: [
@@ -1555,19 +1538,19 @@ window.SOFIA_GEOMETRIA_GATE_STORY = {
           y: 530,
           scale: 1,
           flipX: false,
-          name: "Sofia",
+          name: "Sofía",
         },
       ],
       dialogs: [
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "Lo lograste. Al-Juarismi ya encuadernó el Libro del Álgebra.",
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
         },
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "¿Estás listo para partir al Área de Geometría?",
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
           choices: [
             {
               text: "Sí. Llévame a Geometría.",

@@ -6,6 +6,7 @@ window.MN_ARITMETICA_SHEET_KEYS = [
   "sheet_sistema_decimal",
   "sheet_suma",
   "sheet_resta",
+  "sheet_estimacion",
   "sheet_cero",
   "sheet_multiplicacion",
   "sheet_dos_caras",

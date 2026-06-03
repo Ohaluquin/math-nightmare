@@ -1,4 +1,4 @@
-﻿// historia_aritmetica.js - Historia principal de Math Nightmare
+// historia_aritmetica.js - Historia principal de Math Nightmare
 // Nombre fijo del protagonista
 window.MN_PLAYER_NAME = "Nico";
 
@@ -84,7 +84,7 @@ window.MN_STORY = {
         },
         {
           speaker: "Voz extraña",
-          text: "No necesitarás todas las hojas, pero sí las suficientes para demostrar tu valia.",
+          text: "No necesitarás todas las hojas, pero sí las suficientes para demostrar tu valía.",
         },
         {
           speaker: "Voz extraña",
@@ -183,11 +183,11 @@ const MN_SOFIA_HELP_TOPICS = [
     id: "bruno",
     label: "Bruno",
     page: 1,
-    helpSheetKey: "sheet_cero",
+    helpSheetKey: "sheet_estimacion",
     mechanic:
       "Debes hacer clic para agregar monstruitos al elevador. Si el elevador no sube, te pasaste y necesitas quitar algunos. Si se cae, te faltaron. Observa bien lo que ocurre y ajusta hasta que quede equilibrado.",
     tip: "Aquí conviene estimar antes de probar. Puedes apoyarte en multiplicaciones o en sumas repetidas para calcular cuántos monstruitos caben y acercarte más rápido a la cantidad correcta.",
-    sheets: [{ key: "sheet_cero", label: "El Cero" }],
+    sheets: [{ key: "sheet_estimacion", label: "Estimación" }],
   },
   {
     id: "armonia",
@@ -195,7 +195,7 @@ const MN_SOFIA_HELP_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_division",
     mechanic:
-      "Aparece una división con un solo número incorrecto y debes hacer clic justo sobre ese número. Cada acierto te da otra división y sigues jugando mientras dure la canción. La velocidad ayuda porque da puntos y combos, y necesitas 2000 puntos para ganar la hoja.",
+      "Aparece una división con un solo número incorrecto y debes hacer clic justo sobre ese número. Cada acierto te da otra división y sigues jugando mientras dure la canción. La velocidad ayuda porque da puntos y combos: necesitas 2000 puntos para ganar la primera hoja y 4000 para la secundaria.",
     tip: "Este reto trabaja el algoritmo de la división. No trates de adivinar: revisa mentalmente cada paso de la cuenta hasta encontrar dónde ya no coincide.",
     sheets: [{ key: "sheet_division", label: "Algoritmo de la división" }],
   },
@@ -235,8 +235,8 @@ const MN_SOFIA_HELP_TOPICS = [
     page: 2,
     helpSheetKey: "sheet_primos",
     mechanic:
-      "En este reto te mueves con las flechas y disparas con la barra espaciadora. Antes de disparar, debes elegir el tipo de divisor con el que quieres atacar: 2, 3, 5, 7, o 1 si el número es primo de más de dos dígitos. No conviene disparar de más: si atacas con un número que no es divisor, en lugar de reducir al enemigo lo multiplicas y el número crece.",
-    tip: "Aquí practicas divisores, criterios de divisibilidad y números primos. Antes de disparar, revisa si el número realmente cumple con el criterio del divisor que elegiste: par para 2, suma de cifras para 3, última cifra para 5, y en otros casos conviene probar con cuidado antes de actuar.",
+      "Te mueves con las flechas y atacas eligiendo el divisor correcto: 2, 3, 5, 7 o P. Usa P solo cuando el número sea primo de más de dos dígitos.",
+    tip: "Antes de disparar, revisa el criterio: si termina en cifra par, usa 2; si la suma de sus cifras es múltiplo de 3, usa 3; si termina en 0 o 5, usa 5; si tienes duda con 7, prueba con cuidado. Usa P solo cuando ya descartaste esos divisores y el número sea primo en este reto.",
     sheets: [{ key: "sheet_primos", label: "Números primos" }],
   },
   {
@@ -261,7 +261,7 @@ function MN_buildSofiaSupportStory() {
       dialogs: [
         {
           speaker: "Sofía",
-          text: "Hola, soy Sofía. Puedo ayudarte?",
+          text: "Hola, soy Sofía. ¿Puedo ayudarte?",
           stage: { focus: "Sofía" },
           choices: [
             { text: "¿Qué es el Reino de los Números?", next: "sofia_reino" },
@@ -739,7 +739,7 @@ window.ESCALERA_SUMAS_STORY = {
         },
         {
           speaker: "Don Marino",
-          text: "Guardián, campeón… y ahora espectador. Antes subía y bajaba esta escalera más rápido que nadie. Ahora las rodillas crujen más que la madera.",
+          text: "Guardián, campeón… y ahora espectador. Antes subía y bajaba esta escalera más rápido que nadie. Ahora las rodillas crujen más que la madera.",
           stage: { focus: "Don Marino" },
         },
         {
@@ -970,7 +970,7 @@ window.MINEROS_STORY = {
         },
         {
           speaker: "Bruno",
-          text: "Si entiendes el equilibrio, te lo recompensare con una hoja del libro de la aritmética.",
+          text: "Si entiendes el equilibrio, te lo recompensaré con una hoja del Libro de Aritmética.",
         },
       ],
     },
@@ -1056,13 +1056,13 @@ window.GALILEO_TABLAS_STORY = {
   },
 };
 
-// --- 3.7 Armonia de la Division (division como precision y practica) ---
+// --- 3.7 Armonía de la División (división como precisión y práctica) ---
 window.ARMONIA_DIVISION_STORY = {
   start: "armonia_division_intro",
   order: ["armonia_division_intro"],
   scenes: {
     armonia_division_intro: {
-      title: "Armonia y el ritmo del error",
+      title: "Armonía y el ritmo del error",
       background: "bg_mina",
       music: "bgm_overworld",
       characters: [
@@ -1080,46 +1080,46 @@ window.ARMONIA_DIVISION_STORY = {
           y: 550,
           scale: 0.75,
           flipX: false,
-          name: "Armonia",
+          name: "Armonía",
         },
       ],
       dialogs: [
         {
-          speaker: "Armonia",
+          speaker: "Armonía",
           text: "Las notas no nacen perfectas. Se afinan.",
-          stage: { focus: "Armonia" },
+          stage: { focus: "Armonía" },
         },
         {
-          speaker: "Armonia",
+          speaker: "Armonía",
           text: "En música, el error no es enemigo... es parte del ensayo.",
-          stage: { focus: "Armonia" },
+          stage: { focus: "Armonía" },
         },
         {
-          speaker: "Armonia",
+          speaker: "Armonía",
           text: "Las divisiones funcionan igual: un descuido rompe el compás.",
-          stage: { focus: "Armonia" },
+          stage: { focus: "Armonía" },
         },
         {
           speaker: "Nico",
-          text: "Entonces no se trata de hacerlo rápido, sino de mantener el ritmo.",
+          text: "Eso me pasa mucho con las divisiones largas... empiezo bien, pero luego me pierdo en qué paso sigue.",
           stage: { focus: "Nico" },
         },
         {
-          speaker: "Armonia",
-          text: "Exacto. Encuentra el fallo, corrige y continua.",
-          stage: { focus: "Armonia" },
+          speaker: "Armonía",
+          text: "Exacto. Justo debes seguir el ritmo: dividir, multiplicar, restar y bajar, sin saltarte ningún paso.",
+          stage: { focus: "Armonía" },
         },
         {
-          speaker: "Armonia",
+          speaker: "Armonía",
           text: "Si dominas ese pulso, el cálculo deja de sonar como ruido.",
-          stage: { focus: "Armonia" },
+          stage: { focus: "Armonía" },
         },
       ],
     },
   },
 };
 
-// --- 3.8 Chaman de la Jerarquía (orden de operaciones, enteros, signos) ---
+// --- 3.8 Chamán de la Jerarquía (orden de operaciones, enteros, signos) ---
 window.CHAMAN_JERARQUIA_STORY = {
   start: "chaman_jerarquia",
   order: ["chaman_jerarquia"],
@@ -1407,7 +1407,7 @@ window.ERATOSTENES_STORY = {
         },
         {
           speaker: "Eratóstenes",
-          text: "Y entonces, compartiré contigo hojas del Libro de la Aritmética.",
+          text: "Y entonces, compartiré contigo hojas del Libro de Aritmética.",
         },
         {
           speaker: "Eratóstenes",
@@ -1514,7 +1514,7 @@ window.LEONARDO_PISA_STORY = {
       ],
     },
 
-    // ───────────────── Estado 3: ya tienes suficientes hojas (11–15) ─────────────────
+    // ───────────────── Estado 3: ya tienes suficientes hojas (11-16) ─────────────────
     // Pierdas o ganes, el camino puede abrirse. El reto queda como desafío opcional.
     leonardo_aprobado: {
       title: "Leonardo de Pisa",
@@ -1551,7 +1551,7 @@ window.LEONARDO_PISA_STORY = {
         },
         {
           speaker: "Nico",
-          text: "Entonces puedo seguir intentando para completar el libro... aunque ya pueda avanzar?",
+          text: "Entonces, ¿puedo seguir intentando para completar el libro... aunque ya pueda avanzar?",
           stage: { focus: "Nico" },
         },
         {
@@ -1568,7 +1568,7 @@ window.LEONARDO_PISA_STORY = {
       ],
     },
 
-    // ───────────────── Estado 4: completista (16 hojas) ─────────────────
+    // ───────────────── Estado 4: completista (17 hojas) ─────────────────
     leonardo_perfecto: {
       title: "Leonardo de Pisa",
       background: "bg_leonardo",

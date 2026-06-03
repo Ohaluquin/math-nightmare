@@ -6,8 +6,8 @@ window.MN_SHEETS_REWARD = {
   caja_rapida: { 1: "sheet_operaciones" }, 
   escalera_sumas: { 1: "sheet_suma", 2: "sheet_sistema_decimal" },
   restas_luciernagas: { 1: "sheet_resta" },
-  mineros_division: { 1: "sheet_cero" },
-  armonia_division: { 1: "sheet_division" },  
+  mineros_division: { 1: "sheet_estimacion" },
+  armonia_division: { 1: "sheet_division", 2: "sheet_cero" },  
   galileo_tablas: { 1: "sheet_multiplicacion", 2: "sheet_dos_caras" },
   chaman_jerarquia: { 1: "sheet_al_juarizmi" },
   general_signos: { 1: "sheet_negativos" },
@@ -154,7 +154,7 @@ MN_REGISTRY.minigames["galileo_tablas"] = {
 MN_REGISTRY.minigames["armonia_division"] = {
   id: "armonia_division",
   factory: (game) => new ArmoniaScene(game),
-  sheets: 1,
+  sheets: 2,
 };
 
 MN_REGISTRY.minigames["chaman_jerarquia"] = {

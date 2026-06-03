@@ -854,7 +854,7 @@ class ResolverEcuacionesScene extends Scene {
     // caja de instrucciÃ³n
     const boxW = Math.min(720, W * 0.86);
     const boxH = 92;
-    const x = (W - boxW) / 2;
+    const x = W * 0.75 - boxW / 2;
     const y = 118;
 
     ctx.fillStyle = "rgba(0,0,0,0.72)";
@@ -1200,15 +1200,15 @@ class ResolverEcuacionesScene extends Scene {
 
     const boxW = 350;
     const boxH = 80;
-    const x = (W - boxW) / 2;
+    const x = 3*(W - boxW) / 4;
     const y = H - boxH - 18;
 
     ctx.save();
     ctx.font = "30px Arial";
-    ctx.fillStyle = "#1f130c";
+    ctx.fillStyle = "#1a0f09";
     ctx.textBaseline = "middle";
     ctx.textAlign = "left";
-    const textX = x + 122;
+    const textX = x + 250;
     const textY = y + boxH / 2;
     const answer = this.answerText || "";
     ctx.fillText(answer, textX, textY);

@@ -24,8 +24,8 @@ const MN_SOFIA_GEOMETRIA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_igualdad",
     mechanic:
-      "Debes observar figuras y decidir si conservan la misma forma y tamaño aunque cambien de posición. La clave es reconocer congruencia y composición espacial.",
-    tip: "No te fijes solo en cómo se ve la silueta a primera vista. Compara lados, ángulos y la manera en que las piezas pueden reacomodarse sin cambiar la figura.",
+      "Arrastra cada pieza sobre la sombra y suéltala donde creas que encaja. Si está en el lugar correcto, la pieza se acomodará; si no, podrás seguir moviéndola hasta encontrar su posición.",
+    tip: "No te frustres si al principio cuesta trabajo. Observa la forma de cada pieza y empieza por los bordes o las esquinas de la sombra. Poco a poco te acostumbrarás a reconocer dónde puede encajar cada figura.",
   },
   {
     id: "rey",
@@ -33,8 +33,8 @@ const MN_SOFIA_GEOMETRIA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_deduccion",
     mechanic:
-      "Aquí debes leer pistas geométricas y sacar conclusiones válidas. Algunas opciones suenan razonables, pero solo una se sigue de los datos dados.",
-    tip: "Pregunta siempre qué sabes con certeza y que solo estás suponiendo. En geometría, demostrar vale más que intuir.",
+      "Observa las pistas que ya dejó una partida iniciada y deduce cuál debe ser el siguiente intento. Empezarás con un reto sencillo, luego uno intermedio y al final jugarás una partida libre.",
+    tip: "Antes de elegir, revisa qué opciones ya quedaron descartadas y cuáles todavía pueden funcionar. En este reto no se trata de adivinar, sino de usar las pistas para reducir posibilidades.",
   },
   {
     id: "ulises",
@@ -42,17 +42,17 @@ const MN_SOFIA_GEOMETRIA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_angulos",
     mechanic:
-      "Tienes que identificar, comparar o calcular ángulos a partir de giros, cruces y referencias visuales. El reto es leer bien la abertura y sus relaciones.",
-    tip: "Ubica si los ángulos son agudos, rectos, obtusos o llanos antes de calcular. Esa clasificación ya te da una pista fuerte sobre el resultado.",
+      "Cada mapa te pide calcular el valor de x usando una propiedad básica de los ángulos. Si eliges mal el valor, perderás el rumbo y no llegarás al tesoro.",
+    tip: "Antes de calcular, identifica qué propiedad se cumple. Si reconoces la relación, el cálculo de x suele ser directo.",
   },
   {
     id: "gemelas",
-    label: "Lia y Mia",
+    label: "Lía y Mía",
     page: 1,
     helpSheetKey: "sheet_isosceles",
     mechanic:
-      "Debes usar las propiedades del triángulo isosceles para decidir qué afirmaciones o pasos son correctos dentro de la construcción o el razonamiento.",
-    tip: "Si dos lados son iguales, los ángulos de la base también lo son. Esa relación suele ser la puerta para resolver casi todo el ejercicio.",
+      "Observa la figura y encuentra los ángulos desconocidos usando relaciones básicas del triángulo isósceles.",
+    tip: "Busca primero los ángulos iguales. Después usa que los ángulos de un triángulo suman 180° y que dos ángulos sobre una recta también suman 180°. Normalmente la respuesta aparece al combinar esas tres ideas.",
   },
   {
     id: "judy",
@@ -60,8 +60,8 @@ const MN_SOFIA_GEOMETRIA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_angulos_ecuaciones",
     mechanic:
-      "Este reto mezcla relaciones entre ángulos con ecuaciones sencillas. Primero identificas la relación geométrica y después encuentras el valor desconocido.",
-    tip: "No empieces despejando sin traducir la figura. Antes decide si son suplementarios, complementarios, opuestos por el vértice o correspondientes.",
+      "Identifica la relación geométrica entre los ángulos, conviértela en una ecuación y resuélvela para encontrar x.",
+    tip: "No empieces despejando sin mirar la figura. Primero decide si los ángulos son iguales, suman 90° o suman 180°; después escribe la ecuación correspondiente.",
   },
   {
     id: "arquitecto",
@@ -69,8 +69,8 @@ const MN_SOFIA_GEOMETRIA_TOPICS = [
     page: 1,
     helpSheetKey: "sheet_poligonos",
     mechanic:
-      "Tienes que reconocer propiedades de polígonos, especialmente regulares, y usar esas propiedades para elegir la respuesta o el paso correcto.",
-    tip: "Fíjate en cuantas veces se repite el mismo ángulo o lado. Cuando una figura es regular, esa simetría te permite anticipar muchas relaciones.",
+      "Observa el polígono, identifica cuántos lados tiene y usa sus propiedades para encontrar la respuesta correcta.",
+    tip: "Si la figura es regular, todos sus lados y ángulos son iguales. Usa esa simetría para relacionar el número de lados con sus ángulos interiores, exteriores o centrales.",
   },
   {
     id: "topógrafo",
@@ -78,8 +78,8 @@ const MN_SOFIA_GEOMETRIA_TOPICS = [
     page: 2,
     helpSheetKey: "sheet_areas",
     mechanic:
-      "Aquí trabajas con medidas del terreno: a veces perímetro, a veces área. El reto es identificar primero qué magnitud te están pidiendo.",
-    tip: "Perímetro mide borde; área mide superficie. Si mezclas esas dos ideas, aunque operes bien, terminarás contestando otra cosa.",
+      "Divide el terreno en figuras más simples, como triángulos y rectángulos. Primero encuentra las medidas faltantes y después usa las fórmulas necesarias para calcular lo que se pide.",
+    tip: "Antes de aplicar una fórmula, revisa qué datos faltan. Puedes usar propiedades geométricas: en rectángulos y paralelogramos los lados opuestos son iguales, y con Pitágoras puedes calcular diagonales o lados desconocidos.",
   },
   {
     id: "descartes",
@@ -88,7 +88,7 @@ const MN_SOFIA_GEOMETRIA_TOPICS = [
     helpSheetKey: "sheet_cartesiano",
     mechanic:
       "Debes ubicar puntos en el plano cartesiano y leer coordenadas con precisión. El orden y el signo importan en cada movimiento.",
-    tip: "Recuerda: primero avanzas en x y después en y. Si cambias el orden, llegas a otro punto completamente distinto.",
+    tip: "Recuerda: primero avanzas en x y después en y. Las flechas de los ejes indican hacia dónde crecen los valores positivos; si la coordenada es negativa, avanzas en sentido contrario.",
   },
   {
     id: "galileo",
@@ -96,8 +96,8 @@ const MN_SOFIA_GEOMETRIA_TOPICS = [
     page: 2,
     helpSheetKey: "sheet_graficas",
     mechanic:
-      "En este reto interpretas gráficas y relaciones visuales entre variables. No basta con ver una línea: hay que leer que cambia y cómo cambia.",
-    tip: "Observa tendencia, puntos clave y comparaciones. Una gráfica cuenta una historia, y tu trabajo es traducirla correctamente.",
+      "Usa la fórmula de la ecuación para calcular y a partir de los valores de x. Puedes escribir el resultado o hacer clic directamente en el punto correcto de la gráfica.",
+    tip: "Después de calcular tres puntos, observa el patrón. Si descubres cuánto aumenta o disminuye y cada vez que x cambia, podrás calcular valores más lejanos sin hacer toda la tabla.",
   },
   {
     id: "aprendiz",
@@ -106,7 +106,7 @@ const MN_SOFIA_GEOMETRIA_TOPICS = [
     helpSheetKey: "sheet_regla_y_compas",
     mechanic:
       "Debes ordenar correctamente los pasos de una construcción con regla y compás. Avanzas solo si respetas la lógica del procedimiento geométrico.",
-    tip: "Piensa en dependencias: un paso solo puede venir después de que sus puntos, arcos o intersecciones ya existen.",
+    tip: "Piensa en dependencias: no puedes usar un punto, arco o intersección antes de haberlo construido. Cada paso debe apoyarse en algo que ya existe.",
   },
   {
     id: "pitagoras",
@@ -115,7 +115,7 @@ const MN_SOFIA_GEOMETRIA_TOPICS = [
     helpSheetKey: "sheet_pitagoras",
     mechanic:
       "La prueba final combina varias ideas de Geometría. No se trata de aplicar una fórmula aislada, sino de decidir qué concepto usar en cada situación.",
-    tip: "Si un problema te abruma, sepáralo: qué tipo de figura hay, qué dato se conoce, qué propiedad conecta esos datos y qué es exactamente lo que piden.",
+    tip: "Si un problema te parece difícil, sepáralo: qué tipo de figura hay, qué dato se conoce, qué propiedad conecta esos datos y qué es exactamente lo que piden.",
   },
 ];
 
@@ -607,7 +607,7 @@ window.ULISES_ANGULOS_STORY = {
         },
         {
           speaker: "Nico",
-          text: "Entonces necesitas medir bien cada giro.",
+          text: "Entonces si me equivoco por poquito, puedo acabar en otro lugar completamente distinto.",
           stage: { focus: "Nico" },
         },
         {
@@ -671,7 +671,7 @@ window.GEMELAS_ISOSCELES_STORY = {
           y: 520,
           scale: 1,
           flipX: false,
-          name: "Lia",
+          name: "Lía",
         },
         {
           image: "ch_gemela2",
@@ -679,19 +679,19 @@ window.GEMELAS_ISOSCELES_STORY = {
           y: 520,
           scale: 1,
           flipX: true,
-          name: "Mia",
+          name: "Mía",
         },
       ],
       dialogs: [
         {
-          speaker: "Lia",
+          speaker: "Lía",
           text: "Nosotras siempre estamos en equilibrio.",
-          stage: { focus: "Lia" },
+          stage: { focus: "Lía" },
         },
         {
-          speaker: "Mia",
+          speaker: "Mía",
           text: "Si una se mueve… la otra también.",
-          stage: { focus: "Mia" },
+          stage: { focus: "Mía" },
         },
         {
           speaker: "Nico",
@@ -699,32 +699,32 @@ window.GEMELAS_ISOSCELES_STORY = {
           stage: { focus: "Nico" },
         },
         {
-          speaker: "Lia",
+          speaker: "Lía",
           text: "No es coincidencia.",
-          stage: { focus: "Lia" },
+          stage: { focus: "Lía" },
         },
         {
-          speaker: "Mia",
+          speaker: "Mía",
           text: "Es una relación.",
-          stage: { focus: "Mia" },
+          stage: { focus: "Mía" },
         },
         {
-          speaker: "Lia",
+          speaker: "Lía",
           text: "Cuando dos partes son iguales…",
         },
         {
-          speaker: "Mia",
+          speaker: "Mía",
           text: "otras también lo serán.",
         },
         {
-          speaker: "Lia",
+          speaker: "Lía",
           text: "Por eso nos gusta jugar este reto con alguien diferente.",
-          stage: { focus: "Lia" },
+          stage: { focus: "Lía" },
         },
         {
-          speaker: "Mia",
+          speaker: "Mía",
           text: "Dos iguales… y uno distinto.",
-          stage: { focus: "Mia" },
+          stage: { focus: "Mía" },
         },
         {
           speaker: "Nico",
@@ -732,56 +732,56 @@ window.GEMELAS_ISOSCELES_STORY = {
           stage: { focus: "Nico" },
         },
         {
-          speaker: "Lia",
+          speaker: "Lía",
           text: "Observar con cuidado.",
-          stage: { focus: "Lia" },
+          stage: { focus: "Lía" },
         },
         {
-          speaker: "Mia",
+          speaker: "Mía",
           text: "Distinguir qué partes son iguales.",
-          stage: { focus: "Mia" },
+          stage: { focus: "Mía" },
         },
         {
-          speaker: "Lia",
+          speaker: "Lía",
           text: "Y decidir qué propiedad usar en cada parte.",
-          stage: { focus: "Lia" },
+          stage: { focus: "Lía" },
         },
         {
-          speaker: "Mia",
+          speaker: "Mía",
           text: "Si dos lados son iguales…",
-          stage: { focus: "Mia" },
+          stage: { focus: "Mía" },
         },
         {
-          speaker: "Lia",
+          speaker: "Lía",
           text: "los ángulos opuestos también lo son.",
         },
         {
-          speaker: "Mia",
+          speaker: "Mía",
           text: "No necesitas verlo todo de inmediato…",
         },
         {
-          speaker: "Lia",
+          speaker: "Lía",
           text: "solo reconocer lo que se repite.",
         },
         {
           speaker: "Nico",
-          text: "Entonces puedo encontrar lo que falta.",
+          text: "Creo que entiendo... si veo qué partes son iguales, puedo usar eso para calcular los ángulos que faltan.",
           stage: { focus: "Nico" },
         },
         {
-          speaker: "Lia",
+          speaker: "Lía",
           text: "Sí.",
-          stage: { focus: "Lia" },
+          stage: { focus: "Lía" },
         },
         {
-          speaker: "Mia",
+          speaker: "Mía",
           text: "Y cuando te acostumbras…",
-          stage: { focus: "Mia" },
+          stage: { focus: "Mía" },
         },
         {
-          speaker: "Lia",
+          speaker: "Lía",
           text: "empieza a parecer fácil.",
-          stage: { focus: "Lia" },
+          stage: { focus: "Lía" },
         },
       ],
     },
@@ -959,6 +959,16 @@ window.ARQUITECTO_POLIGONOS_STORY = {
           stage: { focus: "Darian" },
         },
         {
+          speaker: "Nico",
+          text: "A veces solo cuento los lados, pero no sé qué hacer con los ángulos.",
+          stage: { focus: "Nico" },
+        },
+        {
+          speaker: "Darian",
+          text: "Entonces mira qué se repite, no solo cuánto hay.",
+          stage: { focus: "Darian" },
+        },
+        {
           speaker: "Darian",
           text: "Cuando una figura es regular, sus lados y sus ángulos repiten una misma regla.",
         },
@@ -967,36 +977,8 @@ window.ARQUITECTO_POLIGONOS_STORY = {
           text: "Y cuando hay simetría, una parte te ayuda a prever las demás.",
         },
         {
-          speaker: "Nico",
-          text: "Entonces no se trata solo de mirar la figura... sino de descubrir qué se repite en ella.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Darian",
-          text: "Exactamente.",
-          stage: { focus: "Darian" },
-        },
-        {
-          speaker: "Darian",
-          text: "Muchos ven un polígono y solo cuentan lados.",
-        },
-        {
-          speaker: "Darian",
-          text: "Pero si observas bien, también puedes reconocer regularidad, simetría y relaciones que vuelven predecible la forma.",
-        },
-        {
           speaker: "Darian",
           text: "Eso es lo que permite diseñar, anticipar y construir con precisión.",
-        },
-        {
-          speaker: "Nico",
-          text: "Entonces, si entiendo la regla de la figura, puedo encontrar lo que falta.",
-          stage: { focus: "Nico" },
-        },
-        {
-          speaker: "Darian",
-          text: "Así es.",
-          stage: { focus: "Darian" },
         },
         {
           speaker: "Darian",
@@ -1269,7 +1251,7 @@ window.GALILEO_GRAFICAS_STORY = {
         },
         {
           speaker: "Nico",
-          text: "Entonces una gráfica no solo dibuja datos... tambien cuenta cómo cambian.",
+          text: "Entonces una gráfica no solo dibuja datos... también cuenta cómo cambian.",
           stage: { focus: "Nico" },
         },
         {
@@ -1347,7 +1329,7 @@ window.EVARISTO_TRAZOS_STORY = {
         },
         {
           speaker: "Nico",
-          text: "Entonces no se trata solo de llegar al resultado.",
+          text: "O sea que no puedo saltarme pasos aunque el dibujo final se parezca.",
           stage: { focus: "Nico" },
         },
         {
@@ -1677,7 +1659,7 @@ window.SOFIA_CASTILLO_READY_STORY = {
   order: ["sofia_ready", "exit"],
   scenes: {
     sofia_ready: {
-      title: "Sofia",
+      title: "Sofía",
       background: "bg_sofia",
       music: "bgm_quiet",
       characters: MN_SOFIA_GEOMETRIA_CHARACTERS,
@@ -1689,20 +1671,23 @@ window.SOFIA_CASTILLO_READY_STORY = {
         },
         {
           speaker: "Sofía",
-          text: "El camino al castillo por fin está abierto",
-          stage: { focus: "Sofia" },
+          text: "El camino al castillo por fin está abierto.",
+          stage: { focus: "Sofía" },
         },
         {
-          speaker: "Sofia",
-          text: "Estas listo para irte del área de Geometría o todavia hay retos que quieres hacer?",
-          stage: { focus: "Sofia" },
+          speaker: "Sofía",
+          text: "¿Estás listo para irte del área de Geometría o todavía hay retos que quieres hacer?",
+          stage: { focus: "Sofía" },
           choices: [
             {
               text: "Ya estoy listo para irme.",
-              action: { type: "PUSH_STORY", storyKey: "npc_sofia_castillo_final" },
+              action: {
+                type: "PUSH_STORY",
+                storyKey: "npc_sofia_castillo_final",
+              },
             },
             {
-              text: "Todavia quiero hacer más retos.",
+              text: "Todavía quiero hacer más retos.",
               next: "exit",
             },
           ],
@@ -1710,7 +1695,7 @@ window.SOFIA_CASTILLO_READY_STORY = {
       ],
     },
     exit: {
-      title: "Exit de Sofia",
+      title: "Exit de Sofía",
       music: "bgm_overworld",
       dialogs: [],
     },
@@ -1733,9 +1718,9 @@ window.SOFIA_CASTILLO_FINAL_STORY = {
           stage: { focus: "Nico" },
         },
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "Sí. El castillo reconoció los libros que reuniste.",
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
         },
         {
           speaker: "Nico",
@@ -1743,9 +1728,9 @@ window.SOFIA_CASTILLO_FINAL_STORY = {
           stage: { focus: "Nico" },
         },
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "No exactamente. La puerta siempre estuvo ahí. Lo que faltaba era que pudieras llegar hasta ella.",
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
         },
         {
           speaker: "Nico",
@@ -1753,9 +1738,9 @@ window.SOFIA_CASTILLO_FINAL_STORY = {
           stage: { focus: "Nico" },
         },
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "Entonces vamos, no lo hagas esperar.",
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
         },
         {
           speaker: "Nico",
@@ -1763,15 +1748,15 @@ window.SOFIA_CASTILLO_FINAL_STORY = {
           stage: { focus: "Nico" },
         },
         {
-          speaker: "Sofia",
+          speaker: "Sofía",
           text: "Hasta aquí puedo acompañarte. La puerta tienes que cruzarla tú.",
-          stage: { focus: "Sofia" },
+          stage: { focus: "Sofía" },
         },
         {
           speaker: "Nico",
           text: "Gracias, Sofía.",
           stage: { focus: "Nico" },
-        },        
+        },
       ],
     },
 
